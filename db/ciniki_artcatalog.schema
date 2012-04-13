@@ -22,6 +22,8 @@
 # flags:			0x01 - for sale
 #					0x02 - Sold
 #
+# image_id:			The image in the images module to use as the default picture.
+#
 # catalog_number:	The user assigned number for the piece.
 #
 # category:			The category for the atdo.
@@ -33,6 +35,8 @@
 # framed_size:		The framed size of the piece.
 #
 # price:			The price of the piece.
+#
+# notes:			Any notes for the piece.
 #
 # user_id:			The user who added the piece.
 #
@@ -46,12 +50,17 @@ create table ciniki_artcatalog (
 	name varchar(200) not null,
 	type tinyint unsigned not null,
 	flags tinyint unsigned not null,
+	image_id int not null,
 	catalog_number varchar(100) not null,
 	category varchar(200) not null,
 	media varchar(200) not null,
 	size varchar(200) not null,
 	framed_size varchar(200) not null,
 	price varchar(200) not null,
+	location varchar(200) not null,
+	awards varchar(6000) not null,
+	notes varchar(6000) not null,
+	description varchar(6000) not null,
 	user_id int not null,
 	date_added datetime not null,
 	last_updated datetime not null,

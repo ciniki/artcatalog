@@ -40,8 +40,8 @@ function ciniki_artcatalog_listByCategory($ciniki) {
 	require_once($ciniki['config']['core']['modules_dir'] . '/users/private/dateFormat.php');
 	$date_format = ciniki_users_dateFormat($ciniki);
 
-	$strsql = "SELECT ciniki_artcatalog.id, name, media, catalog_number, "
-		. "IF(ciniki_artcatalog.category='', 'Uncategorized', ciniki_artcatalog.category) AS name "
+	$strsql = "SELECT ciniki_artcatalog.id, image_id, name, media, catalog_number, size, framed_size, price, location, "
+		. "IF(ciniki_artcatalog.category='', 'Uncategorized', ciniki_artcatalog.category) AS cname "
 //		. "IF(ciniki_artcatalog.status=1, 'open', 'closed') AS status "
 		. "FROM ciniki_artcatalog "
 		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
@@ -63,10 +63,10 @@ function ciniki_artcatalog_listByCategory($ciniki) {
 	}
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');
 	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'artcatalog', array(
-		array('container'=>'categories', 'fname'=>'name', 'name'=>'category',
-			'fields'=>array('name')),
+		array('container'=>'categories', 'fname'=>'cname', 'name'=>'category',
+			'fields'=>array('cname')),
 		array('container'=>'pieces', 'fname'=>'id', 'name'=>'piece',
-			'fields'=>array('id', 'name', 'media', 'catalog_number')),
+			'fields'=>array('id', 'name', 'image_id', 'media', 'catalog_number', 'size', 'framed_size', 'price', 'location')),
 		));
 	// error_log($strsql);
 	if( $rc['stat'] != 'ok' ) {
