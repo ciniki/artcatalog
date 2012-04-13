@@ -48,6 +48,8 @@ function ciniki_artcatalog_searchQuick($ciniki) {
 		. "AND (name LIKE '" . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
 			. "OR name like '% " . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
 			. "OR catalog_number like '" . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
+			. "OR media like '" . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
+			. "OR media like '% " . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
 			. "OR location like '" . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
 			. "OR location like '% " . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
 			. ") "

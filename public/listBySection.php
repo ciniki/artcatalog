@@ -11,7 +11,7 @@
 // Returns
 // -------
 //
-function ciniki_artcatalog_listByCategory($ciniki) {
+function ciniki_artcatalog_listBySection($ciniki) {
     //  
     // Find all the required and optional arguments
     //  
@@ -19,6 +19,7 @@ function ciniki_artcatalog_listByCategory($ciniki) {
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
         'business_id'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No business specified'), 
         'status'=>array('required'=>'no', 'blank'=>'no', 'errmsg'=>'No status specified'), 
+        'section'=>array('required'=>'no', 'blank'=>'no', 'errmsg'=>'No section specified'), 
         'limit'=>array('required'=>'no', 'blank'=>'no', 'errmsg'=>'No limit specified'), 
         )); 
     if( $rc['stat'] != 'ok' ) { 
@@ -37,34 +38,37 @@ function ciniki_artcatalog_listByCategory($ciniki) {
     }   
 
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbQuote.php');
-	require_once($ciniki['config']['core']['modules_dir'] . '/users/private/dateFormat.php');
-	$date_format = ciniki_users_dateFormat($ciniki);
 
-	$strsql = "SELECT ciniki_artcatalog.id, image_id, name, media, catalog_number, size, framed_size, price, location, "
-		. "IF(ciniki_artcatalog.category='', 'Uncategorized', ciniki_artcatalog.category) AS cname "
-//		. "IF(ciniki_artcatalog.status=1, 'open', 'closed') AS status "
-		. "FROM ciniki_artcatalog "
-		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
-		. "";
-	if( isset($args['status']) ) {
-		switch($args['status']) {
-			case 'Open':
-			case 'open': $strsql .= "AND ciniki_artcatalog.status = 1 ";
-				break;
-			case 'Closed':
-			case 'closed': $strsql .= "AND ciniki_artcatalog.status = 60 ";
-				break;
-		}
+
+	if( !isset($args['section']) || $args['section'] == 'category' ) {
+		$strsql = "SELECT ciniki_artcatalog.id, image_id, name, media, catalog_number, size, framed_size, price, location, "
+			. "IF(ciniki_artcatalog.category='', '', ciniki_artcatalog.category) AS sname "
+			. "FROM ciniki_artcatalog "
+			. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+			. "ORDER BY sname, name "
+			. "";
+	} elseif( $args['section'] == 'media' ) {
+		$strsql = "SELECT ciniki_artcatalog.id, image_id, name, media, catalog_number, size, framed_size, price, location, "
+			. "IF(ciniki_artcatalog.media='', '', ciniki_artcatalog.media) AS sname "
+			. "FROM ciniki_artcatalog "
+			. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+			. "ORDER BY sname, name "
+			. "";
+	} elseif( $args['section'] == 'location' ) {
+		$strsql = "SELECT ciniki_artcatalog.id, image_id, name, media, catalog_number, size, framed_size, price, location, "
+			. "IF(ciniki_artcatalog.location='', '', ciniki_artcatalog.location) AS sname "
+			. "FROM ciniki_artcatalog "
+			. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+			. "ORDER BY sname, name "
+			. "";
 	}
-	$strsql .= "ORDER BY category, name "
-		. "";
 	if( isset($args['limit']) && $args['limit'] != '' && $args['limit'] > 0 ) {
 		$strsql .= "LIMIT " . ciniki_core_dbQuote($ciniki, $args['limit']) . " ";
 	}
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');
 	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'artcatalog', array(
-		array('container'=>'categories', 'fname'=>'cname', 'name'=>'category',
-			'fields'=>array('cname')),
+		array('container'=>'sections', 'fname'=>'sname', 'name'=>'section',
+			'fields'=>array('sname')),
 		array('container'=>'pieces', 'fname'=>'id', 'name'=>'piece',
 			'fields'=>array('id', 'name', 'image_id', 'media', 'catalog_number', 'size', 'framed_size', 'price', 'location')),
 		));
@@ -72,9 +76,9 @@ function ciniki_artcatalog_listByCategory($ciniki) {
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
 	}
-	if( !isset($rc['categories']) ) {
-		return array('stat'=>'ok', 'categories'=>array());
+	if( !isset($rc['sections']) ) {
+		return array('stat'=>'ok', 'sections'=>array());
 	}
-	return array('stat'=>'ok', 'categories'=>$rc['categories']);
+	return array('stat'=>'ok', 'sections'=>$rc['sections']);
 }
 ?>
