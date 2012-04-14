@@ -41,21 +41,23 @@ function ciniki_artcatalog_listBySection($ciniki) {
 
 
 	if( !isset($args['section']) || $args['section'] == 'category' ) {
-		$strsql = "SELECT ciniki_artcatalog.id, image_id, name, media, catalog_number, size, framed_size, price, location, "
+		$strsql = "SELECT ciniki_artcatalog.id, image_id, name, media, catalog_number, size, framed_size, price, flags, location, "
 			. "IF(ciniki_artcatalog.category='', '', ciniki_artcatalog.category) AS sname "
+//		. "IF((ciniki_artcatalog.flags&0x01)=1, 'yes', 'no') AS forsale, "
+//		. "IF((ciniki_artcatalog.flags&0x02)=2, 'yes', 'no') AS sold, "
 			. "FROM ciniki_artcatalog "
 			. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
 			. "ORDER BY sname, name "
 			. "";
 	} elseif( $args['section'] == 'media' ) {
-		$strsql = "SELECT ciniki_artcatalog.id, image_id, name, media, catalog_number, size, framed_size, price, location, "
+		$strsql = "SELECT ciniki_artcatalog.id, image_id, name, media, catalog_number, size, framed_size, price, flags, location, "
 			. "IF(ciniki_artcatalog.media='', '', ciniki_artcatalog.media) AS sname "
 			. "FROM ciniki_artcatalog "
 			. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
 			. "ORDER BY sname, name "
 			. "";
 	} elseif( $args['section'] == 'location' ) {
-		$strsql = "SELECT ciniki_artcatalog.id, image_id, name, media, catalog_number, size, framed_size, price, location, "
+		$strsql = "SELECT ciniki_artcatalog.id, image_id, name, media, catalog_number, size, framed_size, price, flags, location, "
 			. "IF(ciniki_artcatalog.location='', '', ciniki_artcatalog.location) AS sname "
 			. "FROM ciniki_artcatalog "
 			. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
@@ -70,7 +72,7 @@ function ciniki_artcatalog_listBySection($ciniki) {
 		array('container'=>'sections', 'fname'=>'sname', 'name'=>'section',
 			'fields'=>array('sname')),
 		array('container'=>'pieces', 'fname'=>'id', 'name'=>'piece',
-			'fields'=>array('id', 'name', 'image_id', 'media', 'catalog_number', 'size', 'framed_size', 'price', 'location')),
+			'fields'=>array('id', 'name', 'image_id', 'media', 'catalog_number', 'size', 'framed_size', 'price', 'flags', 'location')),
 		));
 	// error_log($strsql);
 	if( $rc['stat'] != 'ok' ) {

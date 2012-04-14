@@ -42,9 +42,9 @@ function ciniki_artcatalog_get($ciniki) {
 	require_once($ciniki['config']['core']['modules_dir'] . '/users/private/datetimeFormat.php');
 	$datetime_format = ciniki_users_datetimeFormat($ciniki);
 
-	$strsql = "SELECT ciniki_artcatalog.id, name, image_id, type, flags, catalog_number, category, "
-		. "IF((ciniki_artcatalog.flags&0x01)=1, 'yes', 'no') AS forsale, "
-		. "IF((ciniki_artcatalog.flags&0x02)=2, 'yes', 'no') AS sold, "
+	$strsql = "SELECT ciniki_artcatalog.id, name, image_id, type, flags, catalog_number, category, flags, "
+//		. "IF((ciniki_artcatalog.flags&0x01)=1, 'yes', 'no') AS forsale, "
+//		. "IF((ciniki_artcatalog.flags&0x02)=2, 'yes', 'no') AS sold, "
 		. "media, size, framed_size, price, location, awards, notes, "
 		. "date_added, last_updated "
 		. "FROM ciniki_artcatalog "
