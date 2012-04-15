@@ -38,10 +38,12 @@ function ciniki_artcatalog_checkAccess($ciniki, $business_id, $method) {
 	$modules = $rc['modules'];
 
 	//
-	// Sysadmins are allowed full access
+	// Sysadmins are allowed full access, except for deleting.
 	//
-	if( ($ciniki['session']['user']['perms'] & 0x01) == 0x01 ) {
-		return array('stat'=>'ok', 'modules'=>$modules);
+	if( $method != 'ciniki.artcatalog.delete' ) {
+		if( ($ciniki['session']['user']['perms'] & 0x01) == 0x01 ) {
+			return array('stat'=>'ok', 'modules'=>$modules);
+		}
 	}
 
 	//

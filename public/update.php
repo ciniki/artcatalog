@@ -13,7 +13,6 @@
 // <rsp stat='ok' id='34' />
 //
 function ciniki_artcatalog_update($ciniki) {
-	error_log('test');
     //  
     // Find all the required and optional arguments
     //  
@@ -79,7 +78,8 @@ function ciniki_artcatalog_update($ciniki) {
 		require_once($ciniki['config']['core']['modules_dir'] . '/images/private/insertFromUpload.php');
 		$rc = ciniki_images_insertFromUpload($ciniki, $args['business_id'], $ciniki['session']['user']['id'], 
 			$_FILES['image'], 1, $args['name'], '', 'no');
-		if( $rc['stat'] != 'ok' ) {
+		// If a duplicate image is found, then use that id instead of uploading a new one
+		if( $rc['stat'] != 'ok' && $rc['err']['code'] != '330' ) {
 			ciniki_core_dbTransactionRollback($ciniki, 'users');
 			return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'606', 'msg'=>'Internal Error', 'err'=>$rc['err']));
 		}
