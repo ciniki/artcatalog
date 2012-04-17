@@ -52,6 +52,8 @@ function ciniki_artcatalog_searchQuick($ciniki) {
 			. "OR media like '% " . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
 			. "OR location like '" . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
 			. "OR location like '% " . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
+			. "OR notes like '" . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
+			. "OR notes like '% " . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
 			. ") "
 		. "";
 	$strsql .= "ORDER BY name, location "
