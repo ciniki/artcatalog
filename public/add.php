@@ -25,6 +25,7 @@ function ciniki_artcatalog_add($ciniki) {
         'name'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No name specified'), 
         'catalog_number'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'errmsg'=>'No catalog number specified'), 
         'category'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No category specified'), 
+        'year'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No year specified'), 
         'media'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No media specified'), 
         'size'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No size specified'), 
         'framed_size'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No framed_size specified'), 
@@ -94,7 +95,7 @@ function ciniki_artcatalog_add($ciniki) {
 	//
 	// Add the artcatalog to the database
 	//
-	$strsql = "INSERT INTO ciniki_artcatalog (uuid, business_id, name, type, flags, image_id, catalog_number, category, "
+	$strsql = "INSERT INTO ciniki_artcatalog (uuid, business_id, name, type, flags, image_id, catalog_number, category, year, "
 		. "media, size, framed_size, price, location, awards, notes, user_id, "
 		. "date_added, last_updated) VALUES ("
 		. "UUID(), "
@@ -105,6 +106,7 @@ function ciniki_artcatalog_add($ciniki) {
 		. "'" . ciniki_core_dbQuote($ciniki, $image_id) . "', "
 		. "'" . ciniki_core_dbQuote($ciniki, $args['catalog_number']) . "', "
 		. "'" . ciniki_core_dbQuote($ciniki, $args['category']) . "', "
+		. "'" . ciniki_core_dbQuote($ciniki, $args['year']) . "', "
 		. "'" . ciniki_core_dbQuote($ciniki, $args['media']) . "', "
 		. "'" . ciniki_core_dbQuote($ciniki, $args['size']) . "', "
 		. "'" . ciniki_core_dbQuote($ciniki, $args['framed_size']) . "', "
@@ -135,6 +137,7 @@ function ciniki_artcatalog_add($ciniki) {
 		'flags',
 		'catalog_number',
 		'category',
+		'year',
 		'media',
 		'size',
 		'framed_size',
