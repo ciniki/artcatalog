@@ -38,6 +38,11 @@
 #
 # price:			The price of the piece.
 #
+# location:			Where is the piece currently.  This is used to track if artwork is in a gallery, or 
+#					storage, other homes, etc...
+#
+# awards:			Any awards the piece has won.
+#
 # notes:			Any notes for the piece.
 #
 # user_id:			The user who added the piece.
@@ -69,4 +74,7 @@ create table ciniki_artcatalog (
 	last_updated datetime not null,
     primary key (id),
     index (business_id, category, date_added)
-) ENGINE='InnoDB', COMMENT='v1.02';
+	index (media),
+	index (location),
+	index (year)
+) ENGINE='InnoDB', COMMENT='v1.03';

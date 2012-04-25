@@ -20,6 +20,7 @@ function ciniki_artcatalog_listWithImages($ciniki) {
         'business_id'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No business specified'), 
         'status'=>array('required'=>'no', 'blank'=>'no', 'errmsg'=>'No status specified'), 
         'section'=>array('required'=>'no', 'blank'=>'no', 'errmsg'=>'No section specified'), 
+		'name'=>array('required'=>'no', 'blank'=>'no', 'errmsg'=>'No section name specified'),
         'limit'=>array('required'=>'no', 'blank'=>'no', 'errmsg'=>'No limit specified'), 
         )); 
     if( $rc['stat'] != 'ok' ) { 
@@ -53,7 +54,26 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 	}
 	$strsql .= "FROM ciniki_artcatalog "
 		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
-		. "ORDER BY sname COLLATE latin1_general_cs, name "
+		. "";
+	//
+	// Check if this should just be a sublist with one section of a group
+	//
+	if( isset($args['name']) && $args['name'] != '' ) {
+		if( $args['name'] == 'Unknown' ) {
+			$args['name'] = '';
+		}
+		if( $args['section'] == 'category' ) {
+			$strsql .= "AND category = '" . ciniki_core_dbQuote($ciniki, $args['name']) . "' ";
+		} elseif( $args['section'] == 'media' ) {
+			$strsql .= "AND media = '" . ciniki_core_dbQuote($ciniki, $args['name']) . "' ";
+		} elseif( $args['section'] == 'location' ) {
+			$strsql .= "AND location = '" . ciniki_core_dbQuote($ciniki, $args['name']) . "' ";
+		} elseif( $args['section'] == 'year' ) {
+			$strsql .= "AND year = '" . ciniki_core_dbQuote($ciniki, $args['name']) . "' ";
+		} 
+		
+	}
+	$strsql .= "ORDER BY sname COLLATE latin1_general_cs, name "
 		. "";
 	if( isset($args['limit']) && $args['limit'] != '' && $args['limit'] > 0 ) {
 		$strsql .= "LIMIT " . ciniki_core_dbQuote($ciniki, $args['limit']) . " ";

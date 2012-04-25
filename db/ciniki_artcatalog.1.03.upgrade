@@ -1,0 +1,7 @@
+#
+# This file will upgrade the database table ciniki_artcatalog to version 1.03 adding more indexes.
+#
+CREATE INDEX media ON ciniki_artcatalog (media);
+CREATE INDEX location ON ciniki_artcatalog (location);
+CREATE INDEX year ON ciniki_artcatalog (year);
+ALTER TABLE ciniki_artcatalog COMMENT='v1.03';
