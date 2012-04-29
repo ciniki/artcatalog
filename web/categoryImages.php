@@ -13,19 +13,26 @@
 // Returns
 // -------
 // <events>
-// 	<event id="" name="" />
+// 	<event id="" title="" />
 // </events>
 //
-function ciniki_artcatalog_web_categoryImages($ciniki, $settings, $business_id, $category) {
+function ciniki_artcatalog_web_categoryImages($ciniki, $settings, $business_id, $type, $category) {
 
-	$strsql = "SELECT name, image_id, media, size, framed_size, price, "
-		. "ciniki_artcatalog.last_updated, "
-		. "ciniki_images.last_updated AS image_last_updated "
+	$strsql = "SELECT name AS title, image_id, media, size, framed_size, price, "
+		. "UNIX_TIMESTAMP(ciniki_images.last_updated) AS last_updated "
 		. "FROM ciniki_artcatalog "
 		. "LEFT JOIN ciniki_images ON (ciniki_artcatalog.image_id = ciniki_images.id) "
 		. "WHERE ciniki_artcatalog.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
-		. "AND category = '" . ciniki_core_dbQuote($ciniki, $category) . "' "
 		. "";
+	if( $type == 'category' ) {
+		$strsql .= "AND category = '" . ciniki_core_dbQuote($ciniki, $category) . "' "
+			. "";
+	} elseif( $type == 'year' ) {
+		$strsql .= "AND year = '" . ciniki_core_dbQuote($ciniki, $category) . "' "
+			. "";
+	} else {
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'635', 'msg'=>"Unable to find images."));
+	}
 
     require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbHashQueryTree.php');
 	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'artcatalog', '');
@@ -35,7 +42,7 @@ function ciniki_artcatalog_web_categoryImages($ciniki, $settings, $business_id, 
 
 	$images = array();
 	foreach($rc['rows'] as $rownum => $row) {
-		$caption = $row['name'];
+		$caption = $row['title'];
 		if( $row['media'] != '' ) {
 			$caption .= ', ' . $row['media'];
 		}
@@ -52,8 +59,8 @@ function ciniki_artcatalog_web_categoryImages($ciniki, $settings, $business_id, 
 			}
 			$caption .= ", " . $price;
 		}
-		array_push($images, array('name'=>$row['name'], 'image_id'=>$row['image_id'],
-			'caption'=>$caption));
+		array_push($images, array('title'=>$row['title'], 'image_id'=>$row['image_id'],
+			'caption'=>$caption, 'last_updated'=>$row['last_updated']));
 	}
 	
 	return array('stat'=>'ok', 'images'=>$images);
