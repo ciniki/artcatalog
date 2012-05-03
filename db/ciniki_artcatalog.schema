@@ -73,7 +73,7 @@ create table ciniki_artcatalog (
 	date_added datetime not null,
 	last_updated datetime not null,
     primary key (id),
-    index (business_id, category, date_added)
+    index (business_id, category, date_added),
 	index (media),
 	index (location),
 	index (year)

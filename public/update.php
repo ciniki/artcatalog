@@ -149,6 +149,6 @@ function ciniki_artcatalog_update($ciniki) {
 		return $rc;
 	}
 
-	return array('stat'=>'ok', 'id'=>$artcatalog_id);
+	return array('stat'=>'ok');
 }
 ?>

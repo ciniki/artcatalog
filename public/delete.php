@@ -76,6 +76,6 @@ function ciniki_artcatalog_delete($ciniki) {
 		return $rc;
 	}
 
-	return array('stat'=>'ok', 'id'=>$artcatalog_id);
+	return array('stat'=>'ok');
 }
 ?>
