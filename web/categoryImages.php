@@ -34,6 +34,11 @@ function ciniki_artcatalog_web_categoryImages($ciniki, $settings, $business_id, 
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'635', 'msg'=>"Unable to find images."));
 	}
 
+	//
+	// Put the latest additions first
+	//
+	$strsql .= "ORDER BY ciniki_artcatalog.date_added DESC ";
+
     require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbHashQueryTree.php');
 	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'artcatalog', '');
 	if( $rc['stat'] != 'ok' ) {
