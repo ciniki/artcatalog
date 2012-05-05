@@ -21,6 +21,11 @@
 #
 # flags:			0x01 - for sale
 #					0x02 - Sold
+#					0x04 - Private (do not show on the website)
+#					0x10 - Category grouping highlight image
+#					0x20 - Media group highlight image
+#					0x40 - Location group highlight image
+#					0x80 - Year group highlight image
 #
 # image_id:			The image in the images module to use as the default picture.
 #
