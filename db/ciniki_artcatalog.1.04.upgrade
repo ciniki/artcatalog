@@ -1,0 +1,5 @@
+#
+# This file will upgrade the database table ciniki_artcatalog to version 1.03 adding more indexes.
+#
+ALTER TABLE ciniki_artcatalog ADD COLUMN webflags tinyint unsigned not null AFTER flags;
+ALTER TABLE ciniki_artcatalog COMMENT='v1.04';

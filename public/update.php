@@ -21,7 +21,8 @@ function ciniki_artcatalog_update($ciniki) {
         'business_id'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No business specified'), 
         'artcatalog_id'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No ID specified'), 
 		'type'=>array('required'=>'no', 'blank'=>'no', 'errmsg'=>'No type specified'),
-        'flags'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No location specified'), 
+        'flags'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No flags specified'), 
+        'webflags'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No webflags specified'), 
         'name'=>array('required'=>'no', 'blank'=>'no', 'errmsg'=>'No name specified'), 
         'catalog_number'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No catalog number specified'), 
         'category'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No category specified'), 
@@ -38,7 +39,7 @@ function ciniki_artcatalog_update($ciniki) {
         return $rc;
     }   
     $args = $rc['args'];
-    
+
     //  
     // Make sure this module is activated, and
     // check permission to run this function for this business
@@ -111,6 +112,7 @@ function ciniki_artcatalog_update($ciniki) {
 		'name',
 		'type',
 		'flags',
+		'webflags',
 		'catalog_number',
 		'category',
 		'year',

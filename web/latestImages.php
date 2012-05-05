@@ -25,6 +25,7 @@ function ciniki_artcatalog_web_latestImages($ciniki, $settings, $business_id, $l
 		. "FROM ciniki_artcatalog "
 		. "LEFT JOIN ciniki_images ON (ciniki_artcatalog.image_id = ciniki_images.id) "
 		. "WHERE ciniki_artcatalog.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+		. "AND (ciniki_artcatalog.webflags&0x01) = 0 "
 		. "";
 	if( $limit != '' && $limit > 0 && is_int($limit) ) {
 		$strsql .= "ORDER BY ciniki_artcatalog.date_added DESC "

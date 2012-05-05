@@ -25,6 +25,7 @@ function ciniki_artcatalog_web_categoryImages($ciniki, $settings, $business_id, 
 		. "FROM ciniki_artcatalog "
 		. "LEFT JOIN ciniki_images ON (ciniki_artcatalog.image_id = ciniki_images.id) "
 		. "WHERE ciniki_artcatalog.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+		. "AND (webflags&0x01) = 0 "
 		. "";
 	if( $type == 'category' ) {
 		$strsql .= "AND category = '" . ciniki_core_dbQuote($ciniki, $category) . "' "
