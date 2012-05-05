@@ -19,7 +19,9 @@
 function ciniki_artcatalog_web_latestImages($ciniki, $settings, $business_id, $limit) {
 
 	$strsql = "SELECT name AS title, image_id, media, size, framed_size, price, "
-		. "UNIX_TIMESTAMP(ciniki_images.last_updated) AS last_updated "
+		. "IF((flags&0x02)=0x02, 'yes', 'no') AS sold, "
+		. "IF(ciniki_images.last_updated > ciniki_artcatalog.last_updated, UNIX_TIMESTAMP(ciniki_images.last_updated), UNIX_TIMESTAMP(ciniki_artcatalog.last_updated)) AS last_updated "
+		// . "UNIX_TIMESTAMP(ciniki_images.last_updated) AS last_updated "
 		. "FROM ciniki_artcatalog "
 		. "LEFT JOIN ciniki_images ON (ciniki_artcatalog.image_id = ciniki_images.id) "
 		. "WHERE ciniki_artcatalog.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
@@ -32,7 +34,7 @@ function ciniki_artcatalog_web_latestImages($ciniki, $settings, $business_id, $l
 			. "LIMIT 4 ";
 	}
 
-    require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbHashQueryTree.php');
+    require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbHashQuery.php');
 	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'artcatalog', '');
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
@@ -58,7 +60,7 @@ function ciniki_artcatalog_web_latestImages($ciniki, $settings, $business_id, $l
 			$caption .= ", " . $price;
 		}
 		array_push($images, array('title'=>$row['title'], 'image_id'=>$row['image_id'],
-			'caption'=>$caption, 'last_updated'=>$row['last_updated']));
+			'caption'=>$caption, 'sold'=>$row['sold'], 'last_updated'=>$row['last_updated']));
 	}
 	
 	return array('stat'=>'ok', 'images'=>$images);
