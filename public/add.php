@@ -38,6 +38,8 @@ function ciniki_artcatalog_add($ciniki) {
         return $rc;
     }   
     $args = $rc['args'];
+
+	$args['permalink'] = preg_replace('/ /', '-', preg_replace('/[^a-z ]/', '', strtolower($args['name'])));
     
     //  
     // Make sure this module is activated, and
@@ -57,11 +59,27 @@ function ciniki_artcatalog_add($ciniki) {
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbTransactionCommit.php');
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbQuote.php');
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbInsert.php');
+	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbHashQuery.php');
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbAddChangeLog.php');
 	$rc = ciniki_core_dbTransactionStart($ciniki, 'artcatalog');
 	if( $rc['stat'] != 'ok' ) { 
 		return $rc;
 	}   
+
+	//
+	// Check the permalink doesn't already exist
+	//
+	$strsql = "SELECT id, name, permalink FROM ciniki_artcatalog "
+		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+		. "AND permalink = '" . ciniki_core_dbQuote($ciniki, $args['permalink']) . "' "
+		. "";
+	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'artcatalog', 'piece');
+	if( $rc['stat'] != 'ok' ) {
+		return $rc;
+	}
+	if( $rc['num_rows'] > 0 ) {
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'649', 'msg'=>'You already have artwork with this name, please choose another name'));
+	}
 
 	//
 	// Check to see if an image was uploaded
@@ -95,12 +113,13 @@ function ciniki_artcatalog_add($ciniki) {
 	//
 	// Add the artcatalog to the database
 	//
-	$strsql = "INSERT INTO ciniki_artcatalog (uuid, business_id, name, type, flags, image_id, catalog_number, category, year, "
+	$strsql = "INSERT INTO ciniki_artcatalog (uuid, business_id, name, permalink, type, flags, image_id, catalog_number, category, year, "
 		. "media, size, framed_size, price, location, awards, notes, user_id, "
 		. "date_added, last_updated) VALUES ("
 		. "UUID(), "
 		. "'" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "', "
 		. "'" . ciniki_core_dbQuote($ciniki, $args['name']) . "', "
+		. "'" . ciniki_core_dbQuote($ciniki, $args['permalink']) . "', "
 		. "'" . ciniki_core_dbQuote($ciniki, $args['type']) . "', "
 		. "'" . ciniki_core_dbQuote($ciniki, $args['flags']) . "', "
 		. "'" . ciniki_core_dbQuote($ciniki, $image_id) . "', "
@@ -133,6 +152,7 @@ function ciniki_artcatalog_add($ciniki) {
 	//
 	$changelog_fields = array(
 		'name',
+		'permalink',
 		'type',
 		'flags',
 		'catalog_number',

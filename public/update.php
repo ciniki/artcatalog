@@ -40,6 +40,26 @@ function ciniki_artcatalog_update($ciniki) {
     }   
     $args = $rc['args'];
 
+	if( isset($args['name']) ) {
+		$args['permalink'] = preg_replace('/ /', '-', preg_replace('/[^a-z ]/', '', strtolower($args['name'])));
+		//
+		// Make sure the permalink is unique
+		//
+		$strsql = "SELECT id, name, permalink FROM ciniki_artcatalog "
+			. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+			. "AND permalink = '" . ciniki_core_dbQuote($ciniki, $args['permalink']) . "' "
+			. "AND id <> '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_id']) . "' "
+			. "";
+		$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'artcatalog', 'piece');
+		if( $rc['stat'] != 'ok' ) {
+			return $rc;
+		}
+		if( $rc['num_rows'] > 0 ) {
+			return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'650', 'msg'=>'You already have artwork with this name, please choose another name'));
+		}
+
+	}
+
     //  
     // Make sure this module is activated, and
     // check permission to run this function for this business
@@ -110,6 +130,7 @@ function ciniki_artcatalog_update($ciniki) {
 	//
 	$changelog_fields = array(
 		'name',
+		'permalink',
 		'type',
 		'flags',
 		'webflags',
