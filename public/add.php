@@ -22,6 +22,7 @@ function ciniki_artcatalog_add($ciniki) {
         'business_id'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No business specified'), 
 		'type'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No type specified'),
         'flags'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'0', 'errmsg'=>'No location specified'), 
+		'image_id'=>array('required'=>'no', 'blank'=>'no', 'default'=>'0', 'errmsg'=>'No image specified'),
         'name'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No name specified'), 
         'catalog_number'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'errmsg'=>'No catalog number specified'), 
         'category'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No category specified'), 
@@ -39,7 +40,7 @@ function ciniki_artcatalog_add($ciniki) {
     }   
     $args = $rc['args'];
 
-	$args['permalink'] = preg_replace('/ /', '-', preg_replace('/[^a-z ]/', '', strtolower($args['name'])));
+	$args['permalink'] = preg_replace('/ /', '-', preg_replace('/[^a-z0-9 ]/', '', strtolower($args['name'])));
     
     //  
     // Make sure this module is activated, and
@@ -82,35 +83,6 @@ function ciniki_artcatalog_add($ciniki) {
 	}
 
 	//
-	// Check to see if an image was uploaded
-	//
-	if( isset($_FILES['uploadfile']['error']) && $_FILES['uploadfile']['error'] == UPLOAD_ERR_INI_SIZE ) {
-		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'600', 'msg'=>'Upload failed, file too large.'));
-	}
-	// FIXME: Add other checkes for $_FILES['uploadfile']['error']
-
-	$image_id = 0;
-	if( isset($_FILES) && isset($_FILES['image']) && $_FILES['image']['tmp_name'] != '' ) {
-		//
-		// Add the image into the database
-		//
-		require_once($ciniki['config']['core']['modules_dir'] . '/images/private/insertFromUpload.php');
-		$rc = ciniki_images_insertFromUpload($ciniki, $args['business_id'], $ciniki['session']['user']['id'], 
-			$_FILES['image'], 1, $args['name'], '', 'no');
-		// If a duplicate image is found, then use that id instead of uploading a new one
-		if( $rc['stat'] != 'ok' && $rc['err']['code'] != '330' ) {
-			ciniki_core_dbTransactionRollback($ciniki, 'users');
-			return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'601', 'msg'=>'Internal Error', 'err'=>$rc['err']));
-		}
-
-		if( !isset($rc['id']) ) {
-			ciniki_core_dbTransactionRollback($ciniki, 'users');
-			return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'602', 'msg'=>'Invalid file type'));
-		}
-		$image_id = $rc['id'];
-	}
-	
-	//
 	// Add the artcatalog to the database
 	//
 	$strsql = "INSERT INTO ciniki_artcatalog (uuid, business_id, name, permalink, type, flags, image_id, catalog_number, category, year, "
@@ -122,7 +94,7 @@ function ciniki_artcatalog_add($ciniki) {
 		. "'" . ciniki_core_dbQuote($ciniki, $args['permalink']) . "', "
 		. "'" . ciniki_core_dbQuote($ciniki, $args['type']) . "', "
 		. "'" . ciniki_core_dbQuote($ciniki, $args['flags']) . "', "
-		. "'" . ciniki_core_dbQuote($ciniki, $image_id) . "', "
+		. "'" . ciniki_core_dbQuote($ciniki, $args['image_id']) . "', "
 		. "'" . ciniki_core_dbQuote($ciniki, $args['catalog_number']) . "', "
 		. "'" . ciniki_core_dbQuote($ciniki, $args['category']) . "', "
 		. "'" . ciniki_core_dbQuote($ciniki, $args['year']) . "', "

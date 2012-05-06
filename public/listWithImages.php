@@ -106,11 +106,13 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 	$sections = $rc['sections'];
 	foreach($sections as $section_num => $section) {
 		foreach($section['section']['pieces'] as $piece_num => $piece) {
-			$rc = ciniki_images_loadCacheThumbnail($ciniki, $piece['piece']['image_id'], 75);
-			if( $rc['stat'] != 'ok' ) {
-				return $rc;
+			if( isset($piece['piece']['image_id']) && $piece['piece']['image_id'] > 0 ) {
+				$rc = ciniki_images_loadCacheThumbnail($ciniki, $piece['piece']['image_id'], 75);
+				if( $rc['stat'] != 'ok' ) {
+					return $rc;
+				}
+				$sections[$section_num]['section']['pieces'][$piece_num]['piece']['image'] = 'data:image/jpg;base64,' . base64_encode($rc['image']);
 			}
-			$sections[$section_num]['section']['pieces'][$piece_num]['piece']['image'] = 'data:image/jpg;base64,' . base64_encode($rc['image']);
 		}
 	}
 

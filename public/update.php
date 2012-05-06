@@ -21,6 +21,7 @@ function ciniki_artcatalog_update($ciniki) {
         'business_id'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No business specified'), 
         'artcatalog_id'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No ID specified'), 
 		'type'=>array('required'=>'no', 'blank'=>'no', 'errmsg'=>'No type specified'),
+		'image_id'=>array('required'=>'no', 'blank'=>'no', 'errmsg'=>'No image specified'),
         'flags'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No flags specified'), 
         'webflags'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No webflags specified'), 
         'name'=>array('required'=>'no', 'blank'=>'no', 'errmsg'=>'No name specified'), 
@@ -41,7 +42,7 @@ function ciniki_artcatalog_update($ciniki) {
     $args = $rc['args'];
 
 	if( isset($args['name']) ) {
-		$args['permalink'] = preg_replace('/ /', '-', preg_replace('/[^a-z ]/', '', strtolower($args['name'])));
+		$args['permalink'] = preg_replace('/ /', '-', preg_replace('/[^a-z0-9 ]/', '', strtolower($args['name'])));
 		//
 		// Make sure the permalink is unique
 		//
@@ -85,45 +86,9 @@ function ciniki_artcatalog_update($ciniki) {
 	}   
 
 	//
-	// Check to see if an image was uploaded
-	//
-	if( isset($_FILES['uploadfile']['error']) && $_FILES['uploadfile']['error'] == UPLOAD_ERR_INI_SIZE ) {
-		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'605', 'msg'=>'Upload failed, file too large.'));
-	}
-	// FIXME: Add other checkes for $_FILES['uploadfile']['error']
-
-	$image_id = 0;
-	if( isset($_FILES) && isset($_FILES['image']) && $_FILES['image']['tmp_name'] != '' ) {
-		//
-		// Add the image into the database
-		//
-		require_once($ciniki['config']['core']['modules_dir'] . '/images/private/insertFromUpload.php');
-		$rc = ciniki_images_insertFromUpload($ciniki, $args['business_id'], $ciniki['session']['user']['id'], 
-			$_FILES['image'], 1, $args['name'], '', 'no');
-		// If a duplicate image is found, then use that id instead of uploading a new one
-		if( $rc['stat'] != 'ok' && $rc['err']['code'] != '330' ) {
-			ciniki_core_dbTransactionRollback($ciniki, 'users');
-			return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'606', 'msg'=>'Internal Error', 'err'=>$rc['err']));
-		}
-
-		if( !isset($rc['id']) ) {
-			ciniki_core_dbTransactionRollback($ciniki, 'users');
-			return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'604', 'msg'=>'Invalid file type'));
-		}
-		$image_id = $rc['id'];
-	}
-
-	//
 	// Start building the update SQL
 	//
 	$strsql = "UPDATE ciniki_artcatalog SET last_updated = UTC_TIMESTAMP()";
-
-	//
-	// Check if the user added a new image
-	//
-	if( $image_id > 0 ) {
-		$strsql .= ", image_id = '" . ciniki_core_dbQuote($ciniki, $image_id) . "' ";
-	}
 
 	//
 	// Add all the fields to the change log
@@ -131,6 +96,7 @@ function ciniki_artcatalog_update($ciniki) {
 	$changelog_fields = array(
 		'name',
 		'permalink',
+		'image_id',
 		'type',
 		'flags',
 		'webflags',
