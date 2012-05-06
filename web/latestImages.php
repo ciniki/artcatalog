@@ -18,7 +18,7 @@
 //
 function ciniki_artcatalog_web_latestImages($ciniki, $settings, $business_id, $limit) {
 
-	$strsql = "SELECT name AS title, image_id, media, size, framed_size, price, "
+	$strsql = "SELECT name AS title, permalink, image_id, media, size, framed_size, price, "
 		. "IF((flags&0x02)=0x02, 'yes', 'no') AS sold, "
 		. "IF(ciniki_images.last_updated > ciniki_artcatalog.last_updated, UNIX_TIMESTAMP(ciniki_images.last_updated), UNIX_TIMESTAMP(ciniki_artcatalog.last_updated)) AS last_updated "
 		// . "UNIX_TIMESTAMP(ciniki_images.last_updated) AS last_updated "
@@ -60,7 +60,7 @@ function ciniki_artcatalog_web_latestImages($ciniki, $settings, $business_id, $l
 			}
 			$caption .= ", " . $price;
 		}
-		array_push($images, array('title'=>$row['title'], 'image_id'=>$row['image_id'],
+		array_push($images, array('title'=>$row['title'], 'permalink'=>$row['permalink'], 'image_id'=>$row['image_id'],
 			'caption'=>$caption, 'sold'=>$row['sold'], 'last_updated'=>$row['last_updated']));
 	}
 	
