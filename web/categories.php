@@ -21,6 +21,7 @@ function ciniki_artcatalog_web_categories($ciniki, $settings, $business_id) {
 	$strsql = "SELECT DISTINCT category AS name "
 		. "FROM ciniki_artcatalog "
 		. "WHERE ciniki_artcatalog.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+		. "AND (ciniki_artcatalog.webflags&0x01) = 0 "
 		. "AND category <> '' "
 		. "ORDER BY category "
 		. "";
