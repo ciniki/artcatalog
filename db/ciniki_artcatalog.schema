@@ -18,6 +18,8 @@
 #	
 #					0 - unknown
 #					1 - Painting
+#					2 - Photograph
+#					3 - Sculpture
 #
 # flags:			0x01 - for sale
 #					0x02 - Sold
