@@ -66,7 +66,9 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 		if( $args['section'] == 'category' ) {
 			$strsql .= "AND category = '" . ciniki_core_dbQuote($ciniki, $args['name']) . "' ";
 		} elseif( $args['section'] == 'media' ) {
-			$strsql .= "AND media = '" . ciniki_core_dbQuote($ciniki, $args['name']) . "' ";
+			$strsql .= "AND media = '" . ciniki_core_dbQuote($ciniki, $args['name']) . "' "
+				. "AND type = 1 "
+				. "";
 		} elseif( $args['section'] == 'location' ) {
 			$strsql .= "AND location = '" . ciniki_core_dbQuote($ciniki, $args['name']) . "' ";
 		} elseif( $args['section'] == 'year' ) {

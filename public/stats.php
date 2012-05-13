@@ -63,6 +63,7 @@ function ciniki_artcatalog_stats($ciniki) {
 	//
 	$strsql = "SELECT IF(media='', 'Unknown', media) AS name, COUNT(*) AS count FROM ciniki_artcatalog "
 		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+		. "AND ciniki_artcatalog.type = 1 "
 		. "GROUP BY media "
 		. "ORDER BY name "
 		. "";
