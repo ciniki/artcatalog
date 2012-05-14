@@ -39,6 +39,25 @@ function ciniki_artcatalog_stats($ciniki) {
 	$rsp = array('stat'=>'ok', 'stats'=>array());
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbCount');
+	
+	//
+	// Get type stats
+	//
+	$strsql = "SELECT type, COUNT(*) AS count FROM ciniki_artcatalog "
+		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+		. "GROUP BY type "
+		. "";
+	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'artcatalog', array(
+		array('container'=>'sections', 'fname'=>'type', 'name'=>'section',
+			'fields'=>array('type', 'count'), 'maps'=>array('type'=>array(''=>'unknown', '1'=>'painting', '2'=>'photograph', '3'=>'sculpture', '4'=>'jewelry'))),
+		));
+	// error_log($strsql);
+	if( $rc['stat'] != 'ok' ) {
+		return $rc;
+	}
+	//$rsp['stats'][0] = array('stat'=>array('name'=>'Categories', 'sections'=>$rc['sections']));
+	$rsp['stats']['types'] = $rc['sections'];
+
 	//
 	// Get the category stats
 	//

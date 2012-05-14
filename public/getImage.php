@@ -35,7 +35,7 @@ function ciniki_artcatalog_getImage($ciniki) {
 		'business_id'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No business specified'), 
 		'image_id'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No image specified'), 
 		'version'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No version specified'),
-		'maxlength'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No size specified'),
+		'maxwidth'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No size specified'),
 		));
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
@@ -53,6 +53,6 @@ function ciniki_artcatalog_getImage($ciniki) {
 	}
 	
 	require_once($ciniki['config']['core']['modules_dir'] . '/images/private/getImage.php');
-	return ciniki_images_getImage($ciniki, $args['business_id'], $args['image_id'], $args['version'], $args['maxlength']);
+	return ciniki_images_getImage($ciniki, $args['business_id'], $args['image_id'], $args['version'], $args['maxwidth'], 0);
 }
 ?>
