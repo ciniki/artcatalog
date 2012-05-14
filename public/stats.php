@@ -122,7 +122,9 @@ function ciniki_artcatalog_stats($ciniki) {
 		return $rc;
 	}
 	//$rsp['stats'][1] = array('stat'=>array('name'=>'Media', 'sections'=>$rc['sections']));
-	$rsp['stats']['media'] = $rc['sections'];
+	if( isset($rc['sections']) ) {
+		$rsp['stats']['media'] = $rc['sections'];
+	}
 
 	//
 	// Get the location stats
