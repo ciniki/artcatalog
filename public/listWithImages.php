@@ -21,13 +21,31 @@ function ciniki_artcatalog_listWithImages($ciniki) {
         'status'=>array('required'=>'no', 'blank'=>'no', 'errmsg'=>'No status specified'), 
         'section'=>array('required'=>'no', 'blank'=>'no', 'errmsg'=>'No section specified'), 
 		'name'=>array('required'=>'no', 'blank'=>'no', 'errmsg'=>'No section name specified'),
+		'type'=>array('required'=>'no', 'blank'=>'no', 'errmsg'=>'No type specified'),
         'limit'=>array('required'=>'no', 'blank'=>'no', 'errmsg'=>'No limit specified'), 
         )); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
     $args = $rc['args'];
-    
+   
+   	//
+	// Map the types to an ID
+	//
+	if( isset($args['type']) && $args['type'] != '' ) {
+		if( $args['type'] == 'painting' ) {
+			$args['type_id'] = 1;
+		} elseif( $args['type'] == 'photograph' ) {
+			$args['type_id'] = 2;
+		} elseif( $args['type'] == 'sculpture' ) {
+			$args['type_id'] = 3;
+		} elseif( $args['type'] == 'jewelry' ) {
+			$args['type_id'] = 4;
+		} else {
+			$args['type_id'] = 0;
+		}
+	}
+
     //  
     // Make sure this module is activated, and
     // check permission to run this function for this business
@@ -74,7 +92,9 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 		} elseif( $args['section'] == 'year' ) {
 			$strsql .= "AND year = '" . ciniki_core_dbQuote($ciniki, $args['name']) . "' ";
 		} 
-		
+	}
+	if( isset($args['type_id']) && $args['type_id'] > 0 ) {
+		$strsql .= "AND type = '" . ciniki_core_dbQuote($ciniki, $args['type_id']) . "' ";
 	}
 	if( isset($args['section']) && $args['section'] == 'year' ) {
 		$strsql .= "ORDER BY sname COLLATE latin1_general_cs DESC, name "
