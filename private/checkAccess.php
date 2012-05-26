@@ -13,36 +13,25 @@
 // =======
 //
 function ciniki_artcatalog_checkAccess($ciniki, $business_id, $method) {
-
 	//
-	// Check if the module is turned on for the business
-	// Check the business is active
-	// Get the ruleset for this module
+	// Check if the business is active and the module is enabled
 	//
-	$strsql = "SELECT ruleset "
-		. ", CONCAT_WS('.', ciniki_business_modules.package, ciniki_business_modules.module) AS module_id "
-		. "FROM ciniki_businesses, ciniki_business_modules "
-		. "WHERE ciniki_businesses.id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
-		. "AND ciniki_businesses.status = 1 "														// Business is active
-		. "AND ciniki_businesses.id = ciniki_business_modules.business_id "
-		. "AND ciniki_business_modules.status = 1 "														// Business is active
-		. "";
-	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbHashIDQuery.php');
-	$rc = ciniki_core_dbHashIDQuery($ciniki, $strsql, 'businesses', 'modules', 'module_id');
+	require_once($ciniki['config']['core']['modules_dir'] . '/businesses/private/checkModuleAccess.php');
+	$rc = ciniki_businesses_checkModuleAccess($ciniki, $business_id, 'ciniki', 'artcatalog');
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
 	}
-	if( !isset($rc['modules']) || !isset($rc['modules']['ciniki.artcatalog']) ) {
-		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'590', 'msg'=>'Access denied.'));
+
+	if( !isset($rc['ruleset']) ) {
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'590', 'msg'=>'No permissions granted'));
 	}
-	$modules = $rc['modules'];
 
 	//
 	// Sysadmins are allowed full access, except for deleting.
 	//
 	if( $method != 'ciniki.artcatalog.delete' ) {
 		if( ($ciniki['session']['user']['perms'] & 0x01) == 0x01 ) {
-			return array('stat'=>'ok', 'modules'=>$modules);
+			return array('stat'=>'ok');
 		}
 	}
 
@@ -65,7 +54,7 @@ function ciniki_artcatalog_checkAccess($ciniki, $business_id, $method) {
 	//
 	if( isset($rc['rows']) && isset($rc['rows'][0]) 
 		&& $rc['rows'][0]['user_id'] > 0 && $rc['rows'][0]['user_id'] == $ciniki['session']['user']['id'] ) {
-		return array('stat'=>'ok', 'modules'=>$modules);
+		return array('stat'=>'ok');
 	}
 
 	//
