@@ -1,0 +1,57 @@
+#
+# Description
+# -----------
+# This table stores information about which customers purchased which pieces of art.
+# Depending on the type of artwork, this table may have many to one relationship to
+# the ciniki_artcatalog table, or a one-one relationship for original work.
+#
+# Fields
+# -------
+# artcatalog_id:	The id from the ciniki_artcatalog table.
+#
+# customer_id:		The customer who purchased the piece of art.
+#
+# flags:			0x01 - Paid
+#					0x02 - 
+#					0x04 - 
+#					0x08 -
+#					0x10 - Trade
+#					0x20 - Donation
+#					0x40 - Gift
+#					0x80 - 
+#
+# price:			The price of the item sold before taxes.
+#
+# taxes:			The taxes for the item.
+#
+# shipping:			Any shipping costs for the item.
+#
+# return_shipping:	Any shipping costs for an item returned. *future*
+#
+# other_costs:		Any additional costs for the sale *future*
+#
+# location:			Where the sale took place, fair, market, etc...
+#
+# notes:			Notes about the sale.
+#
+# date_added:       The UTC date and time the artcatalog customer was added.
+# last_updated:     The UTC date and time the artcatalog customer was last updated.
+#
+create table ciniki_artcatalog_customers (
+	artcatalog_id int not null,
+	customer_id int not null,
+	business_id int not null,
+	flags tinyint unsigned not null,
+	price decimal(10,2) not null,
+	taxes decimal(10,2) not null,
+	shipping decimal(10,2) not null,
+	return_shipping decimal(10,2) not null,
+	other_costs decimal(10,2) not null,
+	location varchar(200) not null,
+	notes varchar(6000) not null,
+	date_added datetime not null,
+	last_updated datetime not null,
+    primary key (artcatalog_id, customer_id),
+    index (business_id),
+	index (location)
+) ENGINE='InnoDB', COMMENT='v1.01';
