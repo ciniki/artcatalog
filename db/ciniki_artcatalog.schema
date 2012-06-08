@@ -19,7 +19,9 @@
 #					0 - unknown
 #					1 - Painting
 #					2 - Photograph
-#					3 - Sculpture
+#					3 - Jewelry
+#					4 - Sculpture
+#					5 - Craft
 #
 # flags:			0x01 - for sale
 #					0x02 - Sold
@@ -54,6 +56,8 @@
 # awards:			Any awards the piece has won.
 #
 # notes:			Any notes for the piece.
+#
+# description:		The description of the piece, which is public on the website.
 #
 # user_id:			The user who added the piece.
 #

@@ -42,25 +42,50 @@ function ciniki_artcatalog_get($ciniki) {
 	require_once($ciniki['config']['core']['modules_dir'] . '/users/private/datetimeFormat.php');
 	$datetime_format = ciniki_users_datetimeFormat($ciniki);
 
-	$strsql = "SELECT ciniki_artcatalog.id, name, permalink, image_id, type, flags, webflags, catalog_number, category, year, "
-//		. "IF((ciniki_artcatalog.flags&0x01)=1, 'yes', 'no') AS forsale, "
-//		. "IF((ciniki_artcatalog.flags&0x02)=2, 'yes', 'no') AS sold, "
-		. "media, size, framed_size, price, location, awards, notes, "
-		. "date_added, last_updated "
+	$strsql = "SELECT ciniki_artcatalog.id, ciniki_artcatalog.name, permalink, image_id, type, type AS type_text, "
+		. "ciniki_artcatalog.flags, "
+		. "IF((ciniki_artcatalog.flags&0x01)=0x01, 'yes', 'no') AS forsale, "
+		. "IF((ciniki_artcatalog.flags&0x02)=0x02, 'yes', 'no') AS sold, "
+		. "CONCAT_WS('', IF((ciniki_artcatalog.webflags&0x01)=0x01, 'hidden', 'visible'), IF((ciniki_artcatalog.webflags&0x10)=0x10, ', category highlight', '')) AS website , "
+		. "webflags, catalog_number, category, year, "
+		. "media, size, framed_size, ciniki_artcatalog.price, ciniki_artcatalog.location, "
+		. "ciniki_artcatalog.description, awards, ciniki_artcatalog.notes, "
+		. "ciniki_artcatalog.date_added, ciniki_artcatalog.last_updated "
+//		. "ciniki_artcatalog_customers.customer_id AS customer_id, "
+//		. "CONCAT_WS(' ', IFNULL(ciniki_customers.first, 'Unknown'), IFNULL(ciniki_customers.last, 'Customer')) AS customer_name, "
+//		. "IF((ciniki_artcatalog_customers.flags&0x01)=0x01, 'yes', 'no') AS paid, "
+//		. "IF((ciniki_artcatalog_customers.flags&0x10)=0x10, 'yes', 'no') AS trade, "
+//		. "IF((ciniki_artcatalog_customers.flags&0x10)=0x20, 'yes', 'no') AS donation, "
+//		. "IF((ciniki_artcatalog_customers.flags&0x10)=0x40, 'yes', 'no') AS gift, "
+//		. "ciniki_artcatalog_customers.price AS customer_price, "
+//		. "(ciniki_artcatalog_customers.price + ciniki_artcatalog_customers.taxes + ciniki_artcatalog_customers.shipping "
+//			. "+ ciniki_artcatalog_customers.return_shipping + ciniki_artcatalog_customers.other_costs) AS customer_sale_total "
 		. "FROM ciniki_artcatalog "
-		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+//		. "LEFT JOIN ciniki_artcatalog_customers ON (ciniki_artcatalog.id = ciniki_artcatalog_customers.artcatalog_id) "
+//		. "LEFT JOIN ciniki_customers ON (ciniki_artcatalog_customers.customer_id = ciniki_customers.id "
+//			. "AND ciniki_customers.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "') "
+		. "WHERE ciniki_artcatalog.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
 		. "AND ciniki_artcatalog.id = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_id']) . "' "
+//		. "ORDER BY ciniki_artcatalog.id, ciniki_customers.last, ciniki_customers.first "
 		. "";
 	
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
-	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'artcatalog', 'piece');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');
+	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'artcatalog', array(
+		array('container'=>'pieces', 'fname'=>'id', 'name'=>'piece',
+			'fields'=>array('id', 'name', 'permalink', 'image_id', 'type', 'type_text', 'flags', 'webflags', 'catalog_number', 'category', 'year',
+				'media', 'size', 'framed_size', 'forsale', 'sold', 'website', 'price', 'location', 'description', 'awards', 'notes'),
+			'maps'=>array('type_text'=>array('0'=>'Unknown', '1'=>'Painting', '2'=>'Photograph', '3'=>'Jewelry', '4'=>'Sculpture', '5'=>'Craft')),
+			),
+//		array('container'=>'sales', 'fname'=>'customer_id', 'name'=>'customer',
+//			'fields'=>array('id'=>'customer_id', 'name'=>'customer_name', 'paid', 'trade', 'donation', 'gift', 'price'=>'customer_price', 'total'=>'customer_sale_total')),
+		));
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
 	}
-	if( !isset($rc['piece']) ) {
+	if( !isset($rc['pieces']) ) {
 		return array('stat'=>'ok', 'err'=>array('pkg'=>'ciniki', 'code'=>'593', 'msg'=>'Unable to find item'));
 	}
-	$piece = $rc['piece'];
+	$piece = $rc['pieces'][0]['piece'];
 
 	return array('stat'=>'ok', 'piece'=>$piece);
 }
