@@ -13,7 +13,6 @@
 // <rsp stat='ok' id='34' />
 //
 function ciniki_artcatalog_add($ciniki) {
-	error_log('test');
     //  
     // Find all the required and optional arguments
     //  
