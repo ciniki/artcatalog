@@ -1,0 +1,5 @@
+#
+# This file will upgrade the database table ciniki_artcatalog to version 1.06
+#
+ALTER TABLE ciniki_artcatalog ADD COLUMN inspiration varchar(6000) not null AFTER description;
+ALTER TABLE ciniki_artcatalog COMMENT='v1.06';

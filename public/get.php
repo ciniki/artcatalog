@@ -49,7 +49,7 @@ function ciniki_artcatalog_get($ciniki) {
 		. "CONCAT_WS('', IF((ciniki_artcatalog.webflags&0x01)=0x01, 'hidden', 'visible'), IF((ciniki_artcatalog.webflags&0x10)=0x10, ', category highlight', '')) AS website , "
 		. "webflags, catalog_number, category, year, "
 		. "media, size, framed_size, ciniki_artcatalog.price, ciniki_artcatalog.location, "
-		. "ciniki_artcatalog.description, awards, ciniki_artcatalog.notes, "
+		. "ciniki_artcatalog.description, inspiration, awards, ciniki_artcatalog.notes, "
 		. "ciniki_artcatalog.date_added, ciniki_artcatalog.last_updated "
 //		. "ciniki_artcatalog_customers.customer_id AS customer_id, "
 //		. "CONCAT_WS(' ', IFNULL(ciniki_customers.first, 'Unknown'), IFNULL(ciniki_customers.last, 'Customer')) AS customer_name, "
@@ -73,7 +73,7 @@ function ciniki_artcatalog_get($ciniki) {
 	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'artcatalog', array(
 		array('container'=>'pieces', 'fname'=>'id', 'name'=>'piece',
 			'fields'=>array('id', 'name', 'permalink', 'image_id', 'type', 'type_text', 'flags', 'webflags', 'catalog_number', 'category', 'year',
-				'media', 'size', 'framed_size', 'forsale', 'sold', 'website', 'price', 'location', 'description', 'awards', 'notes'),
+				'media', 'size', 'framed_size', 'forsale', 'sold', 'website', 'price', 'location', 'description', 'inspiration', 'awards', 'notes'),
 			'maps'=>array('type_text'=>array('0'=>'Unknown', '1'=>'Painting', '2'=>'Photograph', '3'=>'Jewelry', '4'=>'Sculpture', '5'=>'Craft')),
 			),
 //		array('container'=>'sales', 'fname'=>'customer_id', 'name'=>'customer',

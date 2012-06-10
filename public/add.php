@@ -21,7 +21,7 @@ function ciniki_artcatalog_add($ciniki) {
         'business_id'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No business specified'), 
 		'type'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No type specified'),
         'flags'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'0', 'errmsg'=>'No location specified'), 
-		'image_id'=>array('required'=>'no', 'blank'=>'no', 'default'=>'0', 'errmsg'=>'No image specified'),
+		'image_id'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'0', 'errmsg'=>'No image specified'),
         'name'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No name specified'), 
         'catalog_number'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'errmsg'=>'No catalog number specified'), 
         'category'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No category specified'), 
@@ -32,6 +32,7 @@ function ciniki_artcatalog_add($ciniki) {
         'price'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No price specified'), 
         'location'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No location specified'), 
         'description'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No description specified'), 
+        'inspiration'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No inspiration specified'), 
         'awards'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No awards specified'), 
         'notes'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No notes specified'), 
         )); 
@@ -86,7 +87,7 @@ function ciniki_artcatalog_add($ciniki) {
 	// Add the artcatalog to the database
 	//
 	$strsql = "INSERT INTO ciniki_artcatalog (uuid, business_id, name, permalink, type, flags, image_id, catalog_number, category, year, "
-		. "media, size, framed_size, price, location, description, awards, notes, user_id, "
+		. "media, size, framed_size, price, location, description, inspiration, awards, notes, user_id, "
 		. "date_added, last_updated) VALUES ("
 		. "UUID(), "
 		. "'" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "', "
@@ -104,6 +105,7 @@ function ciniki_artcatalog_add($ciniki) {
 		. "'" . ciniki_core_dbQuote($ciniki, $args['price']) . "', "
 		. "'" . ciniki_core_dbQuote($ciniki, $args['location']) . "', "
 		. "'" . ciniki_core_dbQuote($ciniki, $args['description']) . "', "
+		. "'" . ciniki_core_dbQuote($ciniki, $args['inspiration']) . "', "
 		. "'" . ciniki_core_dbQuote($ciniki, $args['awards']) . "', "
 		. "'" . ciniki_core_dbQuote($ciniki, $args['notes']) . "', "
 		. "'" . ciniki_core_dbQuote($ciniki, $ciniki['session']['user']['id']) . "', "
@@ -137,6 +139,7 @@ function ciniki_artcatalog_add($ciniki) {
 		'price',
 		'location',
 		'description',
+		'inspiration',
 		'awards',
 		'notes',
 		);

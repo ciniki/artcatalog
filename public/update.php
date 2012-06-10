@@ -34,6 +34,7 @@ function ciniki_artcatalog_update($ciniki) {
         'price'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No price specified'), 
         'location'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No location specified'), 
         'description'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No description specified'), 
+        'inspiration'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No inspiration specified'), 
         'awards'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No awards specified'), 
         'notes'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No notes specified'), 
         )); 
@@ -110,6 +111,7 @@ function ciniki_artcatalog_update($ciniki) {
 		'price',
 		'location',
 		'description',
+		'inspiration',
 		'awards',
 		'notes',
 		);

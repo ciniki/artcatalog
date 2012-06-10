@@ -59,6 +59,8 @@
 #
 # description:		The description of the piece, which is public on the website.
 #
+# inspiration:		What was the inspiration for the piece.
+#
 # user_id:			The user who added the piece.
 #
 # date_added:       The UTC date and time the thread was added.
@@ -85,6 +87,7 @@ create table ciniki_artcatalog (
 	awards varchar(6000) not null,
 	notes varchar(6000) not null,
 	description varchar(6000) not null,
+	inspiration varchar(6000) not null,
 	user_id int not null,
 	date_added datetime not null,
 	last_updated datetime not null,
@@ -94,4 +97,4 @@ create table ciniki_artcatalog (
 	index (media),
 	index (location),
 	index (year)
-) ENGINE='InnoDB', COMMENT='v1.05';
+) ENGINE='InnoDB', COMMENT='v1.06';
