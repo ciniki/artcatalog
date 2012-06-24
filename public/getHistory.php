@@ -40,7 +40,7 @@ function ciniki_artcatalog_getHistory($ciniki) {
 		return $rc;
 	}
 
-	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbGetChangeLog.php');
-	return ciniki_core_dbGetChangeLog($ciniki, $args['business_id'], 'ciniki_artcatalog', $args['artcatalog_id'], $args['field'], 'artcatalog');
+	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbGetModuleHistory.php');
+	return ciniki_core_dbGetModuleHistory($ciniki, 'artcatalog', 'ciniki_artcatalog_history', $args['business_id'], 'ciniki_artcatalog', $args['artcatalog_id'], $args['field'], 'artcatalog');
 }
 ?>

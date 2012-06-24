@@ -62,7 +62,7 @@ function ciniki_artcatalog_add($ciniki) {
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbQuote.php');
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbInsert.php');
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbHashQuery.php');
-	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbAddChangeLog.php');
+	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbAddModuleHistory.php');
 	$rc = ciniki_core_dbTransactionStart($ciniki, 'artcatalog');
 	if( $rc['stat'] != 'ok' ) { 
 		return $rc;
@@ -146,8 +146,8 @@ function ciniki_artcatalog_add($ciniki) {
 	foreach($changelog_fields as $field) {
 		$insert_name = $field;
 		if( isset($ciniki['request']['args'][$field]) && $ciniki['request']['args'][$field] != '' ) {
-			$rc = ciniki_core_dbAddChangeLog($ciniki, 'artcatalog', $args['business_id'], 
-				'ciniki_artcatalog', $artcatalog_id, $insert_name, $ciniki['request']['args'][$field]);
+			$rc = ciniki_core_dbAddModuleHistory($ciniki, 'artcatalog', 'ciniki_artcatalog_history', $args['business_id'], 
+				1, 'ciniki_artcatalog', $artcatalog_id, $insert_name, $ciniki['request']['args'][$field]);
 		}
 	}
 
