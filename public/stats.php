@@ -67,7 +67,6 @@ function ciniki_artcatalog_stats($ciniki) {
 			'maps'=>array('type'=>array(''=>'unknown', '1'=>'painting', '2'=>'photograph', '3'=>'sculpture', '4'=>'jewelry'),
 				'name'=>array(''=>'Unknown', '1'=>'Paintings', '2'=>'Photographs', '3'=>'Sculptures', '4'=>'Jewelry'))),
 		));
-	// error_log($strsql);
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
 	}
@@ -92,7 +91,6 @@ function ciniki_artcatalog_stats($ciniki) {
 		array('container'=>'sections', 'fname'=>'name', 'name'=>'section',
 			'fields'=>array('name', 'count')),
 		));
-	// error_log($strsql);
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
 	}

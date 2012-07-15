@@ -2,15 +2,18 @@
 //
 // Description
 // ===========
-// This function will check the user has access to the atdo module, and 
-// return a list of other modules enabled for the business.
+// This function will check the user has access to the artcatalog module and
+// the requested method for the business.
 //
 // Arguments
 // =========
+// ciniki:
 // business_id: 		The ID of the business the request is for.
+// method:				The requested public method.
 // 
 // Returns
 // =======
+// <rsp stat="ok" />
 //
 function ciniki_artcatalog_checkAccess($ciniki, $business_id, $method) {
 	//
