@@ -1,0 +1,3 @@
+The art catalog module is designed to store a catalog of artwork, photographs, sculptures, jewelry and 
+other crafts or one of a kind items.  The items can be displayed in the website if the web module is
+enabled for the business.

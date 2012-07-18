@@ -2,14 +2,31 @@
 //
 // Description
 // ===========
-// This function will return all the details for a artcatalog.
+// This method will return all the information for an item in the art catalog.
 //
 // Arguments
 // ---------
-// user_id: 		The user making the request
+// api_key:
+// auth_token:
+// business_id: 		The ID of the business to get the item from.
+// artcatalog_id:		The ID of the item in the catalog to be retrieved.
 // 
 // Returns
 // -------
+// <piece id="27" name="South River" permalink="south-river" 
+//		image_id="34" type="1" type_text="Painting"
+//		flags="1" webflags="0" catalog_number="20120423" 
+//		category="Landscape" year="2012"
+//		media="Pastel" size="8x10" framed_size="12x14" forsale="yes" 
+//		sold="no" website="visible, category highlight"
+//		price="210" location="Home" inspiration="" notes="">
+//	<description>
+//		The description of the item.
+//	</description>
+//	<awards>
+//		The awards the item has won.
+//	</awards>
+// </piece>
 //
 function ciniki_artcatalog_get($ciniki) {
     //  

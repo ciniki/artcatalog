@@ -22,9 +22,10 @@
 #					0 - unknown
 #					1 - Painting
 #					2 - Photograph
-#					3 - Jewelry
-#					4 - Sculpture
-#					5 - Craft
+#					3 - Jewelry *future*
+#					4 - Sculpture *future*
+#					5 - Craft *future*
+#					6 - Clothing *future*
 #
 # flags:			0x01 - for sale
 #					0x02 - Sold

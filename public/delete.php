@@ -2,15 +2,19 @@
 //
 // Description
 // ===========
-// This function will update an art catalog piece to the database.
+// This method will remove an item from the art catalog.  All information
+// will be removed, so be sure you want it deleted.
 //
 // Arguments
 // ---------
-// user_id: 		The user making the request
+// api_key:
+// auth_token:
+// business_id: 		The ID of the business to remove the item from.
+// artcatalog_id:		The ID of the item in the catalog to be removed.
 // 
 // Returns
 // -------
-// <rsp stat='ok' id='34' />
+// <rsp stat='ok' />
 //
 function ciniki_artcatalog_delete($ciniki) {
     //  

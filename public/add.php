@@ -2,11 +2,72 @@
 //
 // Description
 // ===========
-// This function will add a new art catalog piece to the database.
+// This method will add a new item to the art catalog.  The image for the item
+// must be uploaded separately into the ciniki images module.
 //
 // Arguments
 // ---------
-// user_id: 		The user making the request
+// api_key:
+// auth_token:
+// business_id:		The ID of the business to add the item to.  The user must
+//					an owner of the business.
+//
+// type:			The type of the item.  Currently
+//					only two types are supported, Painting and Photographs.
+//
+//					1 - Painting
+//					2 - Photograph
+//					3 - Jewelry *future*
+//					4 - Sculpture *future*
+//					5 - Craft *future*
+//					6 - Clothing *future*
+//
+// flags:			(optional) The bit flags for the item.
+//	
+//					0x01 - The item is for sale.
+//					0x02 - The item is sold.  When displayed on the website, a red dot will be added to indicate sold.
+//
+// image_id:		(optional) The ID of the image in the images module to be displayed for the item.  This
+//					can be uploaded before or after the item is added to the artcatalog.
+//
+// name:			The name of the item.  This name must be unique within the business, as it's
+//					also used to generate the permalink.  The permalink must be usique because it
+//					is used as in the URL to reference an item.
+//
+// catalog_number:	(optional) A freeform field to store a catalog number if the user wants.  The
+//					can be any string of characters.
+//					
+// category:		(optional) The name of the category the item is a part of.  Only one category can
+//					be assigned to each item.
+//
+// year:			(optional) The year the item was completed, or in the case of a photograph, when the
+//					photo was taken.
+//
+// media:			(optional) The type of media the item was created in.  This can be anything that the user
+//					wishes, such as Oil, Pastel, etc for Paintings.  For Photographs, the information will be stored
+//					but nothing done with it.
+//
+// size:			(optional) The size of the item, typically used for Paintings as the size of the original.  
+//					For photographs this is typically the maximum size which the photo can be printed.  This
+//					information is displayed on the website.
+//
+// framed_size:		(optional) The framed size of the item, which is only used for paintings and shown on the website.  
+//					It can be stored for a photograph, but will not be shown on the website.
+//
+// price:			(optional) The price to purchase the item.  This can include the dollar '$' sign or not, it will 
+//					will automatically be added if missing when displayed on the website.
+//
+// location:		(optional) Where the item is currently located.  This can be used to track if paintings are located
+//					at home, or in a gallery.  
+//
+// description:		(optional) The description of the item, which will be displayed on the website.
+//
+// inspiration:		(optional) Where the inspiration came from for the item.  This information will not be displayed on the website.
+//
+// awards:			(optional) Any awards that the item has won.  This information is displayed along with the description
+//					on the website.
+//
+// notes:			(optional) Any notes the creator has for the item.  This information is private and will not be displayed on the website.
 // 
 // Returns
 // -------
