@@ -149,7 +149,7 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');
 	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'artcatalog', array(
 		array('container'=>'sections', 'fname'=>'sname', 'name'=>'section',
-			'fields'=>array('sname')),
+			'fields'=>array('name'=>'sname')),
 		array('container'=>'items', 'fname'=>'id', 'name'=>'item',
 			'fields'=>array('id', 'name', 'image_id', 'type', 'year', 'media', 'catalog_number', 'size', 'framed_size', 'price', 'sold', 'flags', 'location', 'notes')),
 		));
