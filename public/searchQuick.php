@@ -2,14 +2,30 @@
 //
 // Description
 // ===========
-// This method will search the art catalog for pieces that contain the search text
+// This method will search the art catalog for items where start_needle matches one
+// of the fields: name, catalog_number, media, location or notes.  The search looks
+// for fields that start with start_needle, or are preceeded by a space and the start_needle.
 //
 // Arguments
 // ---------
-// user_id: 		The user making the request
+// api_key:
+// auth_token:
+// business_id:		The ID of the business to search.
+//
+// start_needle:	The search string to search the field for.
+//
+// limit:			(optional) Limit the number of results to be returned. 
+//					If the limit is not specified, the default is 25.
 // 
 // Returns
 // -------
+// <items>
+//		<item id="2434" name="Black River" image_id="3872" media="Pastel" catalog_number="20120316"
+//			size="8x10" framed_size="12x14" price="350" location="Home" />
+//		<item id="1854" name="Flowing Stream" image_id="3871" media="Oil" catalog_number="20120219"
+//			size="8x10" framed_size="12x14" price="350" location="Home" />
+//		...
+// </items>
 //
 function ciniki_artcatalog_searchQuick($ciniki) {
     //  
@@ -63,16 +79,15 @@ function ciniki_artcatalog_searchQuick($ciniki) {
 	}
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');
 	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'artcatalog', array(
-		array('container'=>'pieces', 'fname'=>'id', 'name'=>'piece',
+		array('container'=>'items', 'fname'=>'id', 'name'=>'item',
 			'fields'=>array('id', 'name', 'image_id', 'media', 'catalog_number', 'size', 'framed_size', 'price', 'location')),
 		));
-	// error_log($strsql);
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
 	}
-	if( !isset($rc['pieces']) ) {
-		return array('stat'=>'ok', 'pieces'=>array());
+	if( !isset($rc['items']) ) {
+		return array('stat'=>'ok', 'items'=>array());
 	}
-	return array('stat'=>'ok', 'pieces'=>$rc['pieces']);
+	return array('stat'=>'ok', 'items'=>$rc['items']);
 }
 ?>

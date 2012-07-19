@@ -2,19 +2,22 @@
 //
 // Description
 // -----------
-// This function will return a list of categories for the web galleries
+// This function will return a list of categories for the web galleries, 
+// along with the images for each category highlight.
 //
 // Arguments
 // ---------
-// api_key:
-// auth_token:
+// ciniki:
+// settings:		The web settings structure.
 // business_id:		The ID of the business to get events for.
 //
 // Returns
 // -------
-// <events>
-// 	<event id="" name="" />
-// </events>
+// <categories>
+// 		<category name="Portraits" image_id="349" />
+// 		<category name="Landscape" image_id="418" />
+//		...
+// </categories>
 //
 function ciniki_artcatalog_web_categories($ciniki, $settings, $business_id) {
 

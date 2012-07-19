@@ -27,6 +27,14 @@
 //					0x01 - The item is for sale.
 //					0x02 - The item is sold.  When displayed on the website, a red dot will be added to indicate sold.
 //
+// webflags:		(optional) The flags for displaying the item on the business website.
+//
+//					0x01 - Private item, not to be displayed on the website
+//					0x10 - Category highlight item
+//					0x20 - Media highlight item *future*
+//					0x40 - Location highlight item *future*
+//					0x80 - Year highlight item *future*
+//
 // image_id:		(optional) The ID of the image in the images module to be displayed for the item.  This
 //					can be uploaded before or after the item is added to the artcatalog.
 //
@@ -82,6 +90,7 @@ function ciniki_artcatalog_add($ciniki) {
         'business_id'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No business specified'), 
 		'type'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No type specified'),
         'flags'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'0', 'errmsg'=>'No location specified'), 
+        'webflags'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No webflags specified'), 
 		'image_id'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'0', 'errmsg'=>'No image specified'),
         'name'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No name specified'), 
         'catalog_number'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'errmsg'=>'No catalog number specified'), 
@@ -136,7 +145,7 @@ function ciniki_artcatalog_add($ciniki) {
 		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
 		. "AND permalink = '" . ciniki_core_dbQuote($ciniki, $args['permalink']) . "' "
 		. "";
-	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'artcatalog', 'piece');
+	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'artcatalog', 'item');
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
 	}

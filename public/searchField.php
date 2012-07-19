@@ -2,15 +2,34 @@
 //
 // Description
 // -----------
-// Search through the categories for existing art catalog pieces.
+// This method will search a field for the search string provided.
 //
 // Arguments
 // ---------
-// user_id: 		The user making the request
-// search_str:		The search string provided by the user.
+// api_key:
+// auth_token:
+// business_id:		The ID of the business to search.
+// field:			The field to search.  Possible fields available to search are:
+//
+//					- category
+//					- media
+//					- location
+//					- size
+//					- framed_size
+//					- price
+//					- location
+//
+// start_needle:	The search string to search the field for.
+//
+// limit:			(optional) Limit the number of results to be returned. 
+//					If the limit is not specified, the default is 25.
 // 
 // Returns
 // -------
+// <results>
+//		<result name="Landscape" />
+//		<result name="Portrait" />
+// </results>
 //
 function ciniki_artcatalog_searchField($ciniki) {
     //  
@@ -21,7 +40,7 @@ function ciniki_artcatalog_searchField($ciniki) {
         'business_id'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No business specified'), 
 		'field'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No field specified'),
         'start_needle'=>array('required'=>'yes', 'blank'=>'yes', 'errmsg'=>'No search specified'), 
-        'limit'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No limit specified'), 
+        'limit'=>array('required'=>'no', 'blank'=>'no', 'errmsg'=>'No limit specified'), 
         )); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
@@ -32,7 +51,7 @@ function ciniki_artcatalog_searchField($ciniki) {
     // Make sure this module is activated, and
     // check permission to run this function for this business
     //  
-    require_once($ciniki['config']['core']['modules_dir'] . '/artcatalog/private/checkAccess.php');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'artcatalog', 'private', 'checkAccess');
     $rc = ciniki_artcatalog_checkAccess($ciniki, $args['business_id'], 'ciniki.artcatalog.searchField', 0); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;

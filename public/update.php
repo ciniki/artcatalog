@@ -2,15 +2,84 @@
 //
 // Description
 // ===========
-// This function will update an art catalog piece to the database.
+// This method updates one or more elements of an existing item in the art catalog.
 //
 // Arguments
 // ---------
-// user_id: 		The user making the request
+// api_key:
+// auth_token:
+// business_id:		The ID of the business to the item is a part of.
+// artcatalog_id:	The ID of the item in the art catalog.
+//
+// type:			(optional) The type of the item.  Currently
+//					only two types are supported, Painting and Photographs.
+//
+//					1 - Painting
+//					2 - Photograph
+//					3 - Jewelry *future*
+//					4 - Sculpture *future*
+//					5 - Craft *future*
+//					6 - Clothing *future*
+//
+// image_id:		(optional) The ID of the image in the images module to be displayed for the item.  This
+//					can be uploaded before or after the item is added to the artcatalog.
+//
+// flags:			(optional) The bit flags for the item.
+//	
+//					0x01 - The item is for sale.
+//					0x02 - The item is sold.  When displayed on the website, a red dot will be added to indicate sold.
+//
+// webflags:		(optional) The flags for displaying the item on the business website.
+//
+//					0x01 - Private item, not to be displayed on the website
+//					0x10 - Category highlight item
+//					0x20 - Media highlight item *future*
+//					0x40 - Location highlight item *future*
+//					0x80 - Year highlight item *future*
+//
+// name:			(optional) The name of the item.  This name must be unique within the business, as it's
+//					also used to generate the permalink.  The permalink must be usique because it
+//					is used as in the URL to reference an item.
+//
+// catalog_number:	(optional) A freeform field to store a catalog number if the user wants.  The
+//					can be any string of characters.
+//					
+// category:		(optional) The name of the category the item is a part of.  Only one category can
+//					be assigned to each item.
+//
+// year:			(optional) The year the item was completed, or in the case of a photograph, when the
+//					photo was taken.
+//
+// media:			(optional) The type of media the item was created in.  This can be anything that the user
+//					wishes, such as Oil, Pastel, etc for Paintings.  For Photographs, the information will be stored
+//					but nothing done with it.
+//
+// size:			(optional) The size of the item, typically used for Paintings as the size of the original.  
+//					For photographs this is typically the maximum size which the photo can be printed.  This
+//					information is displayed on the website.
+//
+// framed_size:		(optional) The framed size of the item, which is only used for paintings and shown on the website.  
+//					It can be stored for a photograph, but will not be shown on the website.
+//
+// price:			(optional) The price to purchase the item.  This can include the dollar '$' sign or not, it will 
+//					will automatically be added if missing when displayed on the website.
+//
+// location:		(optional) Where the item is currently located.  This can be used to track if paintings are located
+//					at home, or in a gallery.  
+//
+// description:		(optional) The description of the item, which will be displayed on the website.
+//
+// inspiration:		(optional) Where the inspiration came from for the item.  This information will not be displayed on the website.
+//
+// awards:			(optional) Any awards that the item has won.  This information is displayed along with the description
+//					on the website.
+//
+// notes:			(optional) Any notes the creator has for the item.  This information is private and will not be displayed on the website.
+// 
 // 
 // Returns
 // -------
-// <rsp stat='ok' id='34' />
+// <rsp stat='ok' />
 //
 function ciniki_artcatalog_update($ciniki) {
     //  
@@ -53,7 +122,7 @@ function ciniki_artcatalog_update($ciniki) {
 			. "AND permalink = '" . ciniki_core_dbQuote($ciniki, $args['permalink']) . "' "
 			. "AND id <> '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_id']) . "' "
 			. "";
-		$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'artcatalog', 'piece');
+		$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'artcatalog', 'item');
 		if( $rc['stat'] != 'ok' ) {
 			return $rc;
 		}

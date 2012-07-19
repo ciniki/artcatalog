@@ -2,14 +2,44 @@
 //
 // Description
 // ===========
-// This method will list the art catalog pieces sorted by category.
+// This method will get the number of items in each category, media type, location and years.
 //
 // Arguments
 // ---------
-// user_id: 		The user making the request
+// api_key:
+// auth_token:
+// business_id:		The ID of the business to get the stats for.
+// type:			(optional) Only get the stats for a particular type.
+//
+//					1 - Painting
+//					2 - Photograph
+//					3 - Jewelry
+//					4 - Sculpture
 // 
 // Returns
 // -------
+// <stats>
+//		<types>
+//			<section type="painting" name="Paintings" count="21" />
+//		</types>
+//		<categories>
+//			<section name="Landscape" count="14" />
+//			<section name="Portrait" count="7" />
+//		</categories>
+//		<media>
+//			<section name="Oil" count="12" />
+//			<section name="Pastel" count="9" />
+//		</media>
+//		<locations>
+//			<section name="Home" count="12" />
+//			<section name="Gallery" count="4" />
+//			<section name="Private Collection" count="5" />
+//		</locations>
+//		<years>
+//			<section name="2012" count="15" />
+//			<section name="2011" count="6" />
+//		</years>
+// </stats>
 //
 function ciniki_artcatalog_stats($ciniki) {
     //  
@@ -38,6 +68,7 @@ function ciniki_artcatalog_stats($ciniki) {
 			$args['type_id'] = 0;
 		}
 	}
+
     //  
     // Make sure this module is activated, and
     // check permission to run this function for this business

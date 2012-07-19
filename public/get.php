@@ -13,20 +13,20 @@
 // 
 // Returns
 // -------
-// <piece id="27" name="South River" permalink="south-river" 
+// <item id="27" name="South River" permalink="south-river" 
 //		image_id="34" type="1" type_text="Painting"
 //		flags="1" webflags="0" catalog_number="20120423" 
 //		category="Landscape" year="2012"
 //		media="Pastel" size="8x10" framed_size="12x14" forsale="yes" 
 //		sold="no" website="visible, category highlight"
 //		price="210" location="Home" inspiration="" notes="">
-//	<description>
-//		The description of the item.
-//	</description>
-//	<awards>
-//		The awards the item has won.
-//	</awards>
-// </piece>
+//		<description>
+//			The description of the item.
+//		</description>
+//		<awards>
+//			The awards the item has won.
+//		</awards>
+// </item>
 //
 function ciniki_artcatalog_get($ciniki) {
     //  
@@ -88,7 +88,7 @@ function ciniki_artcatalog_get($ciniki) {
 	
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');
 	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'artcatalog', array(
-		array('container'=>'pieces', 'fname'=>'id', 'name'=>'piece',
+		array('container'=>'items', 'fname'=>'id', 'name'=>'item',
 			'fields'=>array('id', 'name', 'permalink', 'image_id', 'type', 'type_text', 'flags', 'webflags', 'catalog_number', 'category', 'year',
 				'media', 'size', 'framed_size', 'forsale', 'sold', 'website', 'price', 'location', 'description', 'inspiration', 'awards', 'notes'),
 			'maps'=>array('type_text'=>array('0'=>'Unknown', '1'=>'Painting', '2'=>'Photograph', '3'=>'Jewelry', '4'=>'Sculpture', '5'=>'Craft')),
@@ -99,11 +99,11 @@ function ciniki_artcatalog_get($ciniki) {
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
 	}
-	if( !isset($rc['pieces']) ) {
+	if( !isset($rc['items']) ) {
 		return array('stat'=>'ok', 'err'=>array('pkg'=>'ciniki', 'code'=>'593', 'msg'=>'Unable to find item'));
 	}
-	$piece = $rc['pieces'][0]['piece'];
+	$item = $rc['items'][0]['item'];
 
-	return array('stat'=>'ok', 'piece'=>$piece);
+	return array('stat'=>'ok', 'item'=>$item);
 }
 ?>

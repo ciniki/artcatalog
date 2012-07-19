@@ -10,6 +10,9 @@
 //
 // Arguments
 // ---------
+// api_key:
+// auth_token:
+// business_id:			The ID of the business to get the image from.
 // image_id:			The ID if the image requested.
 // version:				The version of the image (regular, thumbnail)
 //

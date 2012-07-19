@@ -2,14 +2,51 @@
 //
 // Description
 // ===========
-// This method will list the art catalog pieces sorted by category.
+// This method will list the art catalog items sorted by category.
 //
 // Arguments
 // ---------
-// user_id: 		The user making the request
+// api_key:
+// auth_token:
+// business_id:		The ID of the business to get the list from.
+// section:			(optional) How the list should be sorted and organized.
+//
+//					- category
+//					- media
+//					- location
+//					- year
+//
+// name:			(optional) The name of the section to get restrict the list.  This
+//					can only be specified if the section is also specified.  If the section
+//					is category, then the name will restrict the results to the cateogry of
+//					this name.
+//
+// type:			(optional) Only list items of a specific type. Valid types are:
+//
+//					- painting
+//					- photograph
+//					- jewelry
+//					- sculpture
+//					- craft
+//					- clothing
+//
+// limit:			(optional) Limit the number of results.
 // 
 // Returns
 // -------
+// <sections>
+//		<section name="Landscape">
+//				<item id="23839" name="Swift Rapids" image_id="45" type="1" year="2012" 
+//					media="Oil" catalog_number="20120421"
+//					size="8x10" framed_size="12x14" price="350" sold="yes" flags="1" location="Home"
+//					notes="" />
+//				<item id="23853" name="Open Field" image_id="23" type="1" year="2012" 
+//					media="Pastel" catalog_number="20120311"
+//					size="8x10" framed_size="12x14" price="300" sold="no" flags="1" location="Home"
+//					notes="" />
+//				...
+//		</section>
+// </sections>
 //
 function ciniki_artcatalog_listWithImages($ciniki) {
     //  
@@ -18,7 +55,6 @@ function ciniki_artcatalog_listWithImages($ciniki) {
     require_once($ciniki['config']['core']['modules_dir'] . '/core/private/prepareArgs.php');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
         'business_id'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No business specified'), 
-        'status'=>array('required'=>'no', 'blank'=>'no', 'errmsg'=>'No status specified'), 
         'section'=>array('required'=>'no', 'blank'=>'no', 'errmsg'=>'No section specified'), 
 		'name'=>array('required'=>'no', 'blank'=>'no', 'errmsg'=>'No section name specified'),
 		'type'=>array('required'=>'no', 'blank'=>'no', 'errmsg'=>'No type specified'),
@@ -37,10 +73,14 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 			$args['type_id'] = 1;
 		} elseif( $args['type'] == 'photograph' ) {
 			$args['type_id'] = 2;
-		} elseif( $args['type'] == 'sculpture' ) {
-			$args['type_id'] = 3;
 		} elseif( $args['type'] == 'jewelry' ) {
+			$args['type_id'] = 3;
+		} elseif( $args['type'] == 'sculpture' ) {
 			$args['type_id'] = 4;
+		} elseif( $args['type'] == 'craft' ) {
+			$args['type_id'] = 5;
+		} elseif( $args['type'] == 'clothing' ) {
+			$args['type_id'] = 6;
 		} else {
 			$args['type_id'] = 0;
 		}
@@ -51,7 +91,7 @@ function ciniki_artcatalog_listWithImages($ciniki) {
     // check permission to run this function for this business
     //  
     require_once($ciniki['config']['core']['modules_dir'] . '/artcatalog/private/checkAccess.php');
-    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['business_id'], 'ciniki.artcatalog.notesList'); 
+    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['business_id'], 'ciniki.artcatalog.listWithImages'); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
@@ -110,10 +150,9 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'artcatalog', array(
 		array('container'=>'sections', 'fname'=>'sname', 'name'=>'section',
 			'fields'=>array('sname')),
-		array('container'=>'pieces', 'fname'=>'id', 'name'=>'piece',
+		array('container'=>'items', 'fname'=>'id', 'name'=>'item',
 			'fields'=>array('id', 'name', 'image_id', 'type', 'year', 'media', 'catalog_number', 'size', 'framed_size', 'price', 'sold', 'flags', 'location', 'notes')),
 		));
-	// error_log($strsql);
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
 	}
@@ -127,13 +166,13 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'loadCacheThumbnail');
 	$sections = $rc['sections'];
 	foreach($sections as $section_num => $section) {
-		foreach($section['section']['pieces'] as $piece_num => $piece) {
-			if( isset($piece['piece']['image_id']) && $piece['piece']['image_id'] > 0 ) {
-				$rc = ciniki_images_loadCacheThumbnail($ciniki, $piece['piece']['image_id'], 75);
+		foreach($section['section']['items'] as $inum => $item) {
+			if( isset($item['item']['image_id']) && $item['item']['image_id'] > 0 ) {
+				$rc = ciniki_images_loadCacheThumbnail($ciniki, $item['item']['image_id'], 75);
 				if( $rc['stat'] != 'ok' ) {
 					return $rc;
 				}
-				$sections[$section_num]['section']['pieces'][$piece_num]['piece']['image'] = 'data:image/jpg;base64,' . base64_encode($rc['image']);
+				$sections[$section_num]['section']['items'][$inum]['item']['image'] = 'data:image/jpg;base64,' . base64_encode($rc['image']);
 			}
 		}
 	}
