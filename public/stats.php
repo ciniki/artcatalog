@@ -92,7 +92,7 @@ function ciniki_artcatalog_stats($ciniki) {
 		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
 		. "GROUP BY type "
 		. "";
-	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'artcatalog', array(
+	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
 		array('container'=>'sections', 'fname'=>'type', 'name'=>'section',
 			'fields'=>array('type', 'name', 'count'), 
 			'maps'=>array('type'=>array(''=>'unknown', '1'=>'painting', '2'=>'photograph', '3'=>'sculpture', '4'=>'jewelry'),
@@ -118,7 +118,7 @@ function ciniki_artcatalog_stats($ciniki) {
 		. "GROUP BY category "
 		. "ORDER BY name "
 		. "";
-	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'artcatalog', array(
+	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
 		array('container'=>'sections', 'fname'=>'name', 'name'=>'section',
 			'fields'=>array('name', 'count')),
 		));
@@ -143,7 +143,7 @@ function ciniki_artcatalog_stats($ciniki) {
 		. "GROUP BY media "
 		. "ORDER BY name "
 		. "";
-	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'artcatalog', array(
+	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
 		array('container'=>'sections', 'fname'=>'name', 'name'=>'section',
 			'fields'=>array('name', 'count')),
 		));
@@ -169,7 +169,7 @@ function ciniki_artcatalog_stats($ciniki) {
 		. "GROUP BY location "
 		. "ORDER BY name "
 		. "";
-	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'artcatalog', array(
+	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
 		array('container'=>'sections', 'fname'=>'name', 'name'=>'section',
 			'fields'=>array('name', 'count')),
 		));
@@ -193,7 +193,7 @@ function ciniki_artcatalog_stats($ciniki) {
 		. "GROUP BY year "
 		. "ORDER BY name "
 		. "";
-	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'artcatalog', array(
+	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
 		array('container'=>'sections', 'fname'=>'name', 'name'=>'section',
 			'fields'=>array('name', 'count')),
 		));
@@ -213,7 +213,7 @@ function ciniki_artcatalog_stats($ciniki) {
 //		$strsql .= "AND type = '" . ciniki_core_dbQuote($ciniki, $args['type']) . "' "
 //			. "";
 //	}
-	$rc = ciniki_core_dbCount($ciniki, $strsql, 'artcatalog', 'count');
+	$rc = ciniki_core_dbCount($ciniki, $strsql, 'ciniki.artcatalog', 'count');
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
 	}

@@ -133,7 +133,7 @@ function ciniki_artcatalog_add($ciniki) {
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbInsert.php');
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbHashQuery.php');
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbAddModuleHistory.php');
-	$rc = ciniki_core_dbTransactionStart($ciniki, 'artcatalog');
+	$rc = ciniki_core_dbTransactionStart($ciniki, 'ciniki.artcatalog');
 	if( $rc['stat'] != 'ok' ) { 
 		return $rc;
 	}   
@@ -145,7 +145,7 @@ function ciniki_artcatalog_add($ciniki) {
 		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
 		. "AND permalink = '" . ciniki_core_dbQuote($ciniki, $args['permalink']) . "' "
 		. "";
-	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'artcatalog', 'item');
+	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', 'item');
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
 	}
@@ -181,13 +181,13 @@ function ciniki_artcatalog_add($ciniki) {
 		. "'" . ciniki_core_dbQuote($ciniki, $ciniki['session']['user']['id']) . "', "
 		. "UTC_TIMESTAMP(), UTC_TIMESTAMP())"
 		. "";
-	$rc = ciniki_core_dbInsert($ciniki, $strsql, 'artcatalog');
+	$rc = ciniki_core_dbInsert($ciniki, $strsql, 'ciniki.artcatalog');
 	if( $rc['stat'] != 'ok' ) { 
-		ciniki_core_dbTransactionRollback($ciniki, 'artcatalog');
+		ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
 		return $rc;
 	}
 	if( !isset($rc['insert_id']) || $rc['insert_id'] < 1 ) {
-		ciniki_core_dbTransactionRollback($ciniki, 'artcatalog');
+		ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'592', 'msg'=>'Unable to add item'));
 	}
 	$artcatalog_id = $rc['insert_id'];
@@ -224,10 +224,17 @@ function ciniki_artcatalog_add($ciniki) {
 	//
 	// Commit the database changes
 	//
-    $rc = ciniki_core_dbTransactionCommit($ciniki, 'artcatalog');
+    $rc = ciniki_core_dbTransactionCommit($ciniki, 'ciniki.artcatalog');
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
 	}
+
+	//
+	// Update the last_change date in the business modules
+	// Ignore the result, as we don't want to stop user updates if this fails.
+	//
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'updateModuleChangeDate');
+	ciniki_businesses_updateModuleChangeDate($ciniki, $args['business_id'], 'ciniki', 'artcatalog');
 
 	return array('stat'=>'ok', 'id'=>$artcatalog_id);
 }
