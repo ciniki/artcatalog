@@ -216,7 +216,7 @@ function ciniki_artcatalog_add($ciniki) {
 	foreach($changelog_fields as $field) {
 		$insert_name = $field;
 		if( isset($ciniki['request']['args'][$field]) && $ciniki['request']['args'][$field] != '' ) {
-			$rc = ciniki_core_dbAddModuleHistory($ciniki, 'artcatalog', 'ciniki_artcatalog_history', $args['business_id'], 
+			$rc = ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.artcatalog', 'ciniki_artcatalog_history', $args['business_id'], 
 				1, 'ciniki_artcatalog', $artcatalog_id, $insert_name, $ciniki['request']['args'][$field]);
 		}
 	}

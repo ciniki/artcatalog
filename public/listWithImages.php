@@ -147,7 +147,7 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 		$strsql .= "LIMIT " . ciniki_core_dbQuote($ciniki, $args['limit']) . " ";
 	}
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');
-	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'artcatalog', array(
+	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
 		array('container'=>'sections', 'fname'=>'sname', 'name'=>'section',
 			'fields'=>array('name'=>'sname')),
 		array('container'=>'items', 'fname'=>'id', 'name'=>'item',

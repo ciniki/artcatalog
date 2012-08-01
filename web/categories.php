@@ -30,7 +30,7 @@ function ciniki_artcatalog_web_categories($ciniki, $settings, $business_id) {
 		. "";
 	
     require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbHashQueryTree.php');
-	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'artcatalog', array(
+	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
 		array('container'=>'categories', 'fname'=>'name', 'name'=>'category',
 			'fields'=>array('name')),
 		));
@@ -57,7 +57,7 @@ function ciniki_artcatalog_web_categories($ciniki, $settings, $business_id) {
 			. "AND (ciniki_artcatalog.webflags&0x01) = 0 "
 			. "ORDER BY (ciniki_artcatalog.webflags&0x10) DESC, ciniki_artcatalog.date_added DESC "
 			. "LIMIT 1";
-		$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'artcatalog', 'image');
+		$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', 'image');
 		if( $rc['stat'] != 'ok' ) {
 			return $rc;
 		}

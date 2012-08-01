@@ -49,7 +49,7 @@ function ciniki_artcatalog_delete($ciniki) {
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbQuote.php');
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbDelete.php');
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbAddModuleHistory.php');
-	$rc = ciniki_core_dbTransactionStart($ciniki, 'artcatalog');
+	$rc = ciniki_core_dbTransactionStart($ciniki, 'ciniki.artcatalog');
 	if( $rc['stat'] != 'ok' ) { 
 		return $rc;
 	}   
@@ -62,23 +62,23 @@ function ciniki_artcatalog_delete($ciniki) {
 		. "AND id = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_id']) . "' "
 		. "";
 
-	$rc = ciniki_core_dbDelete($ciniki, $strsql, 'artcatalog');
+	$rc = ciniki_core_dbDelete($ciniki, $strsql, 'ciniki.artcatalog');
 	if( $rc['stat'] != 'ok' ) {
-		ciniki_core_dbTransactionRollback($ciniki, 'artcatalog');
+		ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
 		return $rc;
 	}
 	if( !isset($rc['num_affected_rows']) || $rc['num_affected_rows'] != 1 ) {
-		ciniki_core_dbTransactionRollback($ciniki, 'artcatalog');
+		ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'607', 'msg'=>'Unable to delete art'));
 	}
 
-	$rc = ciniki_core_dbAddModuleHistory($ciniki, 'artcatalog', 'ciniki_artcatalog_history', $args['business_id'],
+	$rc = ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.artcatalog', 'ciniki_artcatalog_history', $args['business_id'],
 		3, 'ciniki_artcatalog', $args['artcatalog_id'], '*', '');
 
 	//
 	// Commit the database changes
 	//
-    $rc = ciniki_core_dbTransactionCommit($ciniki, 'artcatalog');
+    $rc = ciniki_core_dbTransactionCommit($ciniki, 'ciniki.artcatalog');
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
 	}

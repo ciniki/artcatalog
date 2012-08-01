@@ -48,6 +48,6 @@ function ciniki_artcatalog_getHistory($ciniki) {
 	}
 
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbGetModuleHistory.php');
-	return ciniki_core_dbGetModuleHistory($ciniki, 'artcatalog', 'ciniki_artcatalog_history', $args['business_id'], 'ciniki_artcatalog', $args['artcatalog_id'], $args['field']);
+	return ciniki_core_dbGetModuleHistory($ciniki, 'ciniki.artcatalog', 'ciniki_artcatalog_history', $args['business_id'], 'ciniki_artcatalog', $args['artcatalog_id'], $args['field']);
 }
 ?>

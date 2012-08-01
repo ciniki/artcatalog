@@ -43,7 +43,7 @@ function ciniki_artcatalog_web_latestImages($ciniki, $settings, $business_id, $l
 	}
 
     require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbHashQuery.php');
-	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'artcatalog', '');
+	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', '');
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
 	}

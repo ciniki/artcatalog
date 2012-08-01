@@ -122,7 +122,7 @@ function ciniki_artcatalog_update($ciniki) {
 			. "AND permalink = '" . ciniki_core_dbQuote($ciniki, $args['permalink']) . "' "
 			. "AND id <> '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_id']) . "' "
 			. "";
-		$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'artcatalog', 'item');
+		$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', 'item');
 		if( $rc['stat'] != 'ok' ) {
 			return $rc;
 		}
