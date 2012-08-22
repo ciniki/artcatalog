@@ -76,6 +76,8 @@
 //					on the website.
 //
 // notes:			(optional) Any notes the creator has for the item.  This information is private and will not be displayed on the website.
+//
+// lists:			(optional) The lists the item is a part of.
 // 
 // Returns
 // -------
@@ -105,6 +107,7 @@ function ciniki_artcatalog_add($ciniki) {
         'inspiration'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No inspiration specified'), 
         'awards'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No awards specified'), 
         'notes'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No notes specified'), 
+		'lists'=>array('required'=>'no', 'blank'=>'yes', 'type'=>'list', 'delimiter'=>'::', 'errmsg'=>'No lists specified'),
         )); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
@@ -191,6 +194,20 @@ function ciniki_artcatalog_add($ciniki) {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'592', 'msg'=>'Unable to add item'));
 	}
 	$artcatalog_id = $rc['insert_id'];
+
+	//
+	// Check if there are any change to the lists the item is a part of
+	//
+	if( isset($args['lists']) ) {
+		ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'tagsUpdate');
+		$rc = ciniki_core_tagsUpdate($ciniki, 'ciniki.artcatalog', 'ciniki_artcatalog_tags', 'artcatalog_id', $args['artcatalog_id'], 1, $args['lists']);
+		if( $rc['stat'] != 'ok' ) {
+			return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'602', 'msg'=>'Unable to update lists', 'err'=>$rc['err']));
+		}
+		$rc = ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.artcatalog', 'ciniki_artcatalog_history', $args['business_id'], 
+			1, 'ciniki_artcatalog', $args['artcatalog_id'], 'lists', implode('::', $args['lists']));
+		$updated = 1;
+	}
 
 	//
 	// Add all the fields to the change log

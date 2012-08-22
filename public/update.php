@@ -75,8 +75,9 @@
 //					on the website.
 //
 // notes:			(optional) Any notes the creator has for the item.  This information is private and will not be displayed on the website.
-// 
-// 
+//
+// lists:			(optional) The list of tag names for the list tags the item is attached to.
+//
 // Returns
 // -------
 // <rsp stat='ok' />
@@ -95,7 +96,7 @@ function ciniki_artcatalog_update($ciniki) {
         'webflags'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No webflags specified'), 
         'name'=>array('required'=>'no', 'blank'=>'no', 'errmsg'=>'No name specified'), 
         'catalog_number'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No catalog number specified'), 
-        'category'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No category specified'), 
+        'category'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No category specified'),
         'year'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No year specified'), 
         'media'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No media specified'), 
         'size'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No size specified'), 
@@ -105,7 +106,8 @@ function ciniki_artcatalog_update($ciniki) {
         'description'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No description specified'), 
         'inspiration'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No inspiration specified'), 
         'awards'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No awards specified'), 
-        'notes'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No notes specified'), 
+        'notes'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No notes specified'),
+		'lists'=>array('required'=>'no', 'blank'=>'yes', 'type'=>'list', 'delimiter'=>'::', 'errmsg'=>'No lists specified'),
         )); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
@@ -127,7 +129,7 @@ function ciniki_artcatalog_update($ciniki) {
 			return $rc;
 		}
 		if( $rc['num_rows'] > 0 ) {
-			return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'650', 'msg'=>'You already have artwork with this name, please choose another name'));
+			return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'600', 'msg'=>'You already have artwork with this name, please choose another name'));
 		}
 
 	}
@@ -145,16 +147,35 @@ function ciniki_artcatalog_update($ciniki) {
 	//  
 	// Turn off autocommit
 	//  
-	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbTransactionStart.php');
-	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbTransactionRollback.php');
-	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbTransactionCommit.php');
-	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbQuote.php');
-	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbUpdate.php');
-	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbAddModuleHistory.php');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbTransactionStart');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbTransactionRollback');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbTransactionCommit');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuote');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbUpdate');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbAddModuleHistory');
 	$rc = ciniki_core_dbTransactionStart($ciniki, 'ciniki.artcatalog');
 	if( $rc['stat'] != 'ok' ) { 
 		return $rc;
 	}   
+
+	//
+	// Keep track if anything has been updated
+	//
+	$updated = 0;
+
+	//
+	// Check if there are any change to the lists the item is a part of
+	//
+	if( isset($args['lists']) ) {
+		ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'tagsUpdate');
+		$rc = ciniki_core_tagsUpdate($ciniki, 'ciniki.artcatalog', 'ciniki_artcatalog_tags', 'artcatalog_id', $args['artcatalog_id'], 1, $args['lists']);
+		if( $rc['stat'] != 'ok' ) {
+			return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'601', 'msg'=>'Unable to update lists', 'err'=>$rc['err']));
+		}
+		$rc = ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.artcatalog', 'ciniki_artcatalog_history', $args['business_id'], 
+			2, 'ciniki_artcatalog', $args['artcatalog_id'], 'lists', implode('::', $args['lists']));
+		$updated = 1;
+	}
 
 	//
 	// Start building the update SQL
@@ -189,18 +210,25 @@ function ciniki_artcatalog_update($ciniki) {
 			$strsql .= ", $field = '" . ciniki_core_dbQuote($ciniki, $args[$field]) . "' ";
 			$rc = ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.artcatalog', 'ciniki_artcatalog_history', $args['business_id'], 
 				2, 'ciniki_artcatalog', $args['artcatalog_id'], $field, $args[$field]);
+			$updated = 1;
 		}
 	}
-	$strsql .= "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
-		. "AND id = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_id']) . "' ";
-	$rc = ciniki_core_dbUpdate($ciniki, $strsql, 'ciniki.artcatalog');
-	if( $rc['stat'] != 'ok' ) {
-		ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
-		return $rc;
-	}
-	if( !isset($rc['num_affected_rows']) || $rc['num_affected_rows'] != 1 ) {
-		ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
-		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'603', 'msg'=>'Unable to update art'));
+
+	//
+	// Only update the record, and last_updated if there is something to update, or lists were updated
+	//
+	if( $updated > 0 ) {
+		$strsql .= "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+			. "AND id = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_id']) . "' ";
+		$rc = ciniki_core_dbUpdate($ciniki, $strsql, 'ciniki.artcatalog');
+		if( $rc['stat'] != 'ok' ) {
+			ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
+			return $rc;
+		}
+		if( !isset($rc['num_affected_rows']) || $rc['num_affected_rows'] != 1 ) {
+			ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
+			return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'603', 'msg'=>'Unable to update art'));
+		}
 	}
 
 	//
@@ -215,8 +243,10 @@ function ciniki_artcatalog_update($ciniki) {
 	// Update the last_change date in the business modules
 	// Ignore the result, as we don't want to stop user updates if this fails.
 	//
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'updateModuleChangeDate');
-	ciniki_businesses_updateModuleChangeDate($ciniki, $args['business_id'], 'ciniki', 'artcatalog');
+	if( $updated > 0 ) {
+		ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'updateModuleChangeDate');
+		ciniki_businesses_updateModuleChangeDate($ciniki, $args['business_id'], 'ciniki', 'artcatalog');
+	}
 
 	return array('stat'=>'ok');
 }

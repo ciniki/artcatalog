@@ -15,6 +15,7 @@
 //					- media
 //					- location
 //					- year
+//					- lists
 //
 // name:			(optional) The name of the section to get restrict the list.  This
 //					can only be specified if the section is also specified.  If the section
@@ -110,10 +111,21 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 		$strsql .= "IF(ciniki_artcatalog.location='', '', ciniki_artcatalog.location) AS sname ";
 	} elseif( $args['section'] == 'year' ) {
 		$strsql .= "IF(ciniki_artcatalog.year='', '', ciniki_artcatalog.year) AS sname ";
+	} elseif( $args['section'] == 'lists' ) {
+		$strsql .= "IF(ciniki_artcatalog_tags.tag_name='', '', ciniki_artcatalog_tags.tag_name) AS sname ";
 	}
-	$strsql .= "FROM ciniki_artcatalog "
-		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
-		. "";
+
+	if( isset($args['section']) && $args['section'] == 'lists' ) {
+		$strsql .= "FROM ciniki_artcatalog, ciniki_artcatalog_tags "
+			. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+			. "AND ciniki_artcatalog.id = ciniki_artcatalog_tags.artcatalog_id "
+			. "AND ciniki_artcatalog_tags.tag_type = 1 "
+			. "";
+	} else {
+		$strsql .= "FROM ciniki_artcatalog "
+			. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+			. "";
+	}
 	//
 	// Check if this should just be a sublist with one section of a group
 	//
@@ -131,6 +143,8 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 			$strsql .= "AND location = '" . ciniki_core_dbQuote($ciniki, $args['name']) . "' ";
 		} elseif( $args['section'] == 'year' ) {
 			$strsql .= "AND year = '" . ciniki_core_dbQuote($ciniki, $args['name']) . "' ";
+		} elseif( $args['section'] == 'lists' ) {
+			$strsql .= "AND ciniki_artcatalog_tags.tag_name = '" . ciniki_core_dbQuote($ciniki, $args['name']) . "' ";
 		} 
 	}
 	if( isset($args['type_id']) && $args['type_id'] > 0 ) {

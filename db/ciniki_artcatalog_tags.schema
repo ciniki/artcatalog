@@ -1,0 +1,34 @@
+#
+# Description
+# -----------
+# This table is designed to store tags for art catalog items.  Tags
+# can be used to create lists, categories, etc..
+#
+# Fields
+# -------
+# id:				The database ID of the tag.
+#
+# artcatalog_id:	The ID of the art catalog item.
+#
+# tag_type:			The type of tag, which is how it will be used.  This allows
+#					these tags to be used for multiple purposes.
+#	
+#					0 - unknown
+#					1 - List
+#					2 - Category **future**
+#
+# tag_name:			The name of the tag, list or category.
+#
+# date_added:       The UTC date and time the thread was added.
+# last_updated:     The UTC date and time the thread was last updated.
+#
+create table ciniki_artcatalog_tags (
+	id bigint not null auto_increment,
+	artcatalog_id int not null,
+	tag_type int not null,
+	tag_name varchar(150) not null,
+	date_added datetime not null,
+	last_updated datetime not null,
+	primary key (id),
+	unique index (artcatalog_id, tag_type, tag_name)
+) ENGINE='InnoDB', COMMENT='v1.01';
