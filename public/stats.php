@@ -39,6 +39,10 @@
 //			<section name="2012" count="15" />
 //			<section name="2011" count="6" />
 //		</years>
+//		<lists>
+//			<section name="County Fair" count="15" />
+//			<section name="Private Gallery" count="6" />
+//		</lists>
 // </stats>
 //
 function ciniki_artcatalog_stats($ciniki) {
@@ -213,22 +217,23 @@ function ciniki_artcatalog_stats($ciniki) {
 		. "AND ciniki_artcatalog_tags.tag_type = 1 "
 		. "";
 	if( isset($args['type_id']) && $args['type_id'] > 0 ) {
-		$strsql .= "AND type = '" . ciniki_core_dbQuote($ciniki, $args['type_id']) . "' "
+		$strsql .= "AND ciniki_artcatalog.type = '" . ciniki_core_dbQuote($ciniki, $args['type_id']) . "' "
 			. "";
 	}
 	$strsql .= "GROUP BY tag_name "
 		. "ORDER BY name "
 		. "";
-	error_log($strsql);
 	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
 		array('container'=>'sections', 'fname'=>'name', 'name'=>'section',
 			'fields'=>array('name', 'count')),
 		));
 	if( $rc['stat'] != 'ok' ) {
+		error_log($strsql);
 		return $rc;
 	}
-	//$rsp['stats'][3] = array('stat'=>array('name'=>'Years', 'sections'=>$rc['sections']));
-	$rsp['stats']['lists'] = $rc['sections'];
+	if( isset($rc['sections']) ) {
+		$rsp['stats']['lists'] = $rc['sections'];
+	}
 
 	//
 	// Get the total count
