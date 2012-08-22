@@ -15,7 +15,7 @@
 //					- media
 //					- location
 //					- year
-//					- lists
+//					- list
 //
 // name:			(optional) The name of the section to get restrict the list.  This
 //					can only be specified if the section is also specified.  If the section
@@ -111,11 +111,11 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 		$strsql .= "IF(ciniki_artcatalog.location='', '', ciniki_artcatalog.location) AS sname ";
 	} elseif( $args['section'] == 'year' ) {
 		$strsql .= "IF(ciniki_artcatalog.year='', '', ciniki_artcatalog.year) AS sname ";
-	} elseif( $args['section'] == 'lists' ) {
+	} elseif( $args['section'] == 'list' ) {
 		$strsql .= "IF(ciniki_artcatalog_tags.tag_name='', '', ciniki_artcatalog_tags.tag_name) AS sname ";
 	}
 
-	if( isset($args['section']) && $args['section'] == 'lists' ) {
+	if( isset($args['section']) && $args['section'] == 'list' ) {
 		$strsql .= "FROM ciniki_artcatalog, ciniki_artcatalog_tags "
 			. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
 			. "AND ciniki_artcatalog.id = ciniki_artcatalog_tags.artcatalog_id "
@@ -143,7 +143,7 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 			$strsql .= "AND location = '" . ciniki_core_dbQuote($ciniki, $args['name']) . "' ";
 		} elseif( $args['section'] == 'year' ) {
 			$strsql .= "AND year = '" . ciniki_core_dbQuote($ciniki, $args['name']) . "' ";
-		} elseif( $args['section'] == 'lists' ) {
+		} elseif( $args['section'] == 'list' ) {
 			$strsql .= "AND ciniki_artcatalog_tags.tag_name = '" . ciniki_core_dbQuote($ciniki, $args['name']) . "' ";
 		} 
 	}
