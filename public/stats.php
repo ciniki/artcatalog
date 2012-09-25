@@ -228,7 +228,6 @@ function ciniki_artcatalog_stats($ciniki) {
 			'fields'=>array('name', 'count')),
 		));
 	if( $rc['stat'] != 'ok' ) {
-		error_log($strsql);
 		return $rc;
 	}
 	if( isset($rc['sections']) ) {
