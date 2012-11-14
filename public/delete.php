@@ -57,6 +57,7 @@ function ciniki_artcatalog_delete($ciniki) {
 	//
 	// Remove any tags for the artcatalog item
 	//
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'tagsDelete');
 	$rc = ciniki_core_tagsDelete($ciniki, 'ciniki.artcatalog', 'ciniki_artcatalog_tags', 'artcatalog_id', $args['artcatalog_id']);
 	if( $rc['stat'] != 'ok' ) {
 		ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
