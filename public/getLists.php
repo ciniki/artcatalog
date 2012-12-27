@@ -34,7 +34,7 @@ function ciniki_artcatalog_getLists($ciniki) {
     // check permission to run this function for this business
     //  
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'artcatalog', 'private', 'checkAccess');
-    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['business_id'], 'ciniki.artcatalog.getTags'); 
+    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['business_id'], 'ciniki.artcatalog.getLists'); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
