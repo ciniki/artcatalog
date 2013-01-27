@@ -1,0 +1,8 @@
+#
+#
+ALTER TABLE ciniki_artcatalog_tags ADD COLUMN uuid char(36) not null AFTER id;
+UPDATE ciniki_artcatalog_tags SET uuid = uuid();
+ALTER TABLE ciniki_artcatalog_tags ADD COLUMN business_id int not null AFTER uuid;
+UPDATE ciniki_artcatalog_tags SET business_id = (SELECT business_id FROM ciniki_artcatalog WHERE ciniki_artcatalog.id = ciniki_artcatalog_tags.artcatalog_id);
+CREATE INDEX business_id ON ciniki_artcatalog_tags (business_id, uuid, last_updated);
+ALTER TABLE ciniki_artcatalog_tags COMMENT='v1.02';

@@ -83,7 +83,7 @@
 // -------
 // <rsp stat='ok' id='34' />
 //
-function ciniki_artcatalog_add($ciniki) {
+function ciniki_artcatalog_add(&$ciniki) {
     //  
     // Find all the required and optional arguments
     //  
@@ -132,6 +132,7 @@ function ciniki_artcatalog_add($ciniki) {
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbTransactionStart.php');
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbTransactionRollback.php');
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbTransactionCommit.php');
+	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbUUID.php');
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbQuote.php');
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbInsert.php');
 	require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbHashQuery.php');
@@ -140,6 +141,16 @@ function ciniki_artcatalog_add($ciniki) {
 	if( $rc['stat'] != 'ok' ) { 
 		return $rc;
 	}   
+
+	//
+	// Get a new UUID
+	//
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbUUID');
+	$rc = ciniki_core_dbUUID($ciniki, 'ciniki.artcatalog');
+	if( $rc['stat'] != 'ok' ) {
+		return $rc;
+	}
+	$uuid = $rc['uuid'];
 
 	//
 	// Check the permalink doesn't already exist
@@ -162,7 +173,7 @@ function ciniki_artcatalog_add($ciniki) {
 	$strsql = "INSERT INTO ciniki_artcatalog (uuid, business_id, name, permalink, type, flags, image_id, catalog_number, category, year, "
 		. "media, size, framed_size, price, location, description, inspiration, awards, notes, user_id, "
 		. "date_added, last_updated) VALUES ("
-		. "UUID(), "
+		. "'" . ciniki_core_dbQuote($ciniki, $uuid) . "', "
 		. "'" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "', "
 		. "'" . ciniki_core_dbQuote($ciniki, $args['name']) . "', "
 		. "'" . ciniki_core_dbQuote($ciniki, $args['permalink']) . "', "
@@ -200,14 +211,20 @@ function ciniki_artcatalog_add($ciniki) {
 	//
 	if( isset($args['lists']) ) {
 		ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'tagsUpdate');
-		$rc = ciniki_core_tagsUpdate($ciniki, 'ciniki.artcatalog', 'ciniki_artcatalog_tags', 'artcatalog_id', $artcatalog_id, 1, $args['lists']);
+		$rc = ciniki_core_tagsUpdate($ciniki, 'ciniki.artcatalog', $args['business_id'], 'ciniki_artcatalog_tags', 
+			'ciniki_artcatalog_history', 'artcatalog_id', $artcatalog_id, 1, $args['lists']);
 		if( $rc['stat'] != 'ok' ) {
 			return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'602', 'msg'=>'Unable to update lists', 'err'=>$rc['err']));
 		}
-		$rc = ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.artcatalog', 'ciniki_artcatalog_history', $args['business_id'], 
-			1, 'ciniki_artcatalog', $args['artcatalog_id'], 'lists', implode('::', $args['lists']));
-		$updated = 1;
+//		$rc = ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.artcatalog', 'ciniki_artcatalog_history', $args['business_id'], 
+//			1, 'ciniki_artcatalog', $args['artcatalog_id'], 'lists', implode('::', $args['lists']));
 	}
+
+	//
+	// Add the uuid to the history
+	//
+	$rc = ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.artcatalog', 'ciniki_artcatalog_history', 
+		$args['business_id'], 1, 'ciniki_artcatalog', $artcatalog_id, 'uuid', $uuid);
 
 	//
 	// Add all the fields to the change log
@@ -252,6 +269,11 @@ function ciniki_artcatalog_add($ciniki) {
 	//
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'updateModuleChangeDate');
 	ciniki_businesses_updateModuleChangeDate($ciniki, $args['business_id'], 'ciniki', 'artcatalog');
+
+	//
+	// Add to the sync queue so it will get pushed
+	//
+	$ciniki['syncqueue'][] = array('push'=>'ciniki.artcatalog.item', 'args'=>array('id'=>$artcatalog_id));
 
 	return array('stat'=>'ok', 'id'=>$artcatalog_id);
 }

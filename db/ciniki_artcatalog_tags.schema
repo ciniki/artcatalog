@@ -7,6 +7,8 @@
 # Fields
 # -------
 # id:				The database ID of the tag.
+# uuid:				The Universal Unique ID for the tag.
+# business_id:		The ID of the business the artcatalog item is attached to.
 #
 # artcatalog_id:	The ID of the art catalog item.
 #
@@ -24,11 +26,14 @@
 #
 create table ciniki_artcatalog_tags (
 	id bigint not null auto_increment,
+	uuid char(36) not null,
+	business_id int not null,
 	artcatalog_id int not null,
 	tag_type int not null,
 	tag_name varchar(150) not null,
 	date_added datetime not null,
 	last_updated datetime not null,
 	primary key (id),
-	unique index (artcatalog_id, tag_type, tag_name)
-) ENGINE='InnoDB', COMMENT='v1.01';
+	unique index (artcatalog_id, tag_type, tag_name),
+	index (business_id, uuid, last_updated)
+) ENGINE='InnoDB', COMMENT='v1.02';

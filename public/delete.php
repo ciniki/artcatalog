@@ -16,7 +16,7 @@
 // -------
 // <rsp stat='ok' />
 //
-function ciniki_artcatalog_delete($ciniki) {
+function ciniki_artcatalog_delete(&$ciniki) {
     //  
     // Find all the required and optional arguments
     //  
@@ -55,10 +55,27 @@ function ciniki_artcatalog_delete($ciniki) {
 	}   
 
 	//
+	// Get the uuid of the artcatalog item to be deleted
+	//
+	$strsql = "SELECT uuid FROM ciniki_artcatalog "
+		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+		. "AND id = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_id']) . "' "
+		. "";
+	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', 'artcatalog');
+	if( $rc['stat'] != 'ok' ) {
+		return $rc;
+	}
+	if( !isset($rc['artcatalog']) ) {
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'107', 'msg'=>'Unable to find existing item'));
+	}
+	$uuid = $rc['artcatalog']['uuid'];
+
+	//
 	// Remove any tags for the artcatalog item
 	//
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'tagsDelete');
-	$rc = ciniki_core_tagsDelete($ciniki, 'ciniki.artcatalog', 'ciniki_artcatalog_tags', 'artcatalog_id', $args['artcatalog_id']);
+	$rc = ciniki_core_tagsDelete($ciniki, 'ciniki.artcatalog', $args['business_id'], 
+		'ciniki_artcatalog_tags', 'ciniki_artcatalog_history', 'artcatalog_id', $args['artcatalog_id']);
 	if( $rc['stat'] != 'ok' ) {
 		ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
 		return $rc;
@@ -99,6 +116,9 @@ function ciniki_artcatalog_delete($ciniki) {
 	//
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'updateModuleChangeDate');
 	ciniki_businesses_updateModuleChangeDate($ciniki, $args['business_id'], 'ciniki', 'artcatalog');
+
+	$ciniki['syncqueue'][] = array('push'=>'ciniki.artcatalog.item', 
+		'args'=>array('delete_uuid'=>$uuid, 'delete_id'=>$args['artcatalog_id']));
 
 	return array('stat'=>'ok');
 }
