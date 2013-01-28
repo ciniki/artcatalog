@@ -74,7 +74,7 @@ function ciniki_artcatalog_delete(&$ciniki) {
 	// Remove any tags for the artcatalog item
 	//
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'tagsDelete');
-	$rc = ciniki_core_tagsDelete($ciniki, 'ciniki.artcatalog', $args['business_id'], 
+	$rc = ciniki_core_tagsDelete($ciniki, 'ciniki.artcatalog', 'tag', $args['business_id'], 
 		'ciniki_artcatalog_tags', 'ciniki_artcatalog_history', 'artcatalog_id', $args['artcatalog_id']);
 	if( $rc['stat'] != 'ok' ) {
 		ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
@@ -99,8 +99,8 @@ function ciniki_artcatalog_delete(&$ciniki) {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'607', 'msg'=>'Unable to delete art'));
 	}
 
-	$rc = ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.artcatalog', 'ciniki_artcatalog_history', $args['business_id'],
-		3, 'ciniki_artcatalog', $args['artcatalog_id'], '*', '');
+	$rc = ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.artcatalog', 'ciniki_artcatalog_history', 
+		$args['business_id'], 3, 'ciniki_artcatalog', $args['artcatalog_id'], '*', '');
 
 	//
 	// Commit the database changes

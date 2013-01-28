@@ -168,8 +168,9 @@ function ciniki_artcatalog_update(&$ciniki) {
 	//
 	if( isset($args['lists']) ) {
 		ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'tagsUpdate');
-		$rc = ciniki_core_tagsUpdate($ciniki, 'ciniki.artcatalog', $args['business_id'], 'ciniki_artcatalog_tags', 
-			'ciniki_artcatalog_history', 'artcatalog_id', $args['artcatalog_id'], 1, $args['lists']);
+		$rc = ciniki_core_tagsUpdate($ciniki, 'ciniki.artcatalog', 'tag', $args['business_id'], 
+			'ciniki_artcatalog_tags', 'ciniki_artcatalog_history', 
+			'artcatalog_id', $args['artcatalog_id'], 1, $args['lists']);
 		if( $rc['stat'] != 'ok' ) {
 			return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'601', 'msg'=>'Unable to update lists', 'err'=>$rc['err']));
 		}
