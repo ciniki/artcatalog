@@ -117,7 +117,7 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 
 	if( isset($args['section']) && $args['section'] == 'list' ) {
 		$strsql .= "FROM ciniki_artcatalog, ciniki_artcatalog_tags "
-			. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+			. "WHERE ciniki_artcatalog.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
 			. "AND ciniki_artcatalog.id = ciniki_artcatalog_tags.artcatalog_id "
 			. "AND ciniki_artcatalog_tags.tag_type = 1 "
 			. "";
