@@ -106,7 +106,11 @@ function ciniki_artcatalog_stats($ciniki) {
 		return $rc;
 	}
 	//$rsp['stats'][0] = array('stat'=>array('name'=>'Categories', 'sections'=>$rc['sections']));
-	$rsp['stats']['types'] = $rc['sections'];
+	if( isset($rc['sections']) ) {
+		$rsp['stats']['types'] = $rc['sections'];
+//	} else {
+//		$rsp['stats']['types'] = array();
+	}
 
 	//
 	// Get the category stats
@@ -130,8 +134,12 @@ function ciniki_artcatalog_stats($ciniki) {
 		return $rc;
 	}
 	//$rsp['stats'][0] = array('stat'=>array('name'=>'Categories', 'sections'=>$rc['sections']));
-	$rsp['stats']['categories'] = $rc['sections'];
-	
+	if( isset($rc['sections']) ) {
+		$rsp['stats']['categories'] = $rc['sections'];
+//	} else {
+//		$rsp['stats']['categories'] = array();
+	}
+
 	//
 	// Get the media stats
 	//
@@ -181,7 +189,9 @@ function ciniki_artcatalog_stats($ciniki) {
 		return $rc;
 	}
 	//$rsp['stats'][2] = array('stat'=>array('name'=>'Locations', 'sections'=>$rc['sections']));
-	$rsp['stats']['locations'] = $rc['sections'];
+	if( isset($rc['sections']) ) {
+		$rsp['stats']['locations'] = $rc['sections'];
+	}
 
 	//
 	// Get the year stats
@@ -205,7 +215,9 @@ function ciniki_artcatalog_stats($ciniki) {
 		return $rc;
 	}
 	//$rsp['stats'][3] = array('stat'=>array('name'=>'Years', 'sections'=>$rc['sections']));
-	$rsp['stats']['years'] = $rc['sections'];
+	if( isset($rc['sections']) ) {
+		$rsp['stats']['years'] = $rc['sections'];
+	}
 
 	//
 	// Get the lists stats
