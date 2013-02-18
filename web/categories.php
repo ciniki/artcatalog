@@ -29,7 +29,7 @@ function ciniki_artcatalog_web_categories($ciniki, $settings, $business_id) {
 		. "ORDER BY category "
 		. "";
 	
-    require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbHashQueryTree.php');
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');
 	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
 		array('container'=>'categories', 'fname'=>'name', 'name'=>'category',
 			'fields'=>array('name')),

@@ -53,7 +53,7 @@ function ciniki_artcatalog_web_categoryImages($ciniki, $settings, $business_id, 
 	//
 	$strsql .= "ORDER BY ciniki_artcatalog.date_added DESC ";
 
-    require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbHashQuery.php');
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
 	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', '');
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
