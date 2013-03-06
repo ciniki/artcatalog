@@ -174,8 +174,6 @@ function ciniki_artcatalog_update(&$ciniki) {
 		if( $rc['stat'] != 'ok' ) {
 			return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'601', 'msg'=>'Unable to update lists', 'err'=>$rc['err']));
 		}
-//		$rc = ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.artcatalog', 'ciniki_artcatalog_history', $args['business_id'], 
-//			2, 'ciniki_artcatalog', $args['artcatalog_id'], 'lists', implode('::', $args['lists']));
 		$updated = 1;
 	}
 
