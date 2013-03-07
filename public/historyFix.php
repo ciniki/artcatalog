@@ -77,7 +77,6 @@ function ciniki_artcatalog_historyFix($ciniki) {
 		return $rc;
 	}
 
-
 	return array('stat'=>'ok');
 }
 ?>
