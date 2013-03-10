@@ -244,6 +244,7 @@ function ciniki_artcatalog_add(&$ciniki) {
 		'permalink',
 		'type',
 		'flags',
+		'image_id',
 		'catalog_number',
 		'category',
 		'year',
@@ -264,6 +265,20 @@ function ciniki_artcatalog_add(&$ciniki) {
 				'ciniki_artcatalog_history', $args['business_id'], 1, 'ciniki_artcatalog', 
 				$artcatalog_id, $insert_name, $args[$field]);
 		}
+	}
+
+	//
+	// Add image reference
+	//
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'refAdd');
+	$rc = ciniki_images_refAdd($ciniki, $args['business_id'], array(
+		'image_id'=>$args['image_id'], 
+		'object'=>'ciniki.artcatalog.item', 
+		'object_id'=>$artcatalog_id,
+		'object_field'=>'image_id'));
+	if( $rc['stat'] != 'ok' ) {
+		ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
+		return $rc;
 	}
 
 	//

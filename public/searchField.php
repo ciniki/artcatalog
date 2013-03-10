@@ -37,10 +37,10 @@ function ciniki_artcatalog_searchField($ciniki) {
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No business specified'), 
-		'field'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No field specified'),
-        'start_needle'=>array('required'=>'yes', 'blank'=>'yes', 'errmsg'=>'No search specified'), 
-        'limit'=>array('required'=>'no', 'blank'=>'no', 'errmsg'=>'No limit specified'), 
+        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+		'field'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Field'),
+        'start_needle'=>array('required'=>'yes', 'blank'=>'yes', 'name'=>'Search'), 
+        'limit'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Limit'), 
         )); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;

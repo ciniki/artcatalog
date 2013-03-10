@@ -88,26 +88,26 @@ function ciniki_artcatalog_update(&$ciniki) {
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No business specified'), 
-        'artcatalog_id'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No ID specified'), 
-		'type'=>array('required'=>'no', 'blank'=>'no', 'errmsg'=>'No type specified'),
-		'image_id'=>array('required'=>'no', 'blank'=>'no', 'errmsg'=>'No image specified'),
-        'flags'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No flags specified'), 
-        'webflags'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No webflags specified'), 
-        'name'=>array('required'=>'no', 'blank'=>'no', 'errmsg'=>'No name specified'), 
-        'catalog_number'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No catalog number specified'), 
-        'category'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No category specified'),
-        'year'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No year specified'), 
-        'media'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No media specified'), 
-        'size'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No size specified'), 
-        'framed_size'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No framed_size specified'), 
-        'price'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No price specified'), 
-        'location'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No location specified'), 
-        'description'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No description specified'), 
-        'inspiration'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No inspiration specified'), 
-        'awards'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No awards specified'), 
-        'notes'=>array('required'=>'no', 'blank'=>'yes', 'errmsg'=>'No notes specified'),
-		'lists'=>array('required'=>'no', 'blank'=>'yes', 'type'=>'list', 'delimiter'=>'::', 'errmsg'=>'No lists specified'),
+        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'artcatalog_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Item'), 
+		'type'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Type'),
+		'image_id'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Image'),
+        'flags'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Flags'), 
+        'webflags'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Web Flags'), 
+        'name'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Name'), 
+        'catalog_number'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Catalog Number'), 
+        'category'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Category'),
+        'year'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Year'), 
+        'media'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Media'), 
+        'size'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Size'), 
+        'framed_size'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Framed Size'), 
+        'price'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Price'), 
+        'location'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Location'), 
+        'description'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Description'), 
+        'inspiration'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Inspiration'), 
+        'awards'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Awards'), 
+        'notes'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Notes'),
+		'lists'=>array('required'=>'no', 'blank'=>'yes', 'type'=>'list', 'delimiter'=>'::', 'name'=>'Lists'),
         )); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
@@ -157,6 +157,20 @@ function ciniki_artcatalog_update(&$ciniki) {
 	if( $rc['stat'] != 'ok' ) { 
 		return $rc;
 	}   
+
+	// Get the existing image_id
+	$strsql = "SELECT image_id FROM ciniki_artcatalog "
+		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+		. "AND id = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_id']) . "' "
+		. "";
+	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', 'item');
+	if( $rc['stat'] != 'ok' ) {
+		return $rc;
+	}
+	if( !isset($rc['item']) ) {
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'484', 'msg'=>'Gallery image not found'));
+	}
+	$item = $rc['item'];
 
 	//
 	// Keep track if anything has been updated
@@ -228,6 +242,37 @@ function ciniki_artcatalog_update(&$ciniki) {
 		if( !isset($rc['num_affected_rows']) || $rc['num_affected_rows'] != 1 ) {
 			ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
 			return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'603', 'msg'=>'Unable to update art'));
+		}
+	}
+
+	//
+	// Add image reference
+	//
+	if( isset($args['image_id']) && $item['image_id'] != $args['image_id']) {
+		//
+		// Remove the old reference
+		//
+		ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'refClear');
+		$rc = ciniki_images_refClear($ciniki, $args['business_id'], array(
+			'object'=>'ciniki.artcatalog.item', 
+			'object_id'=>$args['artcatalog_id']));
+		if( $rc['stat'] == 'fail' ) {
+			ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
+			return $rc;
+		}
+
+		//
+		// Add the new reference
+		//
+		ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'refAdd');
+		$rc = ciniki_images_refAdd($ciniki, $args['business_id'], array(
+			'image_id'=>$args['image_id'], 
+			'object'=>'ciniki.artcatalog.item', 
+			'object_id'=>$args['artcatalog_id'],
+			'object_field'=>'image_id'));
+		if( $rc['stat'] != 'ok' ) {
+			ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
+			return $rc;
 		}
 	}
 

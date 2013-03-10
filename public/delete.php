@@ -22,8 +22,8 @@ function ciniki_artcatalog_delete(&$ciniki) {
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No business specified'), 
-        'artcatalog_id'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No ID specified'), 
+        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'artcatalog_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Item'), 
         )); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
@@ -57,7 +57,7 @@ function ciniki_artcatalog_delete(&$ciniki) {
 	//
 	// Get the uuid of the artcatalog item to be deleted
 	//
-	$strsql = "SELECT uuid FROM ciniki_artcatalog "
+	$strsql = "SELECT uuid, image_id FROM ciniki_artcatalog "
 		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
 		. "AND id = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_id']) . "' "
 		. "";
@@ -69,6 +69,7 @@ function ciniki_artcatalog_delete(&$ciniki) {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'107', 'msg'=>'Unable to find existing item'));
 	}
 	$uuid = $rc['artcatalog']['uuid'];
+	$image_id = $rc['artcatalog']['image_id'];
 
 	//
 	// Remove any tags for the artcatalog item
@@ -101,6 +102,28 @@ function ciniki_artcatalog_delete(&$ciniki) {
 
 	$rc = ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.artcatalog', 'ciniki_artcatalog_history', 
 		$args['business_id'], 3, 'ciniki_artcatalog', $args['artcatalog_id'], '*', '');
+
+	//
+	// Remove the reference
+	//
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'refClear');
+	$rc = ciniki_images_refClear($ciniki, $args['business_id'], array(
+		'object'=>'ciniki.artcatalog.item', 
+		'object_id'=>$args['artcatalog_id']));
+	if( $rc['stat'] == 'fail' ) {
+		ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
+		return $rc;
+	}
+
+	//
+	// Delete the image
+	//
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'removeImage');
+	$rc = ciniki_images_removeImage($ciniki, $args['business_id'], 0, $image_id);
+	if( $rc['stat'] != 'ok' && $rc['stat'] != 'warn' ) {
+		ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
+		return $rc;
+	}
 
 	//
 	// Commit the database changes
