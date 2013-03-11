@@ -246,11 +246,11 @@ function ciniki_artcatalog_update(&$ciniki) {
 	}
 
 	//
-	// Add image reference
+	// Update image reference
 	//
 	if( isset($args['image_id']) && $item['image_id'] != $args['image_id']) {
 		//
-		// Remove the old reference
+		// Remove the old reference, and remove image if no more references
 		//
 		ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'refClear');
 		$rc = ciniki_images_refClear($ciniki, $args['business_id'], array(

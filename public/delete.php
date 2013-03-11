@@ -104,23 +104,13 @@ function ciniki_artcatalog_delete(&$ciniki) {
 		$args['business_id'], 3, 'ciniki_artcatalog', $args['artcatalog_id'], '*', '');
 
 	//
-	// Remove the reference
+	// Remove the reference, and remove image if no more references
 	//
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'refClear');
 	$rc = ciniki_images_refClear($ciniki, $args['business_id'], array(
 		'object'=>'ciniki.artcatalog.item', 
 		'object_id'=>$args['artcatalog_id']));
 	if( $rc['stat'] == 'fail' ) {
-		ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
-		return $rc;
-	}
-
-	//
-	// Delete the image
-	//
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'removeImage');
-	$rc = ciniki_images_removeImage($ciniki, $args['business_id'], 0, $image_id);
-	if( $rc['stat'] != 'ok' && $rc['stat'] != 'warn' ) {
 		ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
 		return $rc;
 	}
