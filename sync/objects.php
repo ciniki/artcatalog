@@ -33,6 +33,8 @@ function ciniki_artcatalog_sync_objects($ciniki, &$sync, $business_id, $args) {
 			'catalog_number'=>array(),
 			'category'=>array(),
 			'year'=>array(),
+			'month'=>array(),
+			'day'=>array(),
 			'media'=>array(),
 			'size'=>array(),
 			'framed_size'=>array(),

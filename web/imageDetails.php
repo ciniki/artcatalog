@@ -29,7 +29,8 @@ function ciniki_artcatalog_web_imageDetails($ciniki, $settings, $business_id, $p
 	if( !isset($rc['piece']) ) {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'651', 'msg'=>'Unable to find artwork'));
 	}
-	$image = array('title'=>$rc['piece']['name'],
+	$image = array('id'=>$rc['piece']['id'],
+		'title'=>$rc['piece']['name'],
 		'category'=>$rc['piece']['category'],
 		'image_id'=>$rc['piece']['image_id'],
 		'details'=>'',

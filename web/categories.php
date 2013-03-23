@@ -55,7 +55,11 @@ function ciniki_artcatalog_web_categories($ciniki, $settings, $business_id) {
 			. "AND category = '" . ciniki_core_dbQuote($ciniki, $cat['category']['name']) . "' "
 			. "AND ciniki_artcatalog.image_id = ciniki_images.id "
 			. "AND (ciniki_artcatalog.webflags&0x01) = 0 "
-			. "ORDER BY (ciniki_artcatalog.webflags&0x10) DESC, ciniki_artcatalog.date_added DESC "
+			. "ORDER BY (ciniki_artcatalog.webflags&0x10) DESC, "
+			. "ciniki_artcatalog.year DESC, "
+			. "ciniki_artcatalog.month DESC, "
+			. "ciniki_artcatalog.day DESC, "
+			. "ciniki_artcatalog.date_added DESC "
 			. "LIMIT 1";
 		$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', 'image');
 		if( $rc['stat'] != 'ok' ) {
