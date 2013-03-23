@@ -35,10 +35,12 @@ function ciniki_artcatalog_web_latestImages($ciniki, $settings, $business_id, $l
 		. "AND (ciniki_artcatalog.webflags&0x01) = 0 "
 		. "";
 	if( $limit != '' && $limit > 0 && is_int($limit) ) {
-		$strsql .= "ORDER BY ciniki_artcatalog.date_added DESC "
+//		$strsql .= "ORDER BY ciniki_artcatalog.date_added DESC "
+		$strsql .= "ORDER BY ciniki_artcatalog.year DESC, ciniki_artcatalog.month DESC, ciniki_artcatalog.day DESC "
 			. "LIMIT $limit ";
 	} else {
-		$strsql .= "ORDER BY ciniki_artcatalog.date_added DESC "
+//		$strsql .= "ORDER BY ciniki_artcatalog.date_added DESC "
+		$strsql .= "ORDER BY ciniki_artcatalog.year DESC, ciniki_artcatalog.month DESC, ciniki_artcatalog.day DESC "
 			. "LIMIT 4 ";
 	}
 

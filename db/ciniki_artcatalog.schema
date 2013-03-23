@@ -45,6 +45,8 @@
 # category:			The category for the artwork.
 #
 # year:				The year the item was completed.
+# month:			The month the item was completed.
+# day:				The day the item was completed.
 #
 # media:			The media of the creation.
 #
@@ -84,6 +86,8 @@ create table ciniki_artcatalog (
 	catalog_number varchar(100) not null,
 	category varchar(200) not null,
 	year varchar(50) not null,
+	month tinyint unsigned not null,
+	day tinyint unsigned not null,
 	media varchar(200) not null,
 	size varchar(200) not null,
 	framed_size varchar(200) not null,
@@ -101,5 +105,5 @@ create table ciniki_artcatalog (
 	index (business_id, category, date_added),
 	index (media),
 	index (location),
-	index (year)
-) ENGINE='InnoDB', COMMENT='v1.06';
+	index (year, month, day),
+) ENGINE='InnoDB', COMMENT='v1.07';

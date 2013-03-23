@@ -98,6 +98,8 @@ function ciniki_artcatalog_add(&$ciniki) {
         'catalog_number'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Catalog Number'), 
         'category'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Category'), 
         'year'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Year'), 
+        'month'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Month'), 
+        'day'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Day'), 
         'media'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Media'), 
         'size'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Size'), 
         'framed_size'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Framed Size'), 
@@ -170,7 +172,7 @@ function ciniki_artcatalog_add(&$ciniki) {
 	//
 	// Add the artcatalog to the database
 	//
-	$strsql = "INSERT INTO ciniki_artcatalog (uuid, business_id, name, permalink, type, flags, image_id, catalog_number, category, year, "
+	$strsql = "INSERT INTO ciniki_artcatalog (uuid, business_id, name, permalink, type, flags, image_id, catalog_number, category, year, month, day, "
 		. "media, size, framed_size, price, location, description, inspiration, awards, notes, user_id, "
 		. "date_added, last_updated) VALUES ("
 		. "'" . ciniki_core_dbQuote($ciniki, $args['uuid']) . "', "
@@ -183,6 +185,8 @@ function ciniki_artcatalog_add(&$ciniki) {
 		. "'" . ciniki_core_dbQuote($ciniki, $args['catalog_number']) . "', "
 		. "'" . ciniki_core_dbQuote($ciniki, $args['category']) . "', "
 		. "'" . ciniki_core_dbQuote($ciniki, $args['year']) . "', "
+		. "'" . ciniki_core_dbQuote($ciniki, $args['month']) . "', "
+		. "'" . ciniki_core_dbQuote($ciniki, $args['day']) . "', "
 		. "'" . ciniki_core_dbQuote($ciniki, $args['media']) . "', "
 		. "'" . ciniki_core_dbQuote($ciniki, $args['size']) . "', "
 		. "'" . ciniki_core_dbQuote($ciniki, $args['framed_size']) . "', "
@@ -248,6 +252,8 @@ function ciniki_artcatalog_add(&$ciniki) {
 		'catalog_number',
 		'category',
 		'year',
+		'month',
+		'day',
 		'media',
 		'size',
 		'framed_size',

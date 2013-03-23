@@ -58,13 +58,15 @@ function ciniki_artcatalog_get($ciniki) {
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuote');
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'users', 'private', 'datetimeFormat');
 	$datetime_format = ciniki_users_datetimeFormat($ciniki);
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'users', 'private', 'dateFormat');
+	$date_format = ciniki_users_dateFormat($ciniki);
 
 	$strsql = "SELECT ciniki_artcatalog.id, ciniki_artcatalog.name, permalink, image_id, type, type AS type_text, "
 		. "ciniki_artcatalog.flags, "
 		. "IF((ciniki_artcatalog.flags&0x01)=0x01, 'yes', 'no') AS forsale, "
 		. "IF((ciniki_artcatalog.flags&0x02)=0x02, 'yes', 'no') AS sold, "
 		. "CONCAT_WS('', IF((ciniki_artcatalog.webflags&0x01)=0x01, 'hidden', 'visible'), IF((ciniki_artcatalog.webflags&0x10)=0x10, ', category highlight', '')) AS website , "
-		. "webflags, catalog_number, category, year, "
+		. "webflags, catalog_number, category, year, month, day, "
 		. "media, size, framed_size, ciniki_artcatalog.price, ciniki_artcatalog.location, "
 		. "ciniki_artcatalog.description, inspiration, awards, ciniki_artcatalog.notes, "
 		. "ciniki_artcatalog.date_added, ciniki_artcatalog.last_updated, "
@@ -92,8 +94,10 @@ function ciniki_artcatalog_get($ciniki) {
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');
 	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
 		array('container'=>'items', 'fname'=>'id', 'name'=>'item',
-			'fields'=>array('id', 'name', 'permalink', 'image_id', 'type', 'type_text', 'flags', 'webflags', 'catalog_number', 'category', 'year',
-				'media', 'size', 'framed_size', 'forsale', 'sold', 'website', 'price', 'location', 'description', 'inspiration', 'awards', 'notes', 'lists'),
+			'fields'=>array('id', 'name', 'permalink', 'image_id', 'type', 'type_text', 
+				'flags', 'webflags', 'catalog_number', 'category', 'year', 'month', 'day', 
+				'media', 'size', 'framed_size', 'forsale', 'sold', 'website', 'price', 'location', 
+				'description', 'inspiration', 'awards', 'notes', 'lists'),
 			'dlists'=>array('lists'=>'::'),
 			'maps'=>array('type_text'=>array('0'=>'Unknown', '1'=>'Painting', '2'=>'Photograph', '3'=>'Jewelry', '4'=>'Sculpture', '5'=>'Craft')),
 			),

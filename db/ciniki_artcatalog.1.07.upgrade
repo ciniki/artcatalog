@@ -1,0 +1,8 @@
+#
+# This file will upgrade the database table ciniki_artcatalog to version 1.07
+#
+ALTER TABLE ciniki_artcatalog ADD COLUMN month tinyint unsigned not null AFTER year;
+ALTER TABLE ciniki_artcatalog ADD COLUMN day tinyint unsigned not null AFTER month;
+DROP INDEX year ON ciniki_artcatalog;
+CREATE INDEX year ON ciniki_artcatalog (year, month, day);
+ALTER TABLE ciniki_artcatalog COMMENT='v1.07';
