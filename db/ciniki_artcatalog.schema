@@ -105,5 +105,5 @@ create table ciniki_artcatalog (
 	index (business_id, category, date_added),
 	index (media),
 	index (location),
-	index (year, month, day),
+	index (year, month, day)
 ) ENGINE='InnoDB', COMMENT='v1.07';
