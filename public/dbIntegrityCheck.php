@@ -39,12 +39,25 @@ function ciniki_artcatalog_dbIntegrityCheck(&$ciniki) {
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbDelete');
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbFixTableHistory');
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'refAddMissing');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'refDeleteMissing');
 
 	if( $args['fix'] == 'yes' ) {
 		//
 		// Add missing image refs
 		//
 		$rc = ciniki_images_refAddMissing($ciniki, 'ciniki.artcatalog', $args['business_id'],
+			array('object'=>'ciniki.artcatalog.item', 
+				'object_table'=>'ciniki_artcatalog',
+				'object_id_field'=>'id',
+				'object_field'=>'image_id'));
+		if( $rc['stat'] != 'ok' ) {
+			return $rc;
+		}
+
+		//
+		// Remove references which have been left hanging, reference doesn't exist
+		//
+		$rc = ciniki_images_refDeleteMissing($ciniki, 'ciniki.artcatalog', $args['business_id'],
 			array('object'=>'ciniki.artcatalog.item', 
 				'object_table'=>'ciniki_artcatalog',
 				'object_id_field'=>'id',
