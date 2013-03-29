@@ -66,6 +66,7 @@ function ciniki_artcatalog_searchField($ciniki) {
 		&& $args['field'] != 'size'
 		&& $args['field'] != 'framed_size'
 		&& $args['field'] != 'price'
+		&& $args['field'] != 'year'
 		&& $args['field'] != 'location'
 		) {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'599', 'msg'=>'Unvalid search field'));
