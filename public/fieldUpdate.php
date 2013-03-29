@@ -126,4 +126,3 @@ function ciniki_artcatalog_fieldUpdate(&$ciniki) {
 	return array('stat'=>'ok');
 }
 ?>
-
