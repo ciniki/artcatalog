@@ -234,12 +234,6 @@ function ciniki_artcatalog_add(&$ciniki) {
 	}
 
 	//
-	// Add the uuid to the history
-	//
-	$rc = ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.artcatalog', 'ciniki_artcatalog_history', 
-		$args['business_id'], 1, 'ciniki_artcatalog', $artcatalog_id, 'uuid', $args['uuid']);
-
-	//
 	// Add all the fields to the change log
 	//
 	$changelog_fields = array(

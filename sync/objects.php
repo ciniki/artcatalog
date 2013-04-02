@@ -58,6 +58,19 @@ function ciniki_artcatalog_sync_objects($ciniki, &$sync, $business_id, $args) {
 			),
 		'history_table'=>'ciniki_artcatalog_history',
 		);
+	$objects['tracking'] = array(
+		'name'=>'Art Catalog Tracking',
+		'table'=>'ciniki_artcatalog_tracking',
+		'fields'=>array(
+			'artcatalog_id'=>array('ref'=>'ciniki.artcatalog.item'),
+			'name'=>array(),
+			'external_number'=>array(),
+			'start_date'=>array(),
+			'end_date'=>array(),
+			'notes'=>array(),
+			),
+		'history_table'=>'ciniki_artcatalog_history',
+		);
 	
 	return array('stat'=>'ok', 'objects'=>$objects);
 }

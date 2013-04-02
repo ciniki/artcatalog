@@ -34,8 +34,9 @@ function ciniki_artcatalog_get($ciniki) {
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No business specified'), 
-        'artcatalog_id'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No artcatalog specified'), 
+        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'artcatalog_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Item'), 
+		'tracking'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Tracking'),
         )); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
@@ -81,15 +82,14 @@ function ciniki_artcatalog_get($ciniki) {
 //		. "(ciniki_artcatalog_customers.price + ciniki_artcatalog_customers.taxes + ciniki_artcatalog_customers.shipping "
 //			. "+ ciniki_artcatalog_customers.return_shipping + ciniki_artcatalog_customers.other_costs) AS customer_sale_total "
 		. "FROM ciniki_artcatalog "
-		. "LEFT JOIN ciniki_artcatalog_tags ON (ciniki_artcatalog.id = ciniki_artcatalog_tags.artcatalog_id AND ciniki_artcatalog_tags.tag_type = 1) "
+		. "LEFT JOIN ciniki_artcatalog_tags ON (ciniki_artcatalog.id = ciniki_artcatalog_tags.artcatalog_id AND ciniki_artcatalog_tags.tag_type = 1) ";
 //		. "LEFT JOIN ciniki_artcatalog_customers ON (ciniki_artcatalog.id = ciniki_artcatalog_customers.artcatalog_id) "
 //		. "LEFT JOIN ciniki_customers ON (ciniki_artcatalog_customers.customer_id = ciniki_customers.id "
 //			. "AND ciniki_customers.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "') "
-		. "WHERE ciniki_artcatalog.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+	$strsql .= "WHERE ciniki_artcatalog.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
 		. "AND ciniki_artcatalog.id = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_id']) . "' "
-		. "ORDER BY ciniki_artcatalog.id, ciniki_artcatalog_tags.tag_name "
+		. "ORDER BY ciniki_artcatalog.id, ciniki_artcatalog_tags.tag_name ";
 //		. "ORDER BY ciniki_artcatalog.id, ciniki_customers.last, ciniki_customers.first "
-		. "";
 
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');
 	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
@@ -99,7 +99,13 @@ function ciniki_artcatalog_get($ciniki) {
 				'media', 'size', 'framed_size', 'forsale', 'sold', 'website', 'price', 'location', 
 				'description', 'inspiration', 'awards', 'notes', 'lists'),
 			'dlists'=>array('lists'=>'::'),
-			'maps'=>array('type_text'=>array('0'=>'Unknown', '1'=>'Painting', '2'=>'Photograph', '3'=>'Jewelry', '4'=>'Sculpture', '5'=>'Craft')),
+			'maps'=>array('type_text'=>array('0'=>'Unknown', 
+				'1'=>'Painting', 
+				'2'=>'Photograph', 
+				'3'=>'Jewelry', 
+				'4'=>'Sculpture', 
+				'5'=>'Craft',
+				)),
 			),
 //		array('container'=>'sales', 'fname'=>'customer_id', 'name'=>'customer',
 //			'fields'=>array('id'=>'customer_id', 'name'=>'customer_name', 'paid', 'trade', 'donation', 'gift', 'price'=>'customer_price', 'total'=>'customer_sale_total')),
@@ -123,6 +129,30 @@ function ciniki_artcatalog_get($ciniki) {
 	$tags = array();
 	if( isset($rc['tags']) ) {
 		$tags = $rc['tags'];
+	}
+
+	//
+	// Get the tracking list if request
+	//
+	if( isset($args['tracking']) && $args['tracking'] == 'yes' ) {
+		$strsql = "SELECT id, name, external_number, "
+			. "IFNULL(DATE_FORMAT(start_date, '" . ciniki_core_dbQuote($ciniki, $date_format) . "'), '') AS start_date, "
+			. "IFNULL(DATE_FORMAT(end_date, '" . ciniki_core_dbQuote($ciniki, $date_format) . "'), '') AS end_date "
+			. "FROM ciniki_artcatalog_tracking "
+			. "WHERE artcatalog_id = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_id']) . "' "
+			. "AND business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+			. "ORDER BY ciniki_artcatalog_tracking.start_date DESC "
+			. "";
+		$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
+			array('container'=>'tracking', 'fname'=>'id', 'name'=>'place',
+				'fields'=>array('id', 'name', 'external_number', 'start_date', 'end_date')),
+			));
+		if( $rc['stat'] != 'ok' ) {	
+			return $rc;
+		}
+		if( isset($rc['tracking']) ) {
+			$item['tracking'] = $rc['tracking'];
+		}
 	}
 
 	return array('stat'=>'ok', 'item'=>$item, 'tags'=>$tags);
