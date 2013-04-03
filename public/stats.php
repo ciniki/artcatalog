@@ -18,7 +18,7 @@
 // 
 // Returns
 // -------
-// <stats>
+// <stats sections="13">
 //		<types>
 //			<section type="painting" name="Paintings" count="21" />
 //		</types>
@@ -43,6 +43,9 @@
 //			<section name="County Fair" count="15" />
 //			<section name="Private Gallery" count="6" />
 //		</lists>
+//		<tracking>
+//			<section name="Private Collection" count="2" />
+//		</tracking>
 // </stats>
 //
 function ciniki_artcatalog_stats($ciniki) {
@@ -72,6 +75,9 @@ function ciniki_artcatalog_stats($ciniki) {
 			$args['type_id'] = 0;
 		}
 	}
+
+	// Keep track of the total number of sections
+	$num_sections = 0;
 
     //  
     // Make sure this module is activated, and
@@ -105,11 +111,8 @@ function ciniki_artcatalog_stats($ciniki) {
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
 	}
-	//$rsp['stats'][0] = array('stat'=>array('name'=>'Categories', 'sections'=>$rc['sections']));
 	if( isset($rc['sections']) ) {
 		$rsp['stats']['types'] = $rc['sections'];
-//	} else {
-//		$rsp['stats']['types'] = array();
 	}
 
 	//
@@ -133,11 +136,9 @@ function ciniki_artcatalog_stats($ciniki) {
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
 	}
-	//$rsp['stats'][0] = array('stat'=>array('name'=>'Categories', 'sections'=>$rc['sections']));
 	if( isset($rc['sections']) ) {
 		$rsp['stats']['categories'] = $rc['sections'];
-//	} else {
-//		$rsp['stats']['categories'] = array();
+		$num_sections += count($rc['sections']);
 	}
 
 	//
@@ -162,9 +163,9 @@ function ciniki_artcatalog_stats($ciniki) {
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
 	}
-	//$rsp['stats'][1] = array('stat'=>array('name'=>'Media', 'sections'=>$rc['sections']));
 	if( isset($rc['sections']) ) {
 		$rsp['stats']['media'] = $rc['sections'];
+		$num_sections += count($rc['sections']);
 	}
 
 	//
@@ -188,9 +189,9 @@ function ciniki_artcatalog_stats($ciniki) {
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
 	}
-	//$rsp['stats'][2] = array('stat'=>array('name'=>'Locations', 'sections'=>$rc['sections']));
 	if( isset($rc['sections']) ) {
 		$rsp['stats']['locations'] = $rc['sections'];
+		$num_sections += count($rc['sections']);
 	}
 
 	//
@@ -217,6 +218,7 @@ function ciniki_artcatalog_stats($ciniki) {
 	//$rsp['stats'][3] = array('stat'=>array('name'=>'Years', 'sections'=>$rc['sections']));
 	if( isset($rc['sections']) ) {
 		$rsp['stats']['years'] = $rc['sections'];
+		$num_sections += count($rc['sections']);
 	}
 
 	//
@@ -244,6 +246,34 @@ function ciniki_artcatalog_stats($ciniki) {
 	}
 	if( isset($rc['sections']) ) {
 		$rsp['stats']['lists'] = $rc['sections'];
+		$num_sections += count($rc['sections']);
+	}
+
+	//
+	// Get the tracking stats
+	//
+	$strsql = "SELECT IF(ciniki_artcatalog_tracking.name='', '', ciniki_artcatalog_tracking.name) AS name, COUNT(*) AS count "
+		. "FROM ciniki_artcatalog, ciniki_artcatalog_tracking "
+		. "WHERE ciniki_artcatalog.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+		. "AND ciniki_artcatalog.id = ciniki_artcatalog_tracking.artcatalog_id "
+		. "";
+	if( isset($args['type_id']) && $args['type_id'] > 0 ) {
+		$strsql .= "AND ciniki_artcatalog.type = '" . ciniki_core_dbQuote($ciniki, $args['type_id']) . "' "
+			. "";
+	}
+	$strsql .= "GROUP BY name "
+		. "ORDER BY name "
+		. "";
+	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
+		array('container'=>'sections', 'fname'=>'name', 'name'=>'section',
+			'fields'=>array('name', 'count')),
+		));
+	if( $rc['stat'] != 'ok' ) {
+		return $rc;
+	}
+	if( isset($rc['sections']) ) {
+		$rsp['stats']['tracking'] = $rc['sections'];
+		$num_sections += count($rc['sections']);
 	}
 
 	//
@@ -261,6 +291,7 @@ function ciniki_artcatalog_stats($ciniki) {
 		return $rc;
 	}
 	$rsp['total'] = $rc['count']['total'];
+	$rsp['sections'] = $num_sections;
 
 
 	return $rsp;

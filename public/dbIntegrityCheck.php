@@ -89,6 +89,16 @@ function ciniki_artcatalog_dbIntegrityCheck(&$ciniki) {
 		}
 
 		//
+		// Update the history for ciniki_artcatalog_tracking
+		//
+		$rc = ciniki_core_dbFixTableHistory($ciniki, 'ciniki.artcatalog', $args['business_id'],
+			'ciniki_artcatalog_tracking', 'ciniki_artcatalog_history', 
+			array('uuid', 'artcatalog_id', 'name', 'external_number', 'start_date', 'end_date', 'notes'));
+		if( $rc['stat'] != 'ok' ) {
+			return $rc;
+		}
+
+		//
 		// Check for items missing a UUID
 		//
 		$strsql = "UPDATE ciniki_artcatalog_history SET uuid = UUID() WHERE uuid = ''";

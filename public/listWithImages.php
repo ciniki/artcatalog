@@ -55,11 +55,11 @@ function ciniki_artcatalog_listWithImages($ciniki) {
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No business specified'), 
-        'section'=>array('required'=>'no', 'blank'=>'no', 'errmsg'=>'No section specified'), 
-		'name'=>array('required'=>'no', 'blank'=>'no', 'errmsg'=>'No section name specified'),
-		'type'=>array('required'=>'no', 'blank'=>'no', 'errmsg'=>'No type specified'),
-        'limit'=>array('required'=>'no', 'blank'=>'no', 'errmsg'=>'No limit specified'), 
+        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'section'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Section'), 
+		'name'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Section Name specified'),
+		'type'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Type'),
+        'limit'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Limit'), 
         )); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
@@ -100,7 +100,9 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuote');
 
 
-	$strsql = "SELECT ciniki_artcatalog.id, image_id, name, type, year, media, catalog_number, size, framed_size, price, flags, location, notes, "
+	$strsql = "SELECT ciniki_artcatalog.id, image_id, ciniki_artcatalog.name, "
+		. "type, year, media, catalog_number, size, framed_size, price, flags, location, "
+		. "ciniki_artcatalog.notes, "
 		. "IF((flags&0x02)=0x02,'yes','no') AS sold, "
 		. "";
 	if( !isset($args['section']) || $args['section'] == 'category' ) {
@@ -113,6 +115,8 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 		$strsql .= "IF(ciniki_artcatalog.year='', '', ciniki_artcatalog.year) AS sname ";
 	} elseif( $args['section'] == 'list' ) {
 		$strsql .= "IF(ciniki_artcatalog_tags.tag_name='', '', ciniki_artcatalog_tags.tag_name) AS sname ";
+	} elseif( $args['section'] == 'tracking' ) {
+		$strsql .= "IF(ciniki_artcatalog_tracking.name='', '', ciniki_artcatalog_tracking.name) AS sname ";
 	}
 
 	if( isset($args['section']) && $args['section'] == 'list' ) {
@@ -120,6 +124,11 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 			. "WHERE ciniki_artcatalog.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
 			. "AND ciniki_artcatalog.id = ciniki_artcatalog_tags.artcatalog_id "
 			. "AND ciniki_artcatalog_tags.tag_type = 1 "
+			. "";
+	} elseif( isset($args['section']) && $args['section'] == 'tracking' ) {
+		$strsql .= "FROM ciniki_artcatalog, ciniki_artcatalog_tracking "
+			. "WHERE ciniki_artcatalog.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+			. "AND ciniki_artcatalog.id = ciniki_artcatalog_tracking.artcatalog_id "
 			. "";
 	} else {
 		$strsql .= "FROM ciniki_artcatalog "
@@ -145,6 +154,8 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 			$strsql .= "AND year = '" . ciniki_core_dbQuote($ciniki, $args['name']) . "' ";
 		} elseif( $args['section'] == 'list' ) {
 			$strsql .= "AND ciniki_artcatalog_tags.tag_name = '" . ciniki_core_dbQuote($ciniki, $args['name']) . "' ";
+		} elseif( $args['section'] == 'tracking' ) {
+			$strsql .= "AND ciniki_artcatalog_tracking.name = '" . ciniki_core_dbQuote($ciniki, $args['name']) . "' ";
 		} 
 	}
 	if( isset($args['type_id']) && $args['type_id'] > 0 ) {
