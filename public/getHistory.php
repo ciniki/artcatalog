@@ -47,6 +47,13 @@ function ciniki_artcatalog_getHistory($ciniki) {
 		return $rc;
 	}
 
+	if( $args['field'] == 'lists' ) {
+		ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbGetModuleHistoryTags');
+		return ciniki_core_dbGetModuleHistoryTags($ciniki, 'ciniki.artcatalog', 
+			'ciniki_artcatalog_history', $args['business_id'], 
+			'ciniki_artcatalog_tags', $args['artcatalog_id'], 'tag_name', 'artcatalog_id', 1);
+	}
+
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbGetModuleHistory');
 	return ciniki_core_dbGetModuleHistory($ciniki, 'ciniki.artcatalog', 'ciniki_artcatalog_history', $args['business_id'], 'ciniki_artcatalog', $args['artcatalog_id'], $args['field']);
 }
