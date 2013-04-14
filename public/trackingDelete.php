@@ -85,7 +85,7 @@ function ciniki_artcatalog_trackingDelete(&$ciniki) {
 	}
 	if( !isset($rc['num_affected_rows']) || $rc['num_affected_rows'] != 1 ) {
 		ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
-		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1012', 'msg'=>'Unable to delete tracking'));
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1027', 'msg'=>'Unable to delete tracking'));
 	}
 
 	$rc = ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.artcatalog', 
