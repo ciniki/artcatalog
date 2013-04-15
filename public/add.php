@@ -147,7 +147,6 @@ function ciniki_artcatalog_add(&$ciniki) {
 	//
 	// Get a new UUID
 	//
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbUUID');
 	$rc = ciniki_core_dbUUID($ciniki, 'ciniki.artcatalog');
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
@@ -270,15 +269,17 @@ function ciniki_artcatalog_add(&$ciniki) {
 	//
 	// Add image reference
 	//
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'refAdd');
-	$rc = ciniki_images_refAdd($ciniki, $args['business_id'], array(
-		'image_id'=>$args['image_id'], 
-		'object'=>'ciniki.artcatalog.item', 
-		'object_id'=>$artcatalog_id,
-		'object_field'=>'image_id'));
-	if( $rc['stat'] != 'ok' ) {
-		ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
-		return $rc;
+	if( $args['image_id'] > 0 ) {
+		ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'refAdd');
+		$rc = ciniki_images_refAdd($ciniki, $args['business_id'], array(
+			'image_id'=>$args['image_id'], 
+			'object'=>'ciniki.artcatalog.item', 
+			'object_id'=>$artcatalog_id,
+			'object_field'=>'image_id'));
+		if( $rc['stat'] != 'ok' ) {
+			ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
+			return $rc;
+		}
 	}
 
 	//
