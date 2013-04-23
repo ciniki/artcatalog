@@ -75,7 +75,7 @@ function ciniki_artcatalog_sync_objects($ciniki, &$sync, $business_id, $args) {
 		'type'=>'settings',
 		'name'=>'Art Catalog Settings',
 		'table'=>'ciniki_artcatalog_settings',
-		'history_table'=>$history_table,
+		'history_table'=>'ciniki_artcatalog_history,
 		);
 	
 	return array('stat'=>'ok', 'objects'=>$objects);
