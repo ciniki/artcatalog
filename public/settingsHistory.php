@@ -32,13 +32,13 @@ function ciniki_artcatalog_settingsHistory($ciniki) {
 	// Check access to business_id as owner, or sys admin
 	//
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'artcatalog', 'private', 'checkAccess');
-	$rc = ciniki_artcatalog_checkAccess($ciniki, $args['business_id'], 'ciniki.artclub.settingsHistory');
+	$rc = ciniki_artcatalog_checkAccess($ciniki, $args['business_id'], 'ciniki.artcatalog.settingsHistory');
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
 	}
 
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbGetModuleHistory');
-	return ciniki_core_dbGetModuleHistory($ciniki, 'ciniki.artcatalog', 'ciniki_artclub_history', 
+	return ciniki_core_dbGetModuleHistory($ciniki, 'ciniki.artcatalog', 'ciniki_artcatalog_history', 
 		$args['business_id'], 'ciniki_artcatalog_settings', $args['setting'], 'detail_value');
 }
 ?>
