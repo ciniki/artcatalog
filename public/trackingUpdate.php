@@ -2,7 +2,7 @@
 //
 // Description
 // ===========
-// This method updates one or more elements of an existing item in the art catalog.
+// This method will update the details for a tracking entry.
 //
 // Arguments
 // ---------
