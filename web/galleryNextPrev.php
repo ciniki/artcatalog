@@ -17,6 +17,7 @@ function ciniki_artcatalog_web_galleryNextPrev($ciniki, $settings, $business_id,
 	$strsql = "SELECT id, name, permalink "
 		. "FROM ciniki_artcatalog "
 		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+		. "AND image_id > 0 "
 		. "AND (webflags&0x01) = 0 ";
 	if( $type == 'category' ) {
 		$strsql .= "AND category = '" . ciniki_core_dbQuote($ciniki, $img['category']) . "' ";
