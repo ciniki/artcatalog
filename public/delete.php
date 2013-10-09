@@ -83,6 +83,86 @@ function ciniki_artcatalog_delete(&$ciniki) {
 	}
 
 	//
+	// Remove any tracking items
+	//
+	$strsql = "SELECT id, uuid FROM ciniki_artcatalog_tracking "
+		. "WHERE artcatalog_id = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_id']) . "' "
+		. "AND business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+		. "";
+	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', 'tracking');
+	if( $rc['stat'] != 'ok' ) {
+		return $rc;
+	}
+	if( isset($rc['rows']) ) {
+		foreach($rc['rows'] as $rid => $row) {
+			$strsql = "DELETE FROM ciniki_artcatalog_tracking "
+				. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+				. "AND artcatalog_id = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_id']) . "' "
+				. "";
+			$rc = ciniki_core_dbDelete($ciniki, $strsql, 'ciniki.artcatalog');
+			if( $rc['stat'] != 'ok' ) {
+				ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
+				return $rc;
+			}
+			if( !isset($rc['num_affected_rows']) || $rc['num_affected_rows'] != 1 ) {
+				ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
+				return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1351', 'msg'=>'Unable to delete tracking'));
+			}
+
+			$rc = ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.artcatalog', 
+				'ciniki_artcatalog_history', $args['business_id'], 
+				3, 'ciniki_artcatalog_tracking', $row['id'], '*', '');
+			$ciniki['syncqueue'][] = array('push'=>'ciniki.artcatalog.tracking',
+				'args'=>array('delete_uuid'=>$row['uuid'], 'delete_id'=>$row['id']));
+		}
+	}
+
+
+	//
+	// Remove any additional images
+	//
+	$strsql = "SELECT id, uuid, image_id FROM ciniki_artcatalog_images "
+		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+		. "AND artcatalog_id = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_id']) . "' "
+		. "";
+	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', 'image');
+	if( $rc['stat'] != 'ok' ) {
+		return $rc;
+	}
+	if( isset($rc['rows']) ) {
+		ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'refClear');
+		foreach($rc['rows'] as $rid => $row) {
+			//
+			// Delete the reference to the image, and remove the image if no more references
+			//
+			$rc = ciniki_images_refClear($ciniki, $args['business_id'], array(
+				'object'=>'ciniki.artcatalog.image',
+				'object_id'=>$row['id']));
+			if( $rc['stat'] == 'fail' ) {
+				ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
+				return $rc;
+			}
+
+			//
+			// Remove the image from the database
+			//
+			$strsql = "DELETE FROM ciniki_artcatalog_images "
+				. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+				. "AND id = '" . ciniki_core_dbQuote($ciniki, $row['id']) . "' ";
+			$rc = ciniki_core_dbDelete($ciniki, $strsql, 'ciniki.artcatalog');
+			if( $rc['stat'] != 'ok' ) { 
+				ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
+				return $rc;
+			}
+
+			ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.artcatalog', 'ciniki_artcatalog_history', 
+				$args['business_id'], 1, 'ciniki_artcatalog_images', $row['id'], '*', '');
+			$ciniki['syncqueue'][] = array('push'=>'ciniki.artcatalog.image',
+				'args'=>array('delete_uuid'=>$row['uuid'], 'delete_id'=>$row['id']));
+		}
+	}
+
+	//
 	// Start building the delete SQL
 	//
 	$strsql = "DELETE FROM ciniki_artcatalog "
