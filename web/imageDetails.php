@@ -11,47 +11,87 @@
 //
 function ciniki_artcatalog_web_imageDetails($ciniki, $settings, $business_id, $permalink) {
 
-	$strsql = "SELECT ciniki_artcatalog.id, name, permalink, image_id, type, "
-		. "catalog_number, category, year, flags, webflags, "
+	$strsql = "SELECT ciniki_artcatalog.id, "
+		. "ciniki_artcatalog.name, "
+		. "ciniki_artcatalog.permalink, "
+		. "ciniki_artcatalog.image_id, "
+		. "ciniki_artcatalog.type, "
+		. "ciniki_artcatalog.catalog_number, "
+		. "ciniki_artcatalog.category, "
+		. "ciniki_artcatalog.year, "
+		. "ciniki_artcatalog.flags, "
+		. "ciniki_artcatalog.webflags, "
 		. "IF((ciniki_artcatalog.flags&0x01)=1, 'yes', 'no') AS forsale, "
 		. "IF((ciniki_artcatalog.flags&0x02)=2, 'yes', 'no') AS sold, "
 		. "IF((ciniki_artcatalog.webflags&0x01)=1, 'yes', 'no') AS hidden, "
-		. "media, size, framed_size, price, location, description, awards, notes, "
-		. "date_added, last_updated "
+		. "ciniki_artcatalog.media, "
+		. "ciniki_artcatalog.size, "
+		. "ciniki_artcatalog.framed_size, "
+		. "ciniki_artcatalog.price, "
+		. "ciniki_artcatalog.location, "
+		. "ciniki_artcatalog.description, "
+		. "ciniki_artcatalog.awards, "
+		. "ciniki_artcatalog.notes, "
+		. "ciniki_artcatalog.date_added, ciniki_artcatalog.last_updated, "
+		. "ciniki_artcatalog_images.id AS additional_id, "
+		. "ciniki_artcatalog_images.image_id AS additional_image_id, "
+		. "ciniki_artcatalog_images.permalink AS additional_permalink, "
+		. "ciniki_artcatalog_images.name AS additional_name, "
+		. "ciniki_artcatalog_images.description AS additional_description, "
+		. "ciniki_artcatalog_images.last_updated AS additional_last_updated "
 		. "FROM ciniki_artcatalog "
-		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
-		. "AND permalink = '" . ciniki_core_dbQuote($ciniki, $permalink) . "' "
+		. "LEFT JOIN ciniki_artcatalog_images ON (ciniki_artcatalog.id = ciniki_artcatalog_images.artcatalog_id "
+			. "AND ciniki_artcatalog_images.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+			. "AND (ciniki_artcatalog_images.webflags&0x01) = 0 ) "
+		. "WHERE ciniki_artcatalog.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+		. "AND ciniki_artcatalog.permalink = '" . ciniki_core_dbQuote($ciniki, $permalink) . "' "
+		. "ORDER BY ciniki_artcatalog.id, ciniki_artcatalog_images.sequence, ciniki_artcatalog_images.date_added "
 		. "";
-	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', 'piece');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryIDTree');
+	$rc = ciniki_core_dbHashQueryIDTree($ciniki, $strsql, 'ciniki.artcatalog', array(
+		array('container'=>'items', 'fname'=>'id', 
+			'fields'=>array('id', 'title'=>'name', 'permalink', 'image_id', 'type', 'catalog_number', 
+				'category', 'year', 'flags', 'webflags', 'forsale', 'sold', 'hidden', 
+				'media', 'size', 'framed_size', 'price',
+				'location', 'description', 'awards', 'notes', 'date_added', 'last_updated')),
+		array('container'=>'additionalimages', 'fname'=>'additional_id', 
+			'fields'=>array('id'=>'additional_id', 'image_id'=>'additional_image_id',
+				'permalink'=>'additional_permalink',
+				'title'=>'additional_name', 'description'=>'additional_description',
+				'last_updated'=>'additional_last_updated')),
+		));
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
 	}
-	if( !isset($rc['piece']) ) {
+	if( !isset($rc['items']) || count($rc['items']) < 1 ) {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'651', 'msg'=>'Unable to find artwork'));
 	}
-	$image = array('id'=>$rc['piece']['id'],
-		'title'=>$rc['piece']['name'],
-		'category'=>$rc['piece']['category'],
-		'image_id'=>$rc['piece']['image_id'],
-		'details'=>'',
-		'description'=>$rc['piece']['description'],
-		'awards'=>$rc['piece']['awards'],
-		'date_added'=>$rc['piece']['date_added'],
-		'last_updated'=>$rc['piece']['last_updated']);
+	$image = array_pop($rc['items']);
+//	$image = $rc['items'][0]['item'];
+//	$image = array('id'=>$rc['piece']['id'],
+//		'title'=>$rc['piece']['name'],
+//		'category'=>$rc['piece']['category'],
+//		'image_id'=>$rc['piece']['image_id'],
+//		'details'=>'',
+//		'description'=>$rc['piece']['description'],
+//		'awards'=>$rc['piece']['awards'],
+//		'date_added'=>$rc['piece']['date_added'],
+//		'last_updated'=>$rc['piece']['last_updated']);
+	$image['details'] = '';
 	$comma = '';
-	if( $rc['piece']['size'] != '' ) {
-		$image['details'] .= $rc['piece']['size'];
+	if( $image['size'] != '' ) {
+		$image['details'] .= $image['size'];
 		$comma = ', ';
 	}
-	if( $rc['piece']['framed_size'] != '' ) {
-		$image['details'] .= ' (framed: ' . $rc['piece']['framed_size'] . ')';
+	if( $image['framed_size'] != '' ) {
+		$image['details'] .= ' (framed: ' . $image['framed_size'] . ')';
 		$comma = ', ';
 	}
-	if( $rc['piece']['price'] != '' && $rc['piece']['forsale'] == 'yes' ) {
-		$image['details'] .= $comma . preg_replace('/^\s*([^$])/', '\$$1', $rc['piece']['price']);
+	if( $image['price'] != '' && $image['forsale'] == 'yes' ) {
+		$image['details'] .= $comma . preg_replace('/^\s*([^$])/', '\$$1', $image['price']);
 		$comma = ', ';
 	}
-	if( isset($rc['piece']['sold']) && $rc['piece']['sold'] == 'yes' ) {
+	if( isset($image['sold']) && $image['sold'] == 'yes' ) {
 		$image['details'] .= " <b> SOLD</b>";
 		$comma = ', ';
 	}
