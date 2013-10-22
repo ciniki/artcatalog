@@ -54,8 +54,8 @@ function ciniki_artcatalog_stats($ciniki) {
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'errmsg'=>'No business specified'), 
-        'type'=>array('required'=>'no', 'blank'=>'no', 'errmsg'=>'No type specified'), 
+        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'type'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Type'), 
         )); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
