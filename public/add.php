@@ -92,23 +92,23 @@ function ciniki_artcatalog_add(&$ciniki) {
         'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
 		'type'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Type'),
         'flags'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'0', 'name'=>'Flags'), 
-        'webflags'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Web Flags'), 
+        'webflags'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'0', 'name'=>'Web Flags'), 
 		'image_id'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'0', 'name'=>'Image'),
         'name'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Name'), 
         'catalog_number'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Catalog Number'), 
-        'category'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Category'), 
-        'year'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Year'), 
-        'month'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Month'), 
-        'day'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Day'), 
+        'category'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Category'), 
+        'year'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Year'), 
+        'month'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Month'), 
+        'day'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Day'), 
         'media'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Media'), 
         'size'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Size'), 
         'framed_size'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Framed Size'), 
-        'price'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Price'), 
-        'location'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Location'), 
-        'description'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Description'), 
-        'inspiration'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Inspiration'), 
-        'awards'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Awards'), 
-        'notes'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Notes'), 
+        'price'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Price'), 
+        'location'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Location'), 
+        'description'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Description'), 
+        'inspiration'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Inspiration'), 
+        'awards'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Awards'), 
+        'notes'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Notes'), 
 		'lists'=>array('required'=>'no', 'blank'=>'yes', 'type'=>'list', 'delimiter'=>'::', 'name'=>'Lists'),
         )); 
     if( $rc['stat'] != 'ok' ) { 
@@ -117,6 +117,7 @@ function ciniki_artcatalog_add(&$ciniki) {
     $args = $rc['args'];
 
 	$args['permalink'] = preg_replace('/ /', '-', preg_replace('/[^a-z0-9 ]/', '', strtolower($args['name'])));
+	$args['user_id'] = $ciniki['session']['user']['id'];
     
     //  
     // Make sure this module is activated, and
@@ -128,25 +129,10 @@ function ciniki_artcatalog_add(&$ciniki) {
         return $rc;
     }   
 
-	//  
-	// Turn off autocommit
-	//  
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbTransactionStart');
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbTransactionRollback');
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbTransactionCommit');
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbUUID');
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuote');
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbInsert');
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbAddModuleHistory');
-	$rc = ciniki_core_dbTransactionStart($ciniki, 'ciniki.artcatalog');
-	if( $rc['stat'] != 'ok' ) { 
-		return $rc;
-	}   
-
 	//
 	// Get a new UUID
 	//
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbUUID');
 	$rc = ciniki_core_dbUUID($ciniki, 'ciniki.artcatalog');
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
@@ -160,6 +146,7 @@ function ciniki_artcatalog_add(&$ciniki) {
 		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
 		. "AND permalink = '" . ciniki_core_dbQuote($ciniki, $args['permalink']) . "' "
 		. "";
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
 	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', 'item');
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
@@ -168,54 +155,27 @@ function ciniki_artcatalog_add(&$ciniki) {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'649', 'msg'=>'You already have artwork with this name, please choose another name'));
 	}
 
-	//
-	// Add the artcatalog to the database
-	//
-	$strsql = "INSERT INTO ciniki_artcatalog (uuid, business_id, name, permalink, type, flags, image_id, catalog_number, category, year, month, day, "
-		. "media, size, framed_size, price, location, description, inspiration, awards, notes, user_id, "
-		. "date_added, last_updated) VALUES ("
-		. "'" . ciniki_core_dbQuote($ciniki, $args['uuid']) . "', "
-		. "'" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "', "
-		. "'" . ciniki_core_dbQuote($ciniki, $args['name']) . "', "
-		. "'" . ciniki_core_dbQuote($ciniki, $args['permalink']) . "', "
-		. "'" . ciniki_core_dbQuote($ciniki, $args['type']) . "', "
-		. "'" . ciniki_core_dbQuote($ciniki, $args['flags']) . "', "
-		. "'" . ciniki_core_dbQuote($ciniki, $args['image_id']) . "', "
-		. "'" . ciniki_core_dbQuote($ciniki, $args['catalog_number']) . "', "
-		. "'" . ciniki_core_dbQuote($ciniki, $args['category']) . "', "
-		. "'" . ciniki_core_dbQuote($ciniki, $args['year']) . "', "
-		. "'" . ciniki_core_dbQuote($ciniki, $args['month']) . "', "
-		. "'" . ciniki_core_dbQuote($ciniki, $args['day']) . "', "
-		. "'" . ciniki_core_dbQuote($ciniki, $args['media']) . "', "
-		. "'" . ciniki_core_dbQuote($ciniki, $args['size']) . "', "
-		. "'" . ciniki_core_dbQuote($ciniki, $args['framed_size']) . "', "
-		. "'" . ciniki_core_dbQuote($ciniki, $args['price']) . "', "
-		. "'" . ciniki_core_dbQuote($ciniki, $args['location']) . "', "
-		. "'" . ciniki_core_dbQuote($ciniki, $args['description']) . "', "
-		. "'" . ciniki_core_dbQuote($ciniki, $args['inspiration']) . "', "
-		. "'" . ciniki_core_dbQuote($ciniki, $args['awards']) . "', "
-		. "'" . ciniki_core_dbQuote($ciniki, $args['notes']) . "', "
-		. "'" . ciniki_core_dbQuote($ciniki, $ciniki['session']['user']['id']) . "', "
-		. "UTC_TIMESTAMP(), UTC_TIMESTAMP())"
-		. "";
-	$rc = ciniki_core_dbInsert($ciniki, $strsql, 'ciniki.artcatalog');
+	//  
+	// Turn off autocommit
+	//  
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbTransactionStart');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbTransactionRollback');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbTransactionCommit');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuote');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbInsert');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbAddModuleHistory');
+	$rc = ciniki_core_dbTransactionStart($ciniki, 'ciniki.artcatalog');
 	if( $rc['stat'] != 'ok' ) { 
+		return $rc;
+	}   
+
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'objectAdd');
+	$rc = ciniki_core_objectAdd($ciniki, $args['business_id'], 'ciniki.artcatalog.item', $args, 0x04);
+	if( $rc['stat'] != 'ok' ) {
 		ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
 		return $rc;
 	}
-	if( !isset($rc['insert_id']) || $rc['insert_id'] < 1 ) {
-		ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
-		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'592', 'msg'=>'Unable to add item'));
-	}
-	$artcatalog_id = $rc['insert_id'];
-
-	//
-	// Add to the sync queue so it will get pushed.  This should be added
-	// before the tags so it will be pushed ahead of tags and won't cause
-	// extra sync calls.
-	//
-	$ciniki['syncqueue'][] = array('push'=>'ciniki.artcatalog.item', 
-		'args'=>array('id'=>$artcatalog_id));
+	$artcatalog_id = $rc['id'];
 
 	//
 	// Check if there are any change to the lists the item is a part of
@@ -229,56 +189,6 @@ function ciniki_artcatalog_add(&$ciniki) {
 			array_pop($ciniki['syncqueue']);
 			ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
 			return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'602', 'msg'=>'Unable to update lists', 'err'=>$rc['err']));
-		}
-	}
-
-	//
-	// Add all the fields to the change log
-	//
-	$changelog_fields = array(
-		'uuid',
-		'name',
-		'permalink',
-		'type',
-		'flags',
-		'image_id',
-		'catalog_number',
-		'category',
-		'year',
-		'month',
-		'day',
-		'media',
-		'size',
-		'framed_size',
-		'price',
-		'location',
-		'description',
-		'inspiration',
-		'awards',
-		'notes',
-		);
-	foreach($changelog_fields as $field) {
-		$insert_name = $field;
-		if( isset($args[$field]) && $args[$field] != '' ) {
-			$rc = ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.artcatalog', 
-				'ciniki_artcatalog_history', $args['business_id'], 1, 'ciniki_artcatalog', 
-				$artcatalog_id, $insert_name, $args[$field]);
-		}
-	}
-
-	//
-	// Add image reference
-	//
-	if( $args['image_id'] > 0 ) {
-		ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'refAdd');
-		$rc = ciniki_images_refAdd($ciniki, $args['business_id'], array(
-			'image_id'=>$args['image_id'], 
-			'object'=>'ciniki.artcatalog.item', 
-			'object_id'=>$artcatalog_id,
-			'object_field'=>'image_id'));
-		if( $rc['stat'] != 'ok' ) {
-			ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
-			return $rc;
 		}
 	}
 

@@ -40,6 +40,22 @@ function ciniki_artcatalog_delete(&$ciniki) {
         return $rc;
     }   
 
+	//
+	// Get the uuid of the artcatalog item to be deleted
+	//
+	$strsql = "SELECT uuid FROM ciniki_artcatalog "
+		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+		. "AND id = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_id']) . "' "
+		. "";
+	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', 'artcatalog');
+	if( $rc['stat'] != 'ok' ) {
+		return $rc;
+	}
+	if( !isset($rc['artcatalog']) ) {
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'107', 'msg'=>'Unable to find existing item'));
+	}
+	$uuid = $rc['artcatalog']['uuid'];
+
 	//  
 	// Turn off autocommit
 	// 
@@ -53,23 +69,6 @@ function ciniki_artcatalog_delete(&$ciniki) {
 	if( $rc['stat'] != 'ok' ) { 
 		return $rc;
 	}   
-
-	//
-	// Get the uuid of the artcatalog item to be deleted
-	//
-	$strsql = "SELECT uuid, image_id FROM ciniki_artcatalog "
-		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
-		. "AND id = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_id']) . "' "
-		. "";
-	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', 'artcatalog');
-	if( $rc['stat'] != 'ok' ) {
-		return $rc;
-	}
-	if( !isset($rc['artcatalog']) ) {
-		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'107', 'msg'=>'Unable to find existing item'));
-	}
-	$uuid = $rc['artcatalog']['uuid'];
-	$image_id = $rc['artcatalog']['image_id'];
 
 	//
 	// Remove any tags for the artcatalog item
@@ -91,32 +90,20 @@ function ciniki_artcatalog_delete(&$ciniki) {
 		. "";
 	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', 'tracking');
 	if( $rc['stat'] != 'ok' ) {
+		ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
 		return $rc;
 	}
 	if( isset($rc['rows']) ) {
-		foreach($rc['rows'] as $rid => $row) {
-			$strsql = "DELETE FROM ciniki_artcatalog_tracking "
-				. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
-				. "AND artcatalog_id = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_id']) . "' "
-				. "";
-			$rc = ciniki_core_dbDelete($ciniki, $strsql, 'ciniki.artcatalog');
+		$items = $rc['rows'];
+		foreach($items as $rid => $row) {
+			$rc = ciniki_core_objectDelete($ciniki, $args['business_id'], 'ciniki.artcatalog.place',
+				$row['id'], $row['uuid'], 0x04);
 			if( $rc['stat'] != 'ok' ) {
 				ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
 				return $rc;
 			}
-			if( !isset($rc['num_affected_rows']) || $rc['num_affected_rows'] != 1 ) {
-				ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
-				return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1351', 'msg'=>'Unable to delete tracking'));
-			}
-
-			$rc = ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.artcatalog', 
-				'ciniki_artcatalog_history', $args['business_id'], 
-				3, 'ciniki_artcatalog_tracking', $row['id'], '*', '');
-			$ciniki['syncqueue'][] = array('push'=>'ciniki.artcatalog.tracking',
-				'args'=>array('delete_uuid'=>$row['uuid'], 'delete_id'=>$row['id']));
 		}
 	}
-
 
 	//
 	// Remove any additional images
@@ -127,70 +114,27 @@ function ciniki_artcatalog_delete(&$ciniki) {
 		. "";
 	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', 'image');
 	if( $rc['stat'] != 'ok' ) {
+		ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
 		return $rc;
 	}
 	if( isset($rc['rows']) ) {
-		ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'refClear');
-		foreach($rc['rows'] as $rid => $row) {
-			//
-			// Delete the reference to the image, and remove the image if no more references
-			//
-			$rc = ciniki_images_refClear($ciniki, $args['business_id'], array(
-				'object'=>'ciniki.artcatalog.image',
-				'object_id'=>$row['id']));
-			if( $rc['stat'] == 'fail' ) {
+		$images = $rc['rows'];
+		foreach($images as $rid => $row) {
+			$rc = ciniki_core_objectDelete($ciniki, $args['business_id'], 'ciniki.artcatalog.image',
+				$row['id'], $row['uuid'], 0x04);
+			if( $rc['stat'] != 'ok' ) {
 				ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
 				return $rc;
 			}
-
-			//
-			// Remove the image from the database
-			//
-			$strsql = "DELETE FROM ciniki_artcatalog_images "
-				. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
-				. "AND id = '" . ciniki_core_dbQuote($ciniki, $row['id']) . "' ";
-			$rc = ciniki_core_dbDelete($ciniki, $strsql, 'ciniki.artcatalog');
-			if( $rc['stat'] != 'ok' ) { 
-				ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
-				return $rc;
-			}
-
-			ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.artcatalog', 'ciniki_artcatalog_history', 
-				$args['business_id'], 1, 'ciniki_artcatalog_images', $row['id'], '*', '');
-			$ciniki['syncqueue'][] = array('push'=>'ciniki.artcatalog.image',
-				'args'=>array('delete_uuid'=>$row['uuid'], 'delete_id'=>$row['id']));
 		}
 	}
 
 	//
-	// Start building the delete SQL
+	// Remove the artcatalog item
 	//
-	$strsql = "DELETE FROM ciniki_artcatalog "
-		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
-		. "AND id = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_id']) . "' "
-		. "";
-
-	$rc = ciniki_core_dbDelete($ciniki, $strsql, 'ciniki.artcatalog');
+	$rc = ciniki_core_objectDelete($ciniki, $args['business_id'], 'ciniki.artcatalog.item',
+		$args['artcatalog_id'], $uuid, 0x04);
 	if( $rc['stat'] != 'ok' ) {
-		ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
-		return $rc;
-	}
-	if( !isset($rc['num_affected_rows']) || $rc['num_affected_rows'] != 1 ) {
-		ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
-		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'607', 'msg'=>'Unable to delete art'));
-	}
-
-	$rc = ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.artcatalog', 'ciniki_artcatalog_history', 
-		$args['business_id'], 3, 'ciniki_artcatalog', $args['artcatalog_id'], '*', '');
-
-	//
-	// Remove the reference, and remove image if no more references
-	//
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'refClear');
-	$rc = ciniki_images_refClear($ciniki, $args['business_id'], array(
-		'object'=>'ciniki.artcatalog.item', 
-		'object_id'=>$args['artcatalog_id']));
-	if( $rc['stat'] == 'fail' ) {
 		ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
 		return $rc;
 	}
