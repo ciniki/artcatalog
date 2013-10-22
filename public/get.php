@@ -161,11 +161,16 @@ function ciniki_artcatalog_get($ciniki) {
 	//
 	if( isset($args['images']) && $args['images'] == 'yes' ) {
 		ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'loadCacheThumbnail');
-		$strsql = "SELECT id, image_id, name, sequence, webflags, description "
+		$strsql = "SELECT ciniki_artcatalog_images.id, "
+			. "ciniki_artcatalog_images.image_id, "
+			. "ciniki_artcatalog_images.name, "
+			. "ciniki_artcatalog_images.sequence, "
+			. "ciniki_artcatalog_images.webflags, "
+			. "ciniki_artcatalog_images.description "
 			. "FROM ciniki_artcatalog_images "
-			. "WHERE artcatalog_id = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_id']) . "' "
-			. "AND business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
-			. "ORDER BY sequence, date_added, name "
+			. "WHERE ciniki_artcatalog_images.artcatalog_id = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_id']) . "' "
+			. "AND ciniki_artcatalog_images.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+			. "ORDER BY ciniki_artcatalog_images.sequence, ciniki_artcatalog_images.date_added, ciniki_artcatalog_images.name "
 			. "";
 		$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
 			array('container'=>'images', 'fname'=>'id', 'name'=>'image',

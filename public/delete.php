@@ -64,6 +64,7 @@ function ciniki_artcatalog_delete(&$ciniki) {
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbTransactionCommit');
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuote');
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbDelete');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'objectDelete');
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbAddModuleHistory');
 	$rc = ciniki_core_dbTransactionStart($ciniki, 'ciniki.artcatalog');
 	if( $rc['stat'] != 'ok' ) { 
@@ -133,7 +134,7 @@ function ciniki_artcatalog_delete(&$ciniki) {
 	// Remove the artcatalog item
 	//
 	$rc = ciniki_core_objectDelete($ciniki, $args['business_id'], 'ciniki.artcatalog.item',
-		$args['artcatalog_id'], $uuid, 0x04);
+		$args['artcatalog_id'], $uuid, 0x06);
 	if( $rc['stat'] != 'ok' ) {
 		ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
 		return $rc;
@@ -146,16 +147,6 @@ function ciniki_artcatalog_delete(&$ciniki) {
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
 	}
-
-	//
-	// Update the last_change date in the business modules
-	// Ignore the result, as we don't want to stop user updates if this fails.
-	//
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'updateModuleChangeDate');
-	ciniki_businesses_updateModuleChangeDate($ciniki, $args['business_id'], 'ciniki', 'artcatalog');
-
-	$ciniki['syncqueue'][] = array('push'=>'ciniki.artcatalog.item', 
-		'args'=>array('delete_uuid'=>$uuid, 'delete_id'=>$args['artcatalog_id']));
 
 	return array('stat'=>'ok');
 }
