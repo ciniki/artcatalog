@@ -78,7 +78,7 @@ function ciniki_artcatalog_imageAdd(&$ciniki) {
 	}
 
 	if( $args['artcatalog_id'] <= 0 ) {
-		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'99', 'msg'=>'No artcatalog specified'));
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1371', 'msg'=>'No artcatalog specified'));
 	}
 
 	//
