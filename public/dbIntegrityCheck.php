@@ -38,32 +38,27 @@ function ciniki_artcatalog_dbIntegrityCheck(&$ciniki) {
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbUpdate');
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbDelete');
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbFixTableHistory');
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'refAddMissing');
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'refDeleteMissing');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'objectRefFix');
 
 	if( $args['fix'] == 'yes' ) {
 		//
-		// Add missing image refs
+		// Load objects file
 		//
-		$rc = ciniki_images_refAddMissing($ciniki, 'ciniki.artcatalog', $args['business_id'],
-			array('object'=>'ciniki.artcatalog.item', 
-				'object_table'=>'ciniki_artcatalog',
-				'object_id_field'=>'id',
-				'object_field'=>'image_id'));
+		ciniki_core_loadMethod($ciniki, 'ciniki', 'artcatalog', 'private', 'objects');
+		$rc = ciniki_artcatalog_objects($ciniki);
 		if( $rc['stat'] != 'ok' ) {
 			return $rc;
 		}
+		$objects = $rc['objects'];
 
 		//
-		// Remove references which have been left hanging, reference doesn't exist
+		// Check any references for the objects
 		//
-		$rc = ciniki_images_refDeleteMissing($ciniki, 'ciniki.artcatalog', $args['business_id'],
-			array('object'=>'ciniki.artcatalog.item', 
-				'object_table'=>'ciniki_artcatalog',
-				'object_id_field'=>'id',
-				'object_field'=>'image_id'));
-		if( $rc['stat'] != 'ok' ) {
-			return $rc;
+		foreach($objects as $o => $obj) {
+			$rc = ciniki_core_objectRefFix($ciniki, $args['business_id'], 'ciniki.artcatalog.'.$o, 0x04);
+			if( $rc['stat'] != 'ok' ) {
+				return $rc;
+			}
 		}
 
 		//
