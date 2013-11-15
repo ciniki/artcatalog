@@ -38,6 +38,7 @@ function ciniki_artcatalog_get($ciniki) {
         'artcatalog_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Item'), 
 		'tracking'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Tracking'),
 		'images'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Images'),
+		'invoices'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Invoices'),
         )); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
@@ -52,7 +53,8 @@ function ciniki_artcatalog_get($ciniki) {
     $rc = ciniki_artcatalog_checkAccess($ciniki, $args['business_id'], 'ciniki.artcatalog.get'); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
-    }   
+    }
+	$modules = $rc['modules'];
 
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'users', 'private', 'timezoneOffset');
 	$utc_offset = ciniki_users_timezoneOffset($ciniki);
@@ -190,6 +192,20 @@ function ciniki_artcatalog_get($ciniki) {
 					$item['images'][$inum]['image']['image_data'] = 'data:image/jpg;base64,' . base64_encode($rc['image']);
 				}
 			}
+		}
+	}
+
+	//
+	// Get any invoices for this piece of art
+	//
+	if( isset($args['invoices']) && $args['invoices'] == 'yes' && isset($modules['ciniki.sapos']) ) {
+		ciniki_core_loadMethod($ciniki, 'ciniki', 'sapos', 'private', 'objectInvoices');
+		$rc = ciniki_sapos_objectInvoices($ciniki, $args['business_id'], 'ciniki.artcatalog.item', $args['artcatalog_id']);
+		if( $rc['stat'] != 'ok' ) {
+			return $rc;
+		}
+		if( isset($rc['invoices']) ) {
+			$item['invoices'] = $rc['invoices'];
 		}
 	}
 
