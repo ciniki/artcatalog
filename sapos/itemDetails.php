@@ -47,7 +47,7 @@ function ciniki_artcatalog_sapos_itemDetails($ciniki, $business_id, $object_id) 
 		'description'=>$item['name'],
 		'quantity'=>1,
 		'unit_amount'=>0,
-		'taxes'=>0xffff,		// Apply all taxes
+		'taxtypes'=>0xffff,		// Apply all taxes
 		'notes'=>'',
 		);
 
