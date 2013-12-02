@@ -70,6 +70,7 @@ function ciniki_artcatalog_settingsUpdate(&$ciniki) {
 		'enable-lists',
 		'enable-tracking',
 		'enable-inspiration',
+		'taxes-default-taxtype',
 		);
 	//
 	// Check each valid setting and see if a new value was passed in the arguments for it.

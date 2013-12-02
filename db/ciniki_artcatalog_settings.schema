@@ -8,6 +8,9 @@
 # enable-tracking				- Should the tracking/Exhibited feature be displayed
 # enable-inspiration			- Should the inspiration field be displayed
 #
+# Taxes:
+# taxes-default-taxtype		- The default tax type ID for art catalog items.
+#
 # Fields
 # ------
 # business_id:	The id of the business the detail is for.

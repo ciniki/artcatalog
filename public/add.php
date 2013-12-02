@@ -130,6 +130,10 @@ function ciniki_artcatalog_add(&$ciniki) {
     }   
 
 	//
+	// FIXME: Add check for price format
+	//
+
+	//
 	// Get a new UUID
 	//
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbUUID');

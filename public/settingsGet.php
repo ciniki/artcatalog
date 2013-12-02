@@ -34,7 +34,8 @@ function ciniki_artcatalog_settingsGet($ciniki) {
     $rc = ciniki_artcatalog_checkAccess($ciniki, $args['business_id'], 'ciniki.artcatalog.settingsGet'); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
-    }   
+    }
+	$modules = $rc['modules'];
 	
 	//
 	// Grab the settings for the business from the database
@@ -49,6 +50,18 @@ function ciniki_artcatalog_settingsGet($ciniki) {
 		return array('stat'=>'ok', 'settings'=>array());
 	}
 	$settings = $rc['settings'];
+
+	//
+	// If ciniki.taxes module is enabled, load the list of tax types
+	//
+	if( isset($modules['ciniki.taxes']) ) {
+		ciniki_core_loadMethod($ciniki, 'ciniki', 'taxes', 'private', 'taxTypes');
+		$rc = ciniki_taxes_taxTypes($ciniki, $args['business_id']);
+		if( $rc['stat'] != 'ok' ) {
+			return $rc;
+		}
+		return array('stat'=>'ok', 'settings'=>$settings, 'taxtypes'=>$rc['types']);
+	}
 
 	return array('stat'=>'ok', 'settings'=>$settings);
 }

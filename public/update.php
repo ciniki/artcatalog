@@ -145,6 +145,10 @@ function ciniki_artcatalog_update(&$ciniki) {
 		}
 	}
 
+	//
+	// FIXME: Add check for price format
+	//
+
 	//  
 	// Turn off autocommit
 	//  

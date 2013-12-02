@@ -19,6 +19,29 @@ function ciniki_artcatalog_sapos_itemDetails($ciniki, $business_id, $object_id) 
 	}
 
 	//
+	// Query for the taxes for artcatalog
+	//
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbDetailsQueryDash');
+	$rc = ciniki_core_dbDetailsQueryDash($ciniki, 'ciniki_artcatalog_settings', 'business_id', $business_id,
+		'ciniki.artcatalog', 'taxes', 'taxes');
+	if( $rc['stat'] != 'ok' ) {
+		return $rc;
+	}
+	if( isset($rc['taxes']) ) {
+		$tax_settings = $rc['taxes'];
+	} else {
+		$tax_settings = array();
+	}
+
+	//
+	// Set the default taxtype for the item
+	//
+	$taxtype_id = 0;
+	if( isset($tax_settings['taxes-default-taxtype']) ) {
+		$taxtype_id = $tax_settings['taxes-default-taxtype'];
+	}
+
+	//
 	// Prepare the query
 	//
 	$strsql = "SELECT ciniki_artcatalog.name, "
@@ -47,7 +70,9 @@ function ciniki_artcatalog_sapos_itemDetails($ciniki, $business_id, $object_id) 
 		'description'=>$item['name'],
 		'quantity'=>1,
 		'unit_amount'=>0,
-		'taxtypes'=>0xffff,		// Apply all taxes
+		'unit_discount_amount'=>0,
+		'unit_discount_percentage'=>0,
+		'taxtype_id'=>$taxtype_id, 
 		'notes'=>'',
 		);
 
