@@ -75,8 +75,12 @@ function ciniki_artcatalog_searchField($ciniki) {
 	// Get the number of faqs in each status for the business, 
 	// if no rows found, then return empty array
 	//
-	$strsql = "SELECT DISTINCT " . $args['field'] . " AS name "
-		. "FROM ciniki_artcatalog "
+	if( $args['field'] == 'price' ) {
+		$strsql = "SELECT DISTINCT ROUND(price, 2) AS name ";
+	} else {
+		$strsql = "SELECT DISTINCT " . $args['field'] . " AS name ";
+	}
+	$strsql .= "FROM ciniki_artcatalog "
 		. "WHERE ciniki_artcatalog.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
 		. "AND (" . $args['field']  . " LIKE '" . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
 			. "AND " . $args['field'] . " <> '' "

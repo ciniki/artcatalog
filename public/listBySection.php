@@ -64,7 +64,8 @@ function ciniki_artcatalog_listBySection($ciniki) {
 
 
 	if( !isset($args['section']) || $args['section'] == 'category' ) {
-		$strsql = "SELECT ciniki_artcatalog.id, image_id, name, media, catalog_number, size, framed_size, price, flags, location, notes, "
+		$strsql = "SELECT ciniki_artcatalog.id, image_id, name, media, catalog_number, size, framed_size, "
+			. "ROUND(price, 2) AS price, flags, location, notes, "
 			. "IF(ciniki_artcatalog.category='', '', ciniki_artcatalog.category) AS sname "
 //		. "IF((ciniki_artcatalog.flags&0x01)=1, 'yes', 'no') AS forsale, "
 //		. "IF((ciniki_artcatalog.flags&0x02)=2, 'yes', 'no') AS sold, "
@@ -80,7 +81,8 @@ function ciniki_artcatalog_listBySection($ciniki) {
 			. "ORDER BY sname COLLATE latin1_general_cs, name "
 			. "";
 	} elseif( $args['section'] == 'location' ) {
-		$strsql = "SELECT ciniki_artcatalog.id, image_id, name, media, catalog_number, size, framed_size, price, flags, location, notes, "
+		$strsql = "SELECT ciniki_artcatalog.id, image_id, name, media, catalog_number, size, framed_size, "
+			. "ROUND(price, 2) AS price, flags, location, notes, "
 			. "IF(ciniki_artcatalog.location='', '', ciniki_artcatalog.location) AS sname "
 			. "FROM ciniki_artcatalog "
 			. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "

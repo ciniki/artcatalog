@@ -56,7 +56,8 @@ function ciniki_artcatalog_searchQuick($ciniki) {
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'users', 'private', 'dateFormat');
 	$date_format = ciniki_users_dateFormat($ciniki);
 
-	$strsql = "SELECT ciniki_artcatalog.id, image_id, name, media, catalog_number, size, framed_size, price, location, type, "
+	$strsql = "SELECT ciniki_artcatalog.id, image_id, name, media, catalog_number, size, framed_size, "
+		. "ROUND(price, 2) AS price, location, type, "
 		. "IF((flags&0x02)=0x02,'yes','no') AS sold "
 //		. "IF(ciniki_artcatalog.category='', 'Uncategorized', ciniki_artcatalog.category) AS cname "
 //		. "IF(ciniki_artcatalog.status=1, 'open', 'closed') AS status "

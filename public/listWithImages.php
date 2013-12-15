@@ -97,11 +97,23 @@ function ciniki_artcatalog_listWithImages($ciniki) {
         return $rc;
     }   
 
+	//
+	// Load INTL settings
+	//
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'intlSettings');
+	$rc = ciniki_businesses_intlSettings($ciniki, $args['business_id']);
+	if( $rc['stat'] != 'ok' ) {
+		return $rc;
+	}
+	$intl_timezone = $rc['settings']['intl-default-timezone'];
+	$intl_currency_fmt = numfmt_create($rc['settings']['intl-default-locale'], NumberFormatter::CURRENCY);
+	$intl_currency = $rc['settings']['intl-default-currency'];
+
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuote');
 
 
 	$strsql = "SELECT ciniki_artcatalog.id, image_id, ciniki_artcatalog.name, "
-		. "type, year, media, catalog_number, size, framed_size, price, flags, location, "
+		. "type, year, media, catalog_number, size, framed_size, ROUND(price, 2) AS price, flags, location, "
 		. "ciniki_artcatalog.notes, "
 		. "IF((flags&0x02)=0x02,'yes','no') AS sold, "
 		. "";
@@ -176,7 +188,8 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 		array('container'=>'sections', 'fname'=>'sname', 'name'=>'section',
 			'fields'=>array('name'=>'sname')),
 		array('container'=>'items', 'fname'=>'id', 'name'=>'item',
-			'fields'=>array('id', 'name', 'image_id', 'type', 'year', 'media', 'catalog_number', 'size', 'framed_size', 'price', 'sold', 'flags', 'location', 'notes')),
+			'fields'=>array('id', 'name', 'image_id', 'type', 'year', 'media', 'catalog_number', 
+				'size', 'framed_size', 'price', 'sold', 'flags', 'location', 'notes')),
 		));
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
@@ -199,6 +212,7 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 				}
 				$sections[$section_num]['section']['items'][$inum]['item']['image'] = 'data:image/jpg;base64,' . base64_encode($rc['image']);
 			}
+			$sections[$section_num]['section']['items'][$inum]['item']['price'] = numfmt_format_currency($intl_currency_fmt, $item['item']['price'], $intl_currency);
 		}
 	}
 
