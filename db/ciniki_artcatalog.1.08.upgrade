@@ -1,0 +1,5 @@
+#
+# This file will upgrade the database table ciniki_artcatalog to version 1.07
+#
+ALTER TABLE ciniki_artcatalog MODIFY price decimal(19,4) not null;
+ALTER TABLE ciniki_artcatalog COMMENT='v1.08';

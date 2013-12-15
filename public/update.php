@@ -146,8 +146,32 @@ function ciniki_artcatalog_update(&$ciniki) {
 	}
 
 	//
-	// FIXME: Add check for price format
+	// check price format
 	//
+	if( isset($args['price']) ) {
+		//
+		// Load INTL settings
+		//
+		ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'intlSettings');
+		$rc = ciniki_businesses_intlSettings($ciniki, $args['business_id']);
+		if( $rc['stat'] != 'ok' ) {
+			return $rc;
+		}
+		$intl_timezone = $rc['settings']['intl-default-timezone'];
+		$intl_currency_fmt = numfmt_create($rc['settings']['intl-default-locale'], NumberFormatter::CURRENCY);
+		$intl_currency = $rc['settings']['intl-default-currency'];
+
+		if( $args['price'] == '' ) {
+			$args['price'] = 0;
+		}
+		elseif( $args['price'] != '' ) {
+			$price = numfmt_parse_currency($intl_currency_fmt, $args['price'], $intl_currency);
+			if( $price === FALSE ) {
+				return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1413', 'msg'=>'Invalid price format'));
+			}
+			$args['price'] = $price;
+		}
+	}
 
 	//  
 	// Turn off autocommit

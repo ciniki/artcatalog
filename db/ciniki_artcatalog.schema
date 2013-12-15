@@ -91,7 +91,7 @@ create table ciniki_artcatalog (
 	media varchar(200) not null,
 	size varchar(200) not null,
 	framed_size varchar(200) not null,
-	price varchar(200) not null,
+	price decimal(19,4) not null,
 	location varchar(200) not null,
 	awards varchar(6000) not null,
 	notes varchar(6000) not null,
@@ -106,4 +106,4 @@ create table ciniki_artcatalog (
 	index (media),
 	index (location),
 	index (year, month, day)
-) ENGINE='InnoDB', COMMENT='v1.07';
+) ENGINE='InnoDB', COMMENT='v1.08';

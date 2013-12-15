@@ -11,6 +11,21 @@
 //
 function ciniki_artcatalog_web_imageDetails($ciniki, $settings, $business_id, $permalink) {
 
+	//
+	// Load INTL settings
+	//
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'intlSettings');
+	$rc = ciniki_businesses_intlSettings($ciniki, $business_id);
+	if( $rc['stat'] != 'ok' ) {
+		return $rc;
+	}
+	$intl_timezone = $rc['settings']['intl-default-timezone'];
+	$intl_currency_fmt = numfmt_create($rc['settings']['intl-default-locale'], NumberFormatter::CURRENCY);
+	$intl_currency = $rc['settings']['intl-default-currency'];
+
+	//
+	// Get the details about the item
+	//
 	$strsql = "SELECT ciniki_artcatalog.id, "
 		. "ciniki_artcatalog.name, "
 		. "ciniki_artcatalog.permalink, "
@@ -87,8 +102,15 @@ function ciniki_artcatalog_web_imageDetails($ciniki, $settings, $business_id, $p
 		$image['details'] .= ' (framed: ' . $image['framed_size'] . ')';
 		$comma = ', ';
 	}
-	if( $image['price'] != '' && $image['forsale'] == 'yes' ) {
-		$image['details'] .= $comma . preg_replace('/^\s*([^$])/', '\$$1', $image['price']);
+	if( $image['price'] != '' && $image['price'] != '0' && $image['price'] != '0.00' 
+		&& $image['forsale'] == 'yes' ) {
+		if( is_numeric($image['price']) ) {
+			$image['price'] = numfmt_format_currency($intl_currency_fmt, $image['price'], $intl_currency);
+			$image['details'] .= $comma . $image['price'] . ' ' . $intl_currency;
+		} else {
+			$image['details'] .= $comma . $image['price'];
+		}
+//		$image['details'] .= $comma . preg_replace('/^\s*([^$])/', '\$$1', $image['price']);
 		$comma = ', ';
 	}
 	if( isset($image['sold']) && $image['sold'] == 'yes' ) {
