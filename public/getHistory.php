@@ -54,6 +54,12 @@ function ciniki_artcatalog_getHistory($ciniki) {
 			'ciniki_artcatalog_tags', $args['artcatalog_id'], 'tag_name', 'artcatalog_id', 1);
 	}
 
+	if( $args['field'] == 'price' ) {
+		ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbGetModuleHistoryReformat');
+		return ciniki_core_dbGetModuleHistoryReformat($ciniki, 'ciniki.artcatalog', 'ciniki_artcatalog_history', 
+			$args['business_id'], 'ciniki_artcatalog', $args['artcatalog_id'], $args['field'], 'currency');
+	}
+
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbGetModuleHistory');
 	return ciniki_core_dbGetModuleHistory($ciniki, 'ciniki.artcatalog', 'ciniki_artcatalog_history', $args['business_id'], 'ciniki_artcatalog', $args['artcatalog_id'], $args['field']);
 }

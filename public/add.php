@@ -102,7 +102,7 @@ function ciniki_artcatalog_add(&$ciniki) {
         'media'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Media'), 
         'size'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Size'), 
         'framed_size'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Framed Size'), 
-        'price'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'0', 'name'=>'Price'), 
+        'price'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'0', 'type'=>'currency', 'name'=>'Price'), 
         'location'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Location'), 
         'description'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Description'), 
         'inspiration'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Inspiration'), 
@@ -127,32 +127,6 @@ function ciniki_artcatalog_add(&$ciniki) {
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
-
-	//
-	// Load INTL settings
-	//
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'intlSettings');
-	$rc = ciniki_businesses_intlSettings($ciniki, $args['business_id']);
-	if( $rc['stat'] != 'ok' ) {
-		return $rc;
-	}
-	$intl_timezone = $rc['settings']['intl-default-timezone'];
-	$intl_currency_fmt = numfmt_create($rc['settings']['intl-default-locale'], NumberFormatter::CURRENCY);
-	$intl_currency = $rc['settings']['intl-default-currency'];
-
-	//
-	// Check for price format
-	//
-	if( $args['price'] == '' ) {
-		$args['price'] = 0;
-	}
-	elseif( $args['price'] != '' ) {
-		$price = numfmt_parse_currency($intl_currency_fmt, $args['price'], $intl_currency);
-		if( $price === FALSE ) {
-			return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1413', 'msg'=>'Invalid price format'));
-		}
-		$args['price'] = $price;
-	}
 
 	//
 	// Get a new UUID

@@ -103,7 +103,7 @@ function ciniki_artcatalog_update(&$ciniki) {
         'media'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Media'), 
         'size'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Size'), 
         'framed_size'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Framed Size'), 
-        'price'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Price'), 
+        'price'=>array('required'=>'no', 'blank'=>'yes', 'type'=>'currency', 'name'=>'Price'), 
         'location'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Location'), 
         'description'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Description'), 
         'inspiration'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Inspiration'), 
@@ -142,34 +142,6 @@ function ciniki_artcatalog_update(&$ciniki) {
 		}
 		if( $rc['num_rows'] > 0 ) {
 			return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'600', 'msg'=>'You already have artwork with this name, please choose another name'));
-		}
-	}
-
-	//
-	// check price format
-	//
-	if( isset($args['price']) ) {
-		//
-		// Load INTL settings
-		//
-		ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'intlSettings');
-		$rc = ciniki_businesses_intlSettings($ciniki, $args['business_id']);
-		if( $rc['stat'] != 'ok' ) {
-			return $rc;
-		}
-		$intl_timezone = $rc['settings']['intl-default-timezone'];
-		$intl_currency_fmt = numfmt_create($rc['settings']['intl-default-locale'], NumberFormatter::CURRENCY);
-		$intl_currency = $rc['settings']['intl-default-currency'];
-
-		if( $args['price'] == '' ) {
-			$args['price'] = 0;
-		}
-		elseif( $args['price'] != '' ) {
-			$price = numfmt_parse_currency($intl_currency_fmt, $args['price'], $intl_currency);
-			if( $price === FALSE ) {
-				return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1413', 'msg'=>'Invalid price format'));
-			}
-			$args['price'] = $price;
 		}
 	}
 
