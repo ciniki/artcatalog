@@ -131,37 +131,9 @@ function ciniki_artcatalog_templates_list($ciniki, $business_id, $sections, $arg
 			$cur_x = 17;
 			$item = $item['item'];
 
-			if( count($sections) > 1 && $pdf->getY() > ($pdf->getPageHeight() - 50) ) {
-				$pdf->AddPage();
-				$pdf->SetFont('', '', 16);
-				$pdf->SetFont('helvetica', 'B', 16);
-				$pdf->Cell(0, 15, $section['section']['name'] . ' (continued)', 0, false, 'L', 0, '', 0, false, 'M', 'M');
-				$pdf->Ln(10);
-				$pdf->SetFont('', '', 10);
-			}
-
-			$item_y = $pdf->getY();
 			//
-			// Load the image
+			// Determine the title
 			//
-			if( $item['image_id'] > 0 ) {
-				$rc = ciniki_images_loadCacheThumbnail($ciniki, $item['image_id'], 300);
-				if( $rc['stat'] == 'ok' ) {
-					$image = $rc['image'];
-					$img = $pdf->Image('@'.$image, $cur_x, '', 30, 30, 'JPEG', '', '', false, 150, '', false, false, 0);
-					$cur_x += 36;
-//					$pdf->MultiCell($w[0], 30, $img);
-//				} else {
-//					$pdf->MultiCell($w[0], 30, '');
-				}
-//			} else {
-//				$pdf->MultiCell($w[0], 30, '');
-			}
-
-			//
-			// Add the image title
-			//
-			$pdf->SetX($cur_x);
 			$img_title = '';
 			if( in_array('catalog_number', $fields) && $item['catalog_number'] != '' ) {
 				$img_title = $item['catalog_number'];
@@ -178,11 +150,7 @@ function ciniki_artcatalog_templates_list($ciniki, $business_id, $sections, $arg
 				if( $img_title != '' ) { $img_title .= ' (SOLD)'; }
 				else { $img_title .= " SOLD"; }
 			}
-			if( $img_title != '' ) {
-				$pdf->SetFont('', 'B', '12');
-				$pdf->Cell(140, 8, $img_title, 0, 2, 'L');
-			}
-		
+
 			//
 			// Add the other details
 			//
@@ -208,9 +176,61 @@ function ciniki_artcatalog_templates_list($ciniki, $business_id, $sections, $arg
 				if( $details != '' ) { $details .= $divider; }
 				$details .= 'Location: ' . $item['location'];
 			}
-
-			$pdf->SetX($cur_x);
+			
+			//
+			// Calculate the size of image title, details, description
+			$nlines = 0;
+			if( $img_title != '' ) {
+				$nlines += 1;
+			}
 			if( $details != '' ) {
+				$nlines += $pdf->getNumLines($details, 140);
+			}
+			if( in_array('description', $fields) && $item['description'] != '' ) {
+				$nlines += $pdf->getNumLines($item['description'], 140);
+			}
+
+			$item_height = 50;
+			if( $nlines > 5 ) {
+				$item_height = 15 + ($nlines * 7);
+			}
+			if( $pdf->getY() > ($pdf->getPageHeight() - $item_height) ) {
+				if( count($sections) > 1 ) {
+					$pdf->AddPage();
+					$pdf->SetFont('', '', 16);
+					$pdf->SetFont('helvetica', 'B', 16);
+					$pdf->Cell(0, 15, $section['section']['name'] . ' (continued)', 0, false, 'L', 0, '', 0, false, 'M', 'M');
+					$pdf->Ln(10);
+					$pdf->SetFont('', '', 10);
+				} else {
+					$pdf->AddPage();
+				}
+			}
+
+			$item_y = $pdf->getY();
+			//
+			// Load the image
+			//
+			if( $item['image_id'] > 0 ) {
+				$rc = ciniki_images_loadCacheThumbnail($ciniki, $item['image_id'], 300);
+				if( $rc['stat'] == 'ok' ) {
+					$image = $rc['image'];
+					$img = $pdf->Image('@'.$image, $cur_x, '', 30, 30, 'JPEG', '', '', false, 150, '', false, false, 0);
+					$cur_x += 36;
+				}
+			}
+
+			//
+			// Add the image title
+			//
+			if( $img_title != '' ) {
+				$pdf->SetX($cur_x);
+				$pdf->SetFont('', 'B', '12');
+				$pdf->Cell(140, 8, $img_title, 0, 2, 'L');
+			}
+		
+			if( $details != '' ) {
+				$pdf->SetX($cur_x);
 				$pdf->SetFont('', '', '10');
 				$pdf->MultiCell(140, 8, $details, 0, 'L', false, 2, '', '', true, 0, false, true, 0, 'T');
 			}
@@ -218,8 +238,8 @@ function ciniki_artcatalog_templates_list($ciniki, $business_id, $sections, $arg
 			//
 			// Add the description
 			//
-			$pdf->SetX($cur_x);
 			if( in_array('description', $fields) && $item['description'] != '' ) {
+				$pdf->SetX($cur_x);
 				$pdf->SetFont('', '', '10');
 				$pdf->MultiCell(140, 8, $item['description'], 0, 'L', false, 2, '', '', true, 0, false, true, 0, 'T');
 			}
@@ -231,10 +251,6 @@ function ciniki_artcatalog_templates_list($ciniki, $business_id, $sections, $arg
 				$pdf->Ln(10);
 			}
 		}
-//		if( $cur_x > 20 ) {
-//			$pdf->Ln(36);
-//		}
-//		$pdf->Ln(5);
 	}
 
 	//
