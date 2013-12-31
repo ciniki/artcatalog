@@ -57,9 +57,25 @@ function ciniki_artcatalog_listWithImages($ciniki) {
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
         'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
         'section'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Section'), 
-		'name'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Section Name specified'),
+		'name'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Section Name'),
 		'type'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Type'),
         'limit'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Limit'), 
+		// PDF options
+        'output'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Output Type'), 
+        'layout'=>array('required'=>'no', 'blank'=>'no', 'default'=>'list', 'name'=>'Layout',
+			'validlist'=>array('thumbnails', 'list', 'quad', 'single')), 
+        'title'=>array('required'=>'no', 'blank'=>'no', 'default'=>'', 'name'=>'Title'), 
+        'fields'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Fields'), 
+//        'catalog_number'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Catalog Number'), 
+//        'media'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Media'), 
+//        'size'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Size'), 
+//        'framed_size'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Framed Size'), 
+//        'price'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Price'), 
+//        'location'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Location'), 
+//        'description'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Description'), 
+//        'awards'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Awards'), 
+//        'notes'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Notes'), 
+//        'inspiration'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Inspiration'), 
         )); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
@@ -112,8 +128,19 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuote');
 
 
-	$strsql = "SELECT ciniki_artcatalog.id, image_id, ciniki_artcatalog.name, "
-		. "type, year, media, catalog_number, size, framed_size, ROUND(price, 2) AS price, flags, location, "
+	$strsql = "SELECT ciniki_artcatalog.id, "
+		. "image_id, "
+		. "ciniki_artcatalog.name, "
+		. "type, "
+		. "year, "
+		. "media, "
+		. "catalog_number, "
+		. "size, "
+		. "framed_size, "
+		. "price, "
+		. "flags, "
+		. "location, "
+		. "description, "
 		. "ciniki_artcatalog.notes, "
 		. "IF((flags&0x02)=0x02,'yes','no') AS sold, "
 		. "";
@@ -189,30 +216,56 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 			'fields'=>array('name'=>'sname')),
 		array('container'=>'items', 'fname'=>'id', 'name'=>'item',
 			'fields'=>array('id', 'name', 'image_id', 'type', 'year', 'media', 'catalog_number', 
-				'size', 'framed_size', 'price', 'sold', 'flags', 'location', 'notes')),
+				'size', 'framed_size', 'price', 'sold', 'flags', 'location', 'description', 'notes')),
 		));
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
 	}
 	if( !isset($rc['sections']) ) {
-		return array('stat'=>'ok', 'sections'=>array());
+		$sections = array();
+	} else {
+		$sections = $rc['sections'];
+	}
+
+	//
+	// Check if output is to be pdf
+	//
+	if( isset($args['output']) && $args['output'] == 'pdf' ) {
+		if( $args['title'] == '' ) {
+			if( count($sections) == 1 ) {
+				$args['title'] = $sections[0]['section']['name'];
+			} elseif( isset($args['name']) && $args['name'] != '' ) {
+				$args['title'] = $args['name'];
+			} else {
+				$args['title'] = 'Art Catalog';
+			}
+		}
+
+		ciniki_core_loadMethod($ciniki, 'ciniki', 'artcatalog', 'templates', $args['layout']);
+		$function = 'ciniki_artcatalog_templates_' . $args['layout'];
+		$rc = $function($ciniki, $args['business_id'], $sections, $args);
+		if( $rc['stat'] != 'ok' ) {	
+			return $rc;
+		}
+		return array('stat'=>'ok');
 	}
 
 	//
 	// Add thumbnail information into list
 	//
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'loadCacheThumbnail');
-	$sections = $rc['sections'];
-	foreach($sections as $section_num => $section) {
-		foreach($section['section']['items'] as $inum => $item) {
-			if( isset($item['item']['image_id']) && $item['item']['image_id'] > 0 ) {
-				$rc = ciniki_images_loadCacheThumbnail($ciniki, $item['item']['image_id'], 75);
-				if( $rc['stat'] != 'ok' ) {
-					return $rc;
+	if( count($sections) > 0 ) {
+		ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'loadCacheThumbnail');
+		foreach($sections as $section_num => $section) {
+			foreach($section['section']['items'] as $inum => $item) {
+				if( isset($item['item']['image_id']) && $item['item']['image_id'] > 0 ) {
+					$rc = ciniki_images_loadCacheThumbnail($ciniki, $item['item']['image_id'], 75);
+					if( $rc['stat'] != 'ok' ) {
+						return $rc;
+					}
+					$sections[$section_num]['section']['items'][$inum]['item']['image'] = 'data:image/jpg;base64,' . base64_encode($rc['image']);
 				}
-				$sections[$section_num]['section']['items'][$inum]['item']['image'] = 'data:image/jpg;base64,' . base64_encode($rc['image']);
+				$sections[$section_num]['section']['items'][$inum]['item']['price'] = numfmt_format_currency($intl_currency_fmt, $item['item']['price'], $intl_currency);
 			}
-			$sections[$section_num]['section']['items'][$inum]['item']['price'] = numfmt_format_currency($intl_currency_fmt, $item['item']['price'], $intl_currency);
 		}
 	}
 
