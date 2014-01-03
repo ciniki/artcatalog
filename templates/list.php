@@ -212,7 +212,7 @@ function ciniki_artcatalog_templates_list($ciniki, $business_id, $sections, $arg
 			// Load the image
 			//
 			if( $item['image_id'] > 0 ) {
-				$rc = ciniki_images_loadCacheThumbnail($ciniki, $item['image_id'], 300);
+				$rc = ciniki_images_loadCacheThumbnail($ciniki, $business_id, $item['image_id'], 300);
 				if( $rc['stat'] == 'ok' ) {
 					$image = $rc['image'];
 					$img = $pdf->Image('@'.$image, $cur_x, '', 30, 30, 'JPEG', '', '', false, 150, '', false, false, 0);

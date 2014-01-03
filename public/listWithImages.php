@@ -258,7 +258,7 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 		foreach($sections as $section_num => $section) {
 			foreach($section['section']['items'] as $inum => $item) {
 				if( isset($item['item']['image_id']) && $item['item']['image_id'] > 0 ) {
-					$rc = ciniki_images_loadCacheThumbnail($ciniki, $item['item']['image_id'], 75);
+					$rc = ciniki_images_loadCacheThumbnail($ciniki, $args['business_id'], $item['item']['image_id'], 75);
 					if( $rc['stat'] != 'ok' ) {
 						return $rc;
 					}
