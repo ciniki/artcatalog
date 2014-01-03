@@ -1088,9 +1088,9 @@ function ciniki_artcatalog_main() {
 			'location':'include',
 			'description':'include',
 			'awards':'include',
-			'notes':'include',
-			'inspiration':'include',
-			'pagenumbers':'include',
+//			'notes':'include',
+//			'inspiration':'include',
+//			'pagenumbers':'include',
 			};
 		this.downloadpdf.formtab = 'list';
 		this.downloadpdf.sections = this.downloadpdf.forms.list;
