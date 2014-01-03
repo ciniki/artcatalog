@@ -212,7 +212,7 @@ function ciniki_artcatalog_templates_single($ciniki, $business_id, $sections, $a
 			$img_box_height = $pdf->getPageHeight() - $footer_height - $header_height;
 			$details_height += 10 + ($nlines * 6);
 			if( $blank_lines > 0 ) {
-				$details_height += ($blank_lines) * 6;
+				$details_height += ($blank_lines-1) * 3;
 			}
 			$img_box_height -= ($details_height + 10);
 
