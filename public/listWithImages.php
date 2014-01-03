@@ -64,7 +64,7 @@ function ciniki_artcatalog_listWithImages($ciniki) {
         'output'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Output Type'), 
         'layout'=>array('required'=>'no', 'blank'=>'no', 'default'=>'list', 'name'=>'Layout',
 			'validlist'=>array('thumbnails', 'list', 'quad', 'single')), 
-        'title'=>array('required'=>'no', 'blank'=>'no', 'default'=>'', 'name'=>'Title'), 
+        'title'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Title'), 
         'fields'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Fields'), 
 //        'catalog_number'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Catalog Number'), 
 //        'media'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Media'), 
@@ -141,7 +141,9 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 		. "flags, "
 		. "location, "
 		. "description, "
+		. "ciniki_artcatalog.awards, "
 		. "ciniki_artcatalog.notes, "
+		. "ciniki_artcatalog.inspiration, "
 		. "IF((flags&0x02)=0x02,'yes','no') AS sold, "
 		. "";
 	if( !isset($args['section']) || $args['section'] == 'category' ) {
@@ -216,7 +218,8 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 			'fields'=>array('name'=>'sname')),
 		array('container'=>'items', 'fname'=>'id', 'name'=>'item',
 			'fields'=>array('id', 'name', 'image_id', 'type', 'year', 'media', 'catalog_number', 
-				'size', 'framed_size', 'price', 'sold', 'flags', 'location', 'description', 'notes')),
+				'size', 'framed_size', 'price', 'sold', 'flags', 'location', 
+				'description', 'notes', 'awards', 'inspiration')),
 		));
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
@@ -231,15 +234,15 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 	// Check if output is to be pdf
 	//
 	if( isset($args['output']) && $args['output'] == 'pdf' ) {
-		if( $args['title'] == '' ) {
-			if( count($sections) == 1 ) {
-				$args['title'] = $sections[0]['section']['name'];
-			} elseif( isset($args['name']) && $args['name'] != '' ) {
-				$args['title'] = $args['name'];
-			} else {
-				$args['title'] = 'Art Catalog';
-			}
-		}
+//		if( $args['title'] == '' ) {
+//			if( count($sections) == 1 ) {
+//				$args['title'] = $sections[0]['section']['name'];
+//			} elseif( isset($args['name']) && $args['name'] != '' ) {
+//				$args['title'] = $args['name'];
+//			} else {
+//				$args['title'] = 'Art Catalog';
+//			}
+//		}
 
 		ciniki_core_loadMethod($ciniki, 'ciniki', 'artcatalog', 'templates', $args['layout']);
 		$function = 'ciniki_artcatalog_templates_' . $args['layout'];
