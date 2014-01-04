@@ -66,16 +66,6 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 			'validlist'=>array('thumbnails', 'list', 'quad', 'single')), 
         'title'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Title'), 
         'fields'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Fields'), 
-//        'catalog_number'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Catalog Number'), 
-//        'media'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Media'), 
-//        'size'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Size'), 
-//        'framed_size'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Framed Size'), 
-//        'price'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Price'), 
-//        'location'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Location'), 
-//        'description'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Description'), 
-//        'awards'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Awards'), 
-//        'notes'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Notes'), 
-//        'inspiration'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Inspiration'), 
         )); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
@@ -234,16 +224,6 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 	// Check if output is to be pdf
 	//
 	if( isset($args['output']) && $args['output'] == 'pdf' ) {
-//		if( $args['title'] == '' ) {
-//			if( count($sections) == 1 ) {
-//				$args['title'] = $sections[0]['section']['name'];
-//			} elseif( isset($args['name']) && $args['name'] != '' ) {
-//				$args['title'] = $args['name'];
-//			} else {
-//				$args['title'] = 'Art Catalog';
-//			}
-//		}
-
 		ciniki_core_loadMethod($ciniki, 'ciniki', 'artcatalog', 'templates', $args['layout']);
 		$function = 'ciniki_artcatalog_templates_' . $args['layout'];
 		$rc = $function($ciniki, $args['business_id'], $sections, $args);

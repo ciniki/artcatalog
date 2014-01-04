@@ -39,6 +39,12 @@ function ciniki_artcatalog_get($ciniki) {
 		'tracking'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Tracking'),
 		'images'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Images'),
 		'invoices'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Invoices'),
+		// PDF options
+        'output'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Output Type'), 
+        'layout'=>array('required'=>'no', 'blank'=>'no', 'default'=>'list', 'name'=>'Layout',
+			'validlist'=>array('thumbnails', 'list', 'quad', 'single')), 
+        'title'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Title'), 
+        'fields'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Fields'), 
         )); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
@@ -132,6 +138,19 @@ function ciniki_artcatalog_get($ciniki) {
 		return array('stat'=>'ok', 'err'=>array('pkg'=>'ciniki', 'code'=>'593', 'msg'=>'Unable to find item'));
 	}
 	$item = $rc['items'][0]['item'];
+
+	//
+	// Check if output is PDF, then send to single template
+	//
+	if( isset($args['output']) && $args['output'] == 'pdf' ) {
+		ciniki_core_loadMethod($ciniki, 'ciniki', 'artcatalog', 'templates', 'single');
+		$rc = ciniki_artcatalog_templates_single($ciniki, $args['business_id'], 
+			array('sections'=>array('section'=>array('items'=>array('0'=>array('item'=>$item))))), $args);
+		if( $rc['stat'] != 'ok' ) {
+			return $rc;
+		}
+		return array('stat'=>'ok');
+	}
 
 	//
 	// Check for price format

@@ -144,7 +144,7 @@ function ciniki_artcatalog_templates_single($ciniki, $business_id, $sections, $a
 				if( $img_title != '' ) { $img_title .= ' - '; }
 				$img_title .= numfmt_format_currency($intl_currency_fmt, $item['price'], $intl_currency);
 			}
-			if( in_array('sold', $fields) && $item['sold'] == 'yes' ) {
+			if( in_array('sold_label', $fields) && $item['sold'] == 'yes' ) {
 				if( $img_title != '' ) { $img_title .= ' (SOLD)'; }
 				else { $img_title .= " SOLD"; }
 			}
