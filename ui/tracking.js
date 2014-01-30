@@ -150,7 +150,7 @@ function ciniki_artcatalog_tracking() {
 	};
 
 	this.deleteTracking = function() {
-		if( confirm('Are you sure you want to delete \'' + this.edittracking.data.name + '\' from exhibited?  All information about it will be removed and unrecoverable.') ) {
+		if( confirm('Are you sure you want to delete \'' + this.edit.data.name + '\' from exhibited?  All information about it will be removed and unrecoverable.') ) {
 			var rsp = M.api.getJSONCb('ciniki.artcatalog.trackingDelete', {'business_id':M.curBusinessID, 
 				'tracking_id':this.edit.tracking_id}, function(rsp) {
 					if( rsp.stat != 'ok' ) {
