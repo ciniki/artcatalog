@@ -40,6 +40,7 @@ function ciniki_artcatalog_getLists($ciniki) {
     }   
 
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'tagsList');
-	return ciniki_core_tagsList($ciniki, 'ciniki.artcatalog', $args['business_id'], 'ciniki_artcatalog', 'id', 'ciniki_artcatalog_tags', 'artcatalog_id', 1);
+	return ciniki_core_tagsList($ciniki, 'ciniki.artcatalog', $args['business_id'], 
+		'ciniki_artcatalog_tags', 1);
 }
 ?>

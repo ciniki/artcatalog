@@ -163,7 +163,8 @@ function ciniki_artcatalog_get($ciniki) {
 	// Get the available tags
 	//
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'tagsList');
-	$rc = ciniki_core_tagsList($ciniki, 'ciniki.artcatalog', $args['business_id'], 'ciniki_artcatalog', 'id', 'ciniki_artcatalog_tags', 'artcatalog_id', 1);
+	$rc = ciniki_core_tagsList($ciniki, 'ciniki.artcatalog', $args['business_id'], 
+		'ciniki_artcatalog_tags', 1);
 	if( $rc['stat'] != 'ok' ) {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'594', 'msg'=>'Unable to get lists', 'err'=>$rc['err']));
 	}
