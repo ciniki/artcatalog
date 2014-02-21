@@ -67,9 +67,9 @@ function ciniki_artcatalog_stats($ciniki) {
 			$args['type_id'] = 1;
 		} elseif( $args['type'] == 'photograph' ) {
 			$args['type_id'] = 2;
-		} elseif( $args['type'] == 'sculpture' ) {
-			$args['type_id'] = 3;
 		} elseif( $args['type'] == 'jewelry' ) {
+			$args['type_id'] = 3;
+		} elseif( $args['type'] == 'sculpture' ) {
 			$args['type_id'] = 4;
 		} else {
 			$args['type_id'] = 0;
@@ -105,8 +105,8 @@ function ciniki_artcatalog_stats($ciniki) {
 	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
 		array('container'=>'sections', 'fname'=>'type', 'name'=>'section',
 			'fields'=>array('type', 'name', 'count'), 
-			'maps'=>array('type'=>array(''=>'unknown', '1'=>'painting', '2'=>'photograph', '3'=>'sculpture', '4'=>'jewelry'),
-				'name'=>array(''=>'Unknown', '1'=>'Paintings', '2'=>'Photographs', '3'=>'Sculptures', '4'=>'Jewelry'))),
+			'maps'=>array('type'=>array(''=>'unknown', '1'=>'painting', '2'=>'photograph', '3'=>'jewelry', '4'=>'sculpture'),
+				'name'=>array(''=>'Unknown', '1'=>'Paintings', '2'=>'Photographs', '3'=>'Jewelry', '4'=>'Sculptures'))),
 		));
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
