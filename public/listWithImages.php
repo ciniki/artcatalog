@@ -58,7 +58,7 @@ function ciniki_artcatalog_listWithImages($ciniki) {
         'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
         'section'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Section'), 
 		'name'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Section Name'),
-		'type'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Type'),
+		'type'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Type'),
         'limit'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Limit'), 
 		// PDF options
         'output'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Output Type'), 
