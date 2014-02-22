@@ -960,7 +960,7 @@ function ciniki_artcatalog_main() {
 		};
 		p.sections.types.visible = 'no';
 		p.sections.types.tabs = {};
-		if( rsp.stats.types.length > 1 ) {
+		if( rsp.stats.types != null && rsp.stats.types.length > 1 ) {
 			p.sections.types.visible = 'yes';
 			p.sections.types.tabs['all'] = {'label':'All', 'fn':'M.ciniki_artcatalog_main.showMenu(null,null,\'all\');'};
 			for(i in rsp.stats.types) {
