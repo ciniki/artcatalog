@@ -50,6 +50,7 @@ function ciniki_artcatalog_updateWebSettings($ciniki, $business_id) {
 		'6'=>'clothing',
 		);
 
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbInsert');
 	foreach($maps as $type => $name) {
 		$field = "page-gallery-artcatalog-$name";
 		//
