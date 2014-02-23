@@ -26,6 +26,8 @@
 #					4 - Sculpture *future*
 #					5 - Craft *future*
 #					6 - Clothing *future*
+#					7 - Pottery *future*
+#					8 - Knitting *future*
 #
 # flags:			0x01 - for sale
 #					0x02 - Sold
