@@ -342,6 +342,7 @@ function ciniki_artcatalog_main() {
 			'_buttons':{'label':'', 'buttons':{
 				'edit':{'label':'Edit', 'fn':'M.ciniki_artcatalog_main.showEdit(\'M.ciniki_artcatalog_main.showItem();\',M.ciniki_artcatalog_main.item.artcatalog_id);'},
 				'pdf':{'label':'Download PDF', 'fn':'M.ciniki_artcatalog_main.showItemDownload(\'M.ciniki_artcatalog_main.showItem();\',\'ciniki.artcatalog.get\',\'\',M.ciniki_artcatalog_main.item.artcatalog_id);'},
+				'download':{'label':'Download Original', 'fn':'M.ciniki_artcatalog_main.downloadImage(M.ciniki_artcatalog_main.item.data.image_id,\'original\');'},
 			}},
 			};
 		this.item.sectionData = function(s) {
@@ -1185,13 +1186,14 @@ function ciniki_artcatalog_main() {
 		window.open(M.api.getUploadURL(this.downloadpdf.method, args));
 	};
 
+	this.downloadImage = function(iid, version) {
+		window.open(M.api.getUploadURL('ciniki.images.get', {'business_id':M.curBusinessID,
+			'image_id':iid, 'version':version, 'attachment':'yes'}));
+	};
+
 	this.showItem = function(cb, aid, list) {
-		if( aid != null ) {
-			this.item.artcatalog_id = aid;
-		}
-		if( list != null ) {
-			this.item.list = list;
-		}
+		if( aid != null ) { this.item.artcatalog_id = aid; }
+		if( list != null ) { this.item.list = list; }
 
 		this.item.sections.invoices.visible = (M.curBusiness.modules['ciniki.customers'] != null && M.curBusiness.modules['ciniki.sapos'] != null)?'yes':'no';
 
