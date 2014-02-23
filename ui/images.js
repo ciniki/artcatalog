@@ -26,8 +26,9 @@ function ciniki_artcatalog_images() {
 			'_description':{'label':'Description', 'type':'simpleform', 'fields':{
 				'description':{'label':'', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
 			}},
-			'_save':{'label':'', 'buttons':{
+			'_buttons':{'label':'', 'buttons':{
 				'save':{'label':'Save', 'fn':'M.ciniki_artcatalog_images.saveImage();'},
+				'download':{'label':'Download Original', 'fn':'M.ciniki_artcatalog_images.downloadImage(M.ciniki_artcatalog_images.edit.data.image_id, \'original\');'},
 				'delete':{'label':'Delete', 'fn':'M.ciniki_artcatalog_images.deleteImage();'},
 			}},
 		};
@@ -52,9 +53,7 @@ function ciniki_artcatalog_images() {
 
 	this.start = function(cb, appPrefix, aG) {
 		args = {};
-		if( aG != null ) {
-			args = eval(aG);
-		}
+		if( aG != null ) { args = eval(aG); }
 
 		//
 		// Create container
@@ -74,13 +73,11 @@ function ciniki_artcatalog_images() {
 	}
 
 	this.showEdit = function(cb, iid, eid) {
-		if( iid != null ) {
-			this.edit.artcatalog_image_id = iid;
-		}
-		if( eid != null ) {
-			this.edit.artcatalog_id = eid;
-		}
+		if( iid != null ) { this.edit.artcatalog_image_id = iid; }
+		if( eid != null ) { this.edit.artcatalog_id = eid; }
 		if( this.edit.artcatalog_image_id > 0 ) {
+			this.edit.sections._buttons.buttons.download.visible = 'yes';
+			this.edit.sections._buttons.buttons.delete.visible = 'yes';
 			var rsp = M.api.getJSONCb('ciniki.artcatalog.imageGet', 
 				{'business_id':M.curBusinessID, 'artcatalog_image_id':this.edit.artcatalog_image_id}, function(rsp) {
 					if( rsp.stat != 'ok' ) {
@@ -94,6 +91,8 @@ function ciniki_artcatalog_images() {
 		} else {
 			this.edit.reset();
 			this.edit.data = {};
+			this.edit.sections._buttons.buttons.download.visible = 'no';
+			this.edit.sections._buttons.buttons.delete.visible = 'no';
 			this.edit.refresh();
 			this.edit.show(cb);
 		}
@@ -130,6 +129,11 @@ function ciniki_artcatalog_images() {
 						}
 					});
 		}
+	};
+
+	this.downloadImage = function(iid, version) {
+		window.open(M.api.getUploadURL('ciniki.images.get', {'business_id':M.curBusinessID,
+			'image_id':iid, 'version':version, 'attachment':'yes'}));
 	};
 
 	this.deleteImage = function() {
