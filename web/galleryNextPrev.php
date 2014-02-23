@@ -9,7 +9,8 @@
 // Returns
 // -------
 //
-function ciniki_artcatalog_web_galleryNextPrev($ciniki, $settings, $business_id, $permalink, $img, $type) {
+function ciniki_artcatalog_web_galleryNextPrev($ciniki, $settings, $business_id, $args) {
+//$permalink, $img, $type) {
 
 	//
 	// Get the list of images for the current gallery
@@ -19,8 +20,11 @@ function ciniki_artcatalog_web_galleryNextPrev($ciniki, $settings, $business_id,
 		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
 		. "AND image_id > 0 "
 		. "AND (webflags&0x01) = 0 ";
-	if( $type == 'category' ) {
-		$strsql .= "AND category = '" . ciniki_core_dbQuote($ciniki, $img['category']) . "' ";
+	if( isset($args['artcatalog_type']) && $args['artcatalog_type'] > 0 ) {
+		$strsql .= "AND ciniki_artcatalog.type = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_type']) . "' ";
+	}
+	if( isset($args['type']) && $args['type'] == 'category' ) {
+		$strsql .= "AND category = '" . ciniki_core_dbQuote($ciniki, $args['img']['category']) . "' ";
 	}
 	$strsql .= "ORDER BY ciniki_artcatalog.year DESC, "
 		. "ciniki_artcatalog.month DESC, "
@@ -41,7 +45,7 @@ function ciniki_artcatalog_web_galleryNextPrev($ciniki, $settings, $business_id,
 	$num_images = count($images);
 	if( $num_images > 1 ) {
 		for($i=0;$i<$num_images;$i++) {
-			if( $images[$i]['id'] == $img['id'] ) {
+			if( $images[$i]['id'] == $args['img']['id'] ) {
 				if( $i == 0 ) {
 					// First image
 					$next = $images[$i+1];

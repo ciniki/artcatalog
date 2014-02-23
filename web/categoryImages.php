@@ -28,7 +28,7 @@
 //		...
 // </images>
 //
-function ciniki_artcatalog_web_categoryImages($ciniki, $settings, $business_id, $type, $type_name) {
+function ciniki_artcatalog_web_categoryImages($ciniki, $settings, $business_id, $args) {
 
 	$strsql = "SELECT ciniki_artcatalog.id, "
 		. "name AS title, permalink, image_id, media, size, framed_size, price, "
@@ -40,11 +40,14 @@ function ciniki_artcatalog_web_categoryImages($ciniki, $settings, $business_id, 
 		. "AND ciniki_artcatalog.image_id > 0 "
 		. "AND (webflags&0x01) = 0 "
 		. "";
-	if( $type == 'category' ) {
-		$strsql .= "AND category = '" . ciniki_core_dbQuote($ciniki, $type_name) . "' "
+	if( isset($args['artcatalog_type']) && $args['artcatalog_type'] != '' ) {
+		$strsql .= "AND ciniki_artcatalog.type = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_type']) . "' ";
+	}
+	if( isset($args['type']) && $args['type'] == 'category' && isset($args['type_name'])) {
+		$strsql .= "AND category = '" . ciniki_core_dbQuote($ciniki, $args['type_name']) . "' "
 			. "";
-	} elseif( $type == 'year' ) {
-		$strsql .= "AND year = '" . ciniki_core_dbQuote($ciniki, $type_name) . "' "
+	} elseif( isset($args['type']) && $args['type'] == 'year' && isset($args['type_name'])) {
+		$strsql .= "AND year = '" . ciniki_core_dbQuote($ciniki, $args['type_name']) . "' "
 			. "";
 	} else {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'635', 'msg'=>"Unable to find images."));

@@ -183,6 +183,18 @@ function ciniki_artcatalog_update(&$ciniki) {
 	}
 
 	//
+	// Update the possible menu items available for artcatalog.  This is for the split gallery
+	// between Paintings, Photographs, Jewelry, etc
+	//
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'artcatalog', 'private', 'updateWebSettings');
+	$rc = ciniki_artcatalog_updateWebSettings($ciniki, $args['business_id']);
+	if( $rc['stat'] != 'ok' ) {
+		array_pop($ciniki['syncqueue']);
+		ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1600', 'msg'=>'Unable to update web settings', 'err'=>$rc['err']));
+	}
+
+	//
 	// Commit the database changes
 	//
     $rc = ciniki_core_dbTransactionCommit($ciniki, 'ciniki.artcatalog');
