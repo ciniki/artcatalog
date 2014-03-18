@@ -191,7 +191,7 @@ function ciniki_artcatalog_update(&$ciniki) {
 	if( $rc['stat'] != 'ok' ) {
 		array_pop($ciniki['syncqueue']);
 		ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
-		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1600', 'msg'=>'Unable to update web settings', 'err'=>$rc['err']));
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1653', 'msg'=>'Unable to update web settings', 'err'=>$rc['err']));
 	}
 
 	//
