@@ -94,7 +94,7 @@ function ciniki_artcatalog_templates_list($ciniki, $business_id, $sections, $arg
 	$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
 	// Set font
-	$pdf->SetFont('times', 'BI', 10);
+	$pdf->SetFont('times', 'BI', 12);
 	$pdf->SetCellPadding(0);
 
 	// Add a page
@@ -123,8 +123,8 @@ function ciniki_artcatalog_templates_list($ciniki, $business_id, $sections, $arg
 			$pdf->SetFont('', '', 16);
 			$pdf->SetFont('helvetica', 'B', 16);
 			$pdf->Cell(0, 15, $section['section']['name'], 0, false, 'L', 0, '', 0, false, 'M', 'M');
-			$pdf->Ln(10);
-			$pdf->SetFont('', '', 10);
+			$pdf->Ln(12);
+			$pdf->SetFont('', '', 12);
 		}
 	
 		foreach($section['section']['items'] as $iid => $item) {
@@ -200,8 +200,8 @@ function ciniki_artcatalog_templates_list($ciniki, $business_id, $sections, $arg
 					$pdf->SetFont('', '', 16);
 					$pdf->SetFont('helvetica', 'B', 16);
 					$pdf->Cell(0, 15, $section['section']['name'] . ' (continued)', 0, false, 'L', 0, '', 0, false, 'M', 'M');
-					$pdf->Ln(10);
-					$pdf->SetFont('', '', 10);
+					$pdf->Ln(12);
+					$pdf->SetFont('', '', 12);
 				} else {
 					$pdf->AddPage();
 				}
@@ -231,7 +231,7 @@ function ciniki_artcatalog_templates_list($ciniki, $business_id, $sections, $arg
 		
 			if( $details != '' ) {
 				$pdf->SetX($cur_x);
-				$pdf->SetFont('', '', '10');
+				$pdf->SetFont('', '', '12');
 				$pdf->MultiCell(140, 8, $details, 0, 'L', false, 2, '', '', true, 0, false, true, 0, 'T');
 			}
 			
@@ -240,7 +240,7 @@ function ciniki_artcatalog_templates_list($ciniki, $business_id, $sections, $arg
 			//
 			if( in_array('description', $fields) && $item['description'] != '' ) {
 				$pdf->SetX($cur_x);
-				$pdf->SetFont('', '', '10');
+				$pdf->SetFont('', '', '12');
 				$pdf->MultiCell(140, 8, $item['description'], 0, 'L', false, 2, '', '', true, 0, false, true, 0, 'T');
 			}
 			
@@ -248,7 +248,7 @@ function ciniki_artcatalog_templates_list($ciniki, $business_id, $sections, $arg
 			if( $diff_y > 0 && $diff_y < 36 ) {
 				$pdf->Ln((36-$diff_y) + 5);
 			} else {
-				$pdf->Ln(10);
+				$pdf->Ln(12);
 			}
 		}
 	}
