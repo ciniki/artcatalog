@@ -144,36 +144,38 @@ function ciniki_artcatalog_stats($ciniki) {
 	//
 	// Get the media stats
 	//
-	$strsql = "SELECT IF(media='', 'Unknown', media) AS name, COUNT(*) AS count FROM ciniki_artcatalog "
-		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
-		. "";
-	if( isset($args['type_id']) && $args['type_id'] > 0 ) {
-		$strsql .= "AND type = '" . ciniki_core_dbQuote($ciniki, $args['type_id']) . "' "
+	if( !isset($args['type_id']) || $args['type_id'] == 1 ) {
+		$strsql = "SELECT IF(media='', 'Unknown', media) AS name, COUNT(*) AS count FROM ciniki_artcatalog "
+			. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
 			. "";
-	}
-	$strsql .= ""
-		. "AND ciniki_artcatalog.type = 1 "
-		. "GROUP BY media "
-		. "ORDER BY name "
-		. "";
-	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
-		array('container'=>'sections', 'fname'=>'name', 'name'=>'section',
-			'fields'=>array('name', 'count')),
-		));
-	if( $rc['stat'] != 'ok' ) {
-		return $rc;
-	}
-	if( isset($rc['sections']) ) {
-		$rsp['stats']['media'] = $rc['sections'];
-		$num_sections += count($rc['sections']);
-	}
+		if( isset($args['type_id']) && $args['type_id'] > 0 ) {
+			$strsql .= "AND type = '" . ciniki_core_dbQuote($ciniki, $args['type_id']) . "' "
+				. "";
+		}
+		$strsql .= ""
+	//		. "AND ciniki_artcatalog.type = 1 "
+			. "GROUP BY media "
+			. "ORDER BY name "
+			. "";
+		$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
+			array('container'=>'sections', 'fname'=>'name', 'name'=>'section',
+				'fields'=>array('name', 'count')),
+			));
+		if( $rc['stat'] != 'ok' ) {
+			return $rc;
+		}
+		if( isset($rc['sections']) ) {
+			$rsp['stats']['media'] = $rc['sections'];
+			$num_sections += count($rc['sections']);
+		}
+		}
 
-	//
-	// Get the location stats
-	//
-	$strsql = "SELECT IF(location='', 'Unknown', location) AS name, COUNT(*) AS count FROM ciniki_artcatalog "
-		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
-		. "";
+		//
+		// Get the location stats
+		//
+		$strsql = "SELECT IF(location='', 'Unknown', location) AS name, COUNT(*) AS count FROM ciniki_artcatalog "
+			. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+			. "";
 	if( isset($args['type_id']) && $args['type_id'] > 0 ) {
 		$strsql .= "AND type = '" . ciniki_core_dbQuote($ciniki, $args['type_id']) . "' "
 			. "";
@@ -228,7 +230,7 @@ function ciniki_artcatalog_stats($ciniki) {
 		. "FROM ciniki_artcatalog, ciniki_artcatalog_tags "
 		. "WHERE ciniki_artcatalog.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
 		. "AND ciniki_artcatalog.id = ciniki_artcatalog_tags.artcatalog_id "
-		. "AND ciniki_artcatalog_tags.tag_type = 1 "
+//		. "AND ciniki_artcatalog_tags.tag_type = 1 "
 		. "";
 	if( isset($args['type_id']) && $args['type_id'] > 0 ) {
 		$strsql .= "AND ciniki_artcatalog.type = '" . ciniki_core_dbQuote($ciniki, $args['type_id']) . "' "
