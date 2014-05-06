@@ -94,7 +94,7 @@ function ciniki_artcatalog_templates_pricelist($ciniki, $business_id, $sections,
 	$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
 	// Set font
-	$pdf->SetFont('times', 'BI', 10);
+	$pdf->SetFont('times', 'BI', 12);
 	$pdf->SetCellPadding(0);
 
 	// Add a page
@@ -130,13 +130,13 @@ function ciniki_artcatalog_templates_pricelist($ciniki, $business_id, $sections,
 			$pdf->SetFont('helvetica', 'B', 16);
 			$pdf->Cell(0, 15, $section['section']['name'], 0, false, 'L', 0, '', 0, false, 'M', 'M');
 			$pdf->Ln(5);
-			$pdf->SetFont('', '', 10);
+			$pdf->SetFont('', '', 12);
 		}
 
 		//
 		// Add the table headings
 		//
-		$pdf->SetFont('', 'B', 10);
+		$pdf->SetFont('', 'B', 12);
 		$pdf->SetCellPadding(2);
 		$pdf->SetFillColor(224);
 		$pdf->Cell($w[0], 6, $headings[0], 1, 0, 'C', 1);
@@ -189,9 +189,9 @@ function ciniki_artcatalog_templates_pricelist($ciniki, $business_id, $sections,
 			$nlines += $pdf->getNumLines($img_title, $w[0]);
 			$lh = 6;
 			if( $nlines == 2 ) {
-				$lh = 3+($nlines*5);
+				$lh = 3+($nlines*6);
 			} elseif( $nlines > 2 ) {
-				$lh = 2+($nlines*5);
+				$lh = 2+($nlines*6);
 			}
 
 			$item_height = 25;
@@ -202,7 +202,7 @@ function ciniki_artcatalog_templates_pricelist($ciniki, $business_id, $sections,
 					$pdf->SetFont('helvetica', 'B', 16);
 					$pdf->Cell(0, 15, $section['section']['name'] . ' (continued)', 0, false, 'L', 0, '', 0, false, 'M', 'M');
 					$pdf->Ln(5);
-					$pdf->SetFont('', '', 10);
+					$pdf->SetFont('', '', 12);
 					// Add table headings
 					$pdf->SetCellPadding(2);
 					$pdf->SetFillColor(224);
