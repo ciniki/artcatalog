@@ -1087,7 +1087,7 @@ function ciniki_artcatalog_main() {
 			this.list.current_section = encodeURIComponent(unescape(section));
 		}
 		if( name != null ) {
-			this.list.current_name = name;
+			this.list.current_name = unescape(name);
 		}
 		this.list.data = {};
 		if( cb != null ) {
