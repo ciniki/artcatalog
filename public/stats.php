@@ -71,6 +71,8 @@ function ciniki_artcatalog_stats($ciniki) {
 			$args['type_id'] = 3;
 		} elseif( $args['type'] == 'sculpture' ) {
 			$args['type_id'] = 4;
+		} elseif( $args['type'] == 'fibreart' ) {
+			$args['type_id'] = 5;
 		} else {
 			$args['type_id'] = 0;
 		}
@@ -105,8 +107,8 @@ function ciniki_artcatalog_stats($ciniki) {
 	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
 		array('container'=>'sections', 'fname'=>'type', 'name'=>'section',
 			'fields'=>array('type', 'name', 'count'), 
-			'maps'=>array('type'=>array(''=>'unknown', '1'=>'painting', '2'=>'photograph', '3'=>'jewelry', '4'=>'sculpture'),
-				'name'=>array(''=>'Unknown', '1'=>'Paintings', '2'=>'Photographs', '3'=>'Jewelry', '4'=>'Sculptures'))),
+			'maps'=>array('type'=>array(''=>'unknown', '1'=>'painting', '2'=>'photograph', '3'=>'jewelry', '4'=>'sculpture', '5'=>'fibreart'),
+				'name'=>array(''=>'Unknown', '1'=>'Paintings', '2'=>'Photographs', '3'=>'Jewelry', '4'=>'Sculptures', '5'=>'Fibre Arts'))),
 		));
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;

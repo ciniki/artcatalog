@@ -28,7 +28,7 @@
 //					- photograph
 //					- jewelry
 //					- sculpture
-//					- craft
+//					- fibreart
 //					- clothing
 //
 // limit:			(optional) Limit the number of results.
@@ -84,7 +84,7 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 			$args['type_id'] = 3;
 		} elseif( $args['type'] == 'sculpture' ) {
 			$args['type_id'] = 4;
-		} elseif( $args['type'] == 'craft' ) {
+		} elseif( $args['type'] == 'fibreart' ) {
 			$args['type_id'] = 5;
 		} elseif( $args['type'] == 'clothing' ) {
 			$args['type_id'] = 6;

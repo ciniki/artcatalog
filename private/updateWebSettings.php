@@ -46,7 +46,7 @@ function ciniki_artcatalog_updateWebSettings($ciniki, $business_id) {
 		'2'=>'photographs',
 		'3'=>'jewelry',
 		'4'=>'sculptures',
-		'5'=>'crafts',
+		'5'=>'fibrearts',
 		'6'=>'clothing',
 		);
 

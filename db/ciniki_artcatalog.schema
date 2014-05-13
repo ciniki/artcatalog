@@ -23,11 +23,12 @@
 #					1 - Painting
 #					2 - Photograph
 #					3 - Jewelry 
-#					4 - Sculpture *future*
-#					5 - Craft *future*
-#					6 - Clothing *future*
-#					7 - Pottery *future*
-#					8 - Knitting *future*
+#					4 - Sculpture
+#					5 - Fibre Art
+#					6 - Craft *future*
+#					7 - Clothing *future*
+#					8 - Pottery *future*
+#					9 - Knitting *future*
 #
 # flags:			0x01 - for sale
 #					0x02 - Sold

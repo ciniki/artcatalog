@@ -17,9 +17,9 @@
 //
 //					1 - Painting
 //					2 - Photograph
-//					3 - Jewelry *future*
-//					4 - Sculpture *future*
-//					5 - Craft *future*
+//					3 - Jewelry
+//					4 - Sculpture
+//					5 - Fibre Art
 //					6 - Clothing *future*
 //
 // flags:			(optional) The bit flags for the item.
@@ -115,7 +115,9 @@ function ciniki_artcatalog_add(&$ciniki) {
     }   
     $args = $rc['args'];
 
-	$args['permalink'] = preg_replace('/ /', '-', preg_replace('/[^a-z0-9 ]/', '', strtolower($args['name'])));
+//	$args['permalink'] = preg_replace('/ /', '-', preg_replace('/[^a-z0-9 ]/', '', strtolower($args['name'])));
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'makePermalink');
+	$args['permalink'] = ciniki_core_makePermalink($ciniki, $args['name']);
 	$args['user_id'] = $ciniki['session']['user']['id'];
     
     //  

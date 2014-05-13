@@ -16,9 +16,9 @@
 //
 //					1 - Painting
 //					2 - Photograph
-//					3 - Jewelry *future*
-//					4 - Sculpture *future*
-//					5 - Craft *future*
+//					3 - Jewelry
+//					4 - Sculpture
+//					5 - Fibre Art
 //					6 - Clothing *future*
 //
 // image_id:		(optional) The ID of the image in the images module to be displayed for the item.  This
@@ -127,7 +127,9 @@ function ciniki_artcatalog_update(&$ciniki) {
     }   
 
 	if( isset($args['name']) ) {
-		$args['permalink'] = preg_replace('/ /', '-', preg_replace('/[^a-z0-9 ]/', '', strtolower($args['name'])));
+		ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'makePermalink');
+		$args['permalink'] = ciniki_core_makePermalink($ciniki, $args['name']);
+//		$args['permalink'] = preg_replace('/ /', '-', preg_replace('/[^a-z0-9 ]/', '', strtolower($args['name'])));
 		//
 		// Make sure the permalink is unique
 		//
