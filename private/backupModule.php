@@ -212,9 +212,15 @@ function ciniki_artcatalog_backupModule(&$ciniki, $business) {
 			$artcatalog_id = $item['id'];
 
 			//
+			// Create the file name
+			//
+			$item['filename'] = preg_replace("/[^a-zA-Z0-9\ \.\-\_\[\]\(\)\:\;\'\"]/", ' ', $item['name']);
+			$artcatalog_types[$tid]['type']['items'][$iid]['item']['filename'] = $item['filename'];
+			
+			//
 			// Create the directory for the item
 			//
-			$item_backup_dir = $backup_dir . '/' . $type['name'] . '/' . $item['name'];
+			$item_backup_dir = $backup_dir . '/' . $type['name'] . '/' . $item['filename'];
 			if( !file_exists($item_backup_dir) ) {
 				if( mkdir($item_backup_dir, 0755, true) === false ) {
 					return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1729', 'msg'=>'Unable to create backup directory for artcatalog item: ' . $type['name'] . '/' . $item['name']));
@@ -282,7 +288,7 @@ function ciniki_artcatalog_backupModule(&$ciniki, $business) {
 			//
 			// Make sure the directory for the item exists
 			//
-			$item_backup_dir = $backup_dir . '/' . $type['name'] . '/' . $item['name'];
+			$item_backup_dir = $backup_dir . '/' . $type['name'] . '/' . $item['filename'];
 			if( !file_exists($item_backup_dir) ) {
 				if( mkdir($item_backup_dir, 0755, true) === false ) {
 					return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1729', 'msg'=>'Unable to create backup directory for artcatalog item: ' . $type['name'] . '/' . $item['name']));
@@ -502,7 +508,7 @@ function ciniki_artcatalog_backupModule(&$ciniki, $business) {
 				}
 			}
 
-			file_put_contents($item_backup_dir . '/' . $item['name'] . '.txt', $details);
+			file_put_contents($item_backup_dir . '/' . $item['filename'] . '.txt', $details);
 
 			$sheet->getColumnDimension('A')->setAutoSize(true);
 			$sheet->getColumnDimension('B')->setAutoSize(true);
@@ -511,7 +517,7 @@ function ciniki_artcatalog_backupModule(&$ciniki, $business) {
 			$sheet->getColumnDimension('E')->setAutoSize(true);
 			$sheet = $objPHPExcel->setActiveSheetIndex(0);
 			$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
-			$objWriter->save($item_backup_dir . '/' . $item['name'] . '.xls');
+			$objWriter->save($item_backup_dir . '/' . $item['filename'] . '.xls');
 			$objPHPExcel->disconnectWorksheets();
 			unset($objWriter, $objPHPExcel);
 		}
