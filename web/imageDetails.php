@@ -118,6 +118,8 @@ function ciniki_artcatalog_web_imageDetails($ciniki, $settings, $business_id, $p
 		$comma = ', ';
 	}
 
+	$image['category_permalink'] = urlencode($image['category']);
+
 	return array('stat'=>'ok', 'image'=>$image);
 }
 ?>
