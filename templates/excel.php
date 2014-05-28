@@ -88,6 +88,8 @@ function ciniki_artcatalog_templates_excel($ciniki, $business_id, $sections, $ar
 			} else {
 				$sheet->setCellValueByColumnAndRow($i++, 1, $field, false);
 			}
+			$c = chr(65+$i);
+			$sheet->getColumnDimension($c)->setAutoSize(true);
 		}
 		$sheet->getStyle('A1:' . chr(65+$i) . '1')->getFont()->setBold(true);
 
@@ -103,6 +105,15 @@ function ciniki_artcatalog_templates_excel($ciniki, $business_id, $sections, $ar
 				}
 			}
 			$row++;
+		}
+
+		$i = 0;
+		foreach($fields as $field) {
+			if( $field == 'description' || $field == 'awards' || $field == 'notes' || $field == 'inspiration' ) {
+				$c=chr(65+$i);
+				$objPHPExcel->getActiveSheet()->getStyle($c . '1:' . $c . $objPHPExcel->getActiveSheet()->getHighestRow())->getAlignment()->setWrapText(true);
+			}
+			$i++;
 		}
 
 		$sheet_num++;
