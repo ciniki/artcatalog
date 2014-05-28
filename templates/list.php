@@ -75,15 +75,15 @@ function ciniki_artcatalog_templates_list($ciniki, $business_id, $sections, $arg
 	$pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
 	$filename = '';
-	$pdf->title = $args['title'];
-	if( $args['title'] != '' ) {
-		$filename = preg_replace('/[^a-zA-Z0-9_]/', '', preg_replace('/ /', '_', $args['title']));
+	$pdf->title = $args['pagetitle'];
+	if( $args['pagetitle'] != '' ) {
+		$filename = preg_replace('/[^a-zA-Z0-9_]/', '', preg_replace('/ /', '_', $args['pagetitle']));
 	}
 
 	// Set PDF basics
 	$pdf->SetCreator('Ciniki');
 	$pdf->SetAuthor($business_details['name']);
-	$pdf->SetTitle($args['title']);
+	$pdf->SetTitle($args['pagetitle']);
 	$pdf->SetSubject('');
 	$pdf->SetKeywords('');
 

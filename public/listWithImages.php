@@ -63,8 +63,8 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 		// PDF options
         'output'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Output Type'), 
         'layout'=>array('required'=>'no', 'blank'=>'no', 'default'=>'list', 'name'=>'Layout',
-			'validlist'=>array('pricelist', 'thumbnails', 'list', 'quad', 'single')), 
-        'title'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Title'), 
+			'validlist'=>array('pricelist', 'thumbnails', 'list', 'quad', 'single', 'excel')), 
+        'pagetitle'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Title'), 
         'fields'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Fields'), 
         )); 
     if( $rc['stat'] != 'ok' ) { 
@@ -121,6 +121,7 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 	$strsql = "SELECT ciniki_artcatalog.id, "
 		. "image_id, "
 		. "ciniki_artcatalog.name, "
+		. "ciniki_artcatalog.category AS category_name, "
 		. "type, "
 		. "year, "
 		. "media, "
@@ -207,7 +208,8 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 		array('container'=>'sections', 'fname'=>'sname', 'name'=>'section',
 			'fields'=>array('name'=>'sname')),
 		array('container'=>'items', 'fname'=>'id', 'name'=>'item',
-			'fields'=>array('id', 'name', 'image_id', 'type', 'year', 'media', 'catalog_number', 
+			'fields'=>array('id', 'title'=>'name', 'name', 'category'=>'category_name', 
+				'image_id', 'type', 'year', 'media', 'catalog_number', 
 				'size', 'framed_size', 'price', 'sold', 'flags', 'location', 
 				'description', 'notes', 'awards', 'inspiration')),
 		));
@@ -224,6 +226,19 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 	// Check if output is to be pdf
 	//
 	if( isset($args['output']) && $args['output'] == 'pdf' ) {
+		ciniki_core_loadMethod($ciniki, 'ciniki', 'artcatalog', 'templates', $args['layout']);
+		$function = 'ciniki_artcatalog_templates_' . $args['layout'];
+		$rc = $function($ciniki, $args['business_id'], $sections, $args);
+		if( $rc['stat'] != 'ok' ) {	
+			return $rc;
+		}
+		return array('stat'=>'ok');
+	}
+
+	//
+	// Check if output is to be excel
+	//
+	if( isset($args['output']) && $args['output'] == 'excel' ) {
 		ciniki_core_loadMethod($ciniki, 'ciniki', 'artcatalog', 'templates', $args['layout']);
 		$function = 'ciniki_artcatalog_templates_' . $args['layout'];
 		$rc = $function($ciniki, $args['business_id'], $sections, $args);

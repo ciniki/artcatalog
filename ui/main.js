@@ -767,10 +767,11 @@ function ciniki_artcatalog_main() {
 			'list':{'label':'List', 'field_id':'list'},
 //			'quad':{'label':'Quad', 'field_id':'quad'},
 			'single':{'label':'Single', 'field_id':'single'},
+			'excel':{'label':'Excel', 'field_id':'excel'},
 			}};
 		this.downloadpdf.forms.thumbnails = {
 			'details':{'label':'', 'fields':{
-				'title':{'label':'Page Title', 'type':'text'},
+				'pagetitle':{'label':'Page Title', 'type':'text'},
 				}},
 			'_buttons':{'label':'', 'buttons':{
 				'download':{'label':'Download PDF', 'fn':'M.ciniki_artcatalog_main.downloadPDF();'},
@@ -778,7 +779,7 @@ function ciniki_artcatalog_main() {
 		};
 		this.downloadpdf.forms.pricelist = {
 			'details':{'label':'', 'fields':{
-				'title':{'label':'Page Title', 'type':'text'},
+				'pagetitle':{'label':'Page Title', 'type':'text'},
 				'catalog_number':{'label':'Catalog Number', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 				'sold_label':{'label':'Sold Label', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 				'media':{'label':'Media', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
@@ -793,7 +794,7 @@ function ciniki_artcatalog_main() {
 		};
 		this.downloadpdf.forms.list = {
 			'details':{'label':'', 'fields':{
-				'title':{'label':'Page Title', 'type':'text'},
+				'pagetitle':{'label':'Page Title', 'type':'text'},
 				'catalog_number':{'label':'Catalog Number', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 				'sold_label':{'label':'Sold Label', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 				'media':{'label':'Media', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
@@ -809,7 +810,7 @@ function ciniki_artcatalog_main() {
 		};
 //		this.downloadpdf.forms.quad = {
 //			'details':{'label':'', 'fields':{
-//				'title':{'label':'Title', 'type':'text'},
+//				'pagetitle':{'label':'Title', 'type':'text'},
 //				'catalog_number':{'label':'Catalog Number', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 //				'media':{'label':'Media', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 //				'size':{'label':'Size', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
@@ -827,7 +828,7 @@ function ciniki_artcatalog_main() {
 //		};
 		this.downloadpdf.forms.single = {
 			'details':{'label':'', 'fields':{
-				'title':{'label':'Page Title', 'type':'text'},
+				'pagetitle':{'label':'Page Title', 'type':'text'},
 				'catalog_number':{'label':'Catalog Number', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 				'sold_label':{'label':'Sold Label', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 				'media':{'label':'Media', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
@@ -843,6 +844,27 @@ function ciniki_artcatalog_main() {
 				}},
 			'_buttons':{'label':'', 'buttons':{
 				'download':{'label':'Download PDF', 'fn':'M.ciniki_artcatalog_main.downloadPDF();'},
+				}},
+		};
+		this.downloadpdf.forms.excel = {
+			'details':{'label':'', 'fields':{
+				'pagetitle':{'label':'File Name', 'type':'text'},
+				'catalog_number':{'label':'Catalog Number', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
+				'name':{'label':'Title', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
+				'category':{'label':'Category', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
+				'sold_label':{'label':'Sold Label', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
+				'media':{'label':'Media', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
+				'size':{'label':'Size', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
+				'framed_size':{'label':'Framed Size', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
+				'price':{'label':'Price', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
+				'location':{'label':'Location', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
+				'description':{'label':'Description', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
+				'awards':{'label':'Awards', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
+				'notes':{'label':'Notes', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
+				'inspiration':{'label':'Inspiration', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
+				}},
+			'_buttons':{'label':'', 'buttons':{
+				'download':{'label':'Download Excel', 'fn':'M.ciniki_artcatalog_main.downloadExcel();'},
 				}},
 		};
 //		this.downloadpdf.sections = this.downloadpdf.forms.list;
@@ -1202,15 +1224,17 @@ function ciniki_artcatalog_main() {
 		}
 	};
 
-	this.showDownload = function(cb, method, section, name, type, title) {
+	this.showDownload = function(cb, method, section, name, type, pagetitle) {
 		this.downloadpdf.reset();
 		this.downloadpdf.method = method;
 		this.downloadpdf.list_section = section;
 		this.downloadpdf.list_name = name;
 		this.downloadpdf.list_type = type;
 		this.downloadpdf.list_artcatalog_id = null;
-		this.downloadpdf.data = {'title':M.curBusiness.name + (title!=''?' - ' + title:''),
+		this.downloadpdf.data = {'pagetitle':M.curBusiness.name + (pagetitle!=''?' - ' + pagetitle:''),
 			'catalog_number':'include',
+			'name':'include',
+			'category':'include',
 			'media':'include',
 			'size':'include',
 			'framed_size':'include',
@@ -1229,15 +1253,17 @@ function ciniki_artcatalog_main() {
 		this.downloadpdf.show(cb);
 	};
 
-	this.showItemDownload = function(cb, method, title, aid) {
+	this.showItemDownload = function(cb, method, pagetitle, aid) {
 		this.downloadpdf.reset();
 		this.downloadpdf.method = method;
 		this.downloadpdf.list_section = null;
 		this.downloadpdf.list_name = null;
 		this.downloadpdf.list_type = null;
 		this.downloadpdf.list_artcatalog_id = aid;
-		this.downloadpdf.data = {'title':M.curBusiness.name + (title!=''?' - ' + title:''),
+		this.downloadpdf.data = {'pagetitle':M.curBusiness.name + (pagetitle!=''?' - ' + pagetitle:''),
 			'catalog_number':'include',
+			'name':'include',
+			'category':'include',
 			'media':'include',
 			'size':'include',
 			'framed_size':'include',
@@ -1272,10 +1298,41 @@ function ciniki_artcatalog_main() {
 		}
 //		var l = this.downloadpdf.formFieldValue(this.downloadpdf.formField('layout'), 'layout');
 		args['layout'] = this.downloadpdf.formtab;
-		var t = this.downloadpdf.formFieldValue(this.downloadpdf.formField('title'), 'title');
-		args['title'] = t;
+		var t = this.downloadpdf.formFieldValue(this.downloadpdf.formField('pagetitle'), 'pagetitle');
+		args['pagetitle'] = t;
 		var fields = '';
 		var flds = ['catalog_number','media','size','framed_size','price','location','description','awards','notes','inspiration'];
+		for(i in this.downloadpdf.sections.details.fields) {
+			if( this.downloadpdf.formFieldValue(this.downloadpdf.formField(i), i) == 'include' ) {
+				fields += ',' + i;
+			}
+		}
+		if( fields != '' ) {
+			args['fields'] = fields.substring(1);
+		}
+		window.open(M.api.getUploadURL(this.downloadpdf.method, args));
+	};
+
+	this.downloadExcel = function() {
+		var args = {'business_id':M.curBusinessID, 'output':'excel'};
+		if( this.downloadpdf.list_section != null && this.downloadpdf.list_section != '' ) { 
+			args['section'] = this.downloadpdf.list_section; 
+		}
+		if( this.downloadpdf.list_name != null && this.downloadpdf.list_name != '' ) { 
+			args['name'] = this.downloadpdf.list_name; 
+		}
+		if( this.downloadpdf.list_type != null && this.downloadpdf.list_type != '' ) { 
+			args['type'] = this.downloadpdf.list_type;
+		}
+		if( this.downloadpdf.list_artcatalog_id != null && this.downloadpdf.list_artcatalog_id != '' ) { 
+			args['artcatalog_id'] = this.downloadpdf.list_artcatalog_id;
+		}
+//		var l = this.downloadpdf.formFieldValue(this.downloadpdf.formField('layout'), 'layout');
+		args['layout'] = this.downloadpdf.formtab;
+		var t = this.downloadpdf.formFieldValue(this.downloadpdf.formField('pagetitle'), 'pagetitle');
+		args['pagetitle'] = t;
+		var fields = '';
+		var flds = ['catalog_number','title', 'category', 'media','size','framed_size','price','location','description','awards','notes','inspiration'];
 		for(i in this.downloadpdf.sections.details.fields) {
 			if( this.downloadpdf.formFieldValue(this.downloadpdf.formField(i), i) == 'include' ) {
 				fields += ',' + i;
