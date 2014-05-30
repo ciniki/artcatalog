@@ -125,7 +125,7 @@ function ciniki_artcatalog_get($ciniki) {
 				'2'=>'Photograph', 
 				'3'=>'Jewelry', 
 				'4'=>'Sculpture', 
-				'5'=>'Craft',
+				'5'=>'Fibre Art',
 				)),
 			),
 //		array('container'=>'sales', 'fname'=>'customer_id', 'name'=>'customer',
