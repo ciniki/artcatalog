@@ -41,7 +41,7 @@ function ciniki_artcatalog_web_categoryImages($ciniki, $settings, $business_id, 
 			$strsql .= "AND (detail_key LIKE 'category-description-" . ciniki_core_dbQuote($ciniki, $args['type_name']) . "' "
 				. "OR detail_key LIKE 'category-description-" . ciniki_core_dbQuote($ciniki, $args['artcatalog_type']) . "-" . $args['type_name'] . "' )";
 		} else {
-			$strsql .= "AND detail_key LIKE 'category-description-" . ciniki_core_dbQuote($ciniki, $args['type_name']) . "' )";
+			$strsql .= "AND detail_key = 'category-description-" . ciniki_core_dbQuote($ciniki, $args['type_name']) . "' ";
 		}
 		$rc = ciniki_core_dbHashIDQuery($ciniki, $strsql, 'ciniki.artcatalog', 'settings', 'detail_key');
 		if( $rc['stat'] != 'ok' ) {
@@ -52,11 +52,10 @@ function ciniki_artcatalog_web_categoryImages($ciniki, $settings, $business_id, 
 			&& isset($rc['settings']['category-description-' . $args['artcatalog_type'] . '-' . $args['type_name']]['detail_value']) ) {
 			$album['description'] = $rc['settings']['category-description-' . $args['artcatalog_type'] . '-' . $args['type_name']]['detail_value'];
 			
-		} elseif( isset($rc['settings']['category-description-' . $args['type_name']]) ) {
+		} elseif( isset($rc['settings']['category-description-' . $args['type_name']]['detail_value']) ) {
 			$album['description'] = $rc['settings']['category-description-' . $args['type_name']]['detail_value'];
 		}
 	}
-
 	
 	$strsql = "SELECT ciniki_artcatalog.id, "
 		. "name AS title, permalink, image_id, media, size, framed_size, price, "
@@ -88,7 +87,6 @@ function ciniki_artcatalog_web_categoryImages($ciniki, $settings, $business_id, 
 		. "ciniki_artcatalog.month DESC, "
 		. "ciniki_artcatalog.day DESC, "
 		. "ciniki_artcatalog.date_added DESC ";
-//	$strsql .= "ORDER BY ciniki_artcatalog.date_added DESC ";
 
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
 	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', '');
