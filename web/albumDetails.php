@@ -32,7 +32,8 @@ function ciniki_artcatalog_web_albumDetails($ciniki, $settings, $business_id, $a
 	//
 	// Get the gallery information
 	//
+	$album = array();
 
-	return array('stat'=>'ok', 'album'=>array());
+	return array('stat'=>'ok', 'album'=>$album);
 }
 ?>

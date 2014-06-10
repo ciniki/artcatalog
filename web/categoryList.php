@@ -19,7 +19,19 @@
 //		...
 // </categories>
 //
-function ciniki_artcatalog_web_categories($ciniki, $settings, $business_id, $args) {
+function ciniki_artcatalog_web_categoryList($ciniki, $settings, $business_id, $args) {
+
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbDetailsQueryDash');	
+	$rc = ciniki_core_dbDetailsQueryDash($ciniki, 'ciniki_artcatalog_settings', 'business_id', $business_id,
+		'ciniki.artcatalog', 'settings', 'category');
+	if( $rc['stat'] != 'ok' ) {
+		error_log('ERR: Unable to get category details');
+	}
+	if( isset($rc['settings']) ) {
+		$settings = $rc['settings'];
+	} else {
+		$settings = array();
+	}
 
 	$strsql = "SELECT DISTINCT category AS name "
 		. "FROM ciniki_artcatalog "
@@ -76,6 +88,17 @@ function ciniki_artcatalog_web_categories($ciniki, $settings, $business_id, $arg
 		}
 		if( isset($rc['image']) ) {
 			$categories[$cnum]['category']['image_id'] = $rc['image']['image_id'];
+		}
+		//
+		// Setup the synopsis
+		//
+		if( isset($args['artcatalog_type']) && $args['artcatalog_type'] > 0 
+			&& isset($settings['category-synopsis-' . $args['category_type'] . '-' . $cat['category']['name']]) ) {
+			$categories[$cnum]['category']['synopsis'] = $settings['category-synopsis-' . $args['category_type'] . '-' . $cat['category']['name']];
+		} elseif( isset($settings['category-synopsis-' . $cat['category']['name']]) ) {
+			$categories[$cnum]['category']['synopsis'] = $settings['category-synopsis-' . $cat['category']['name'];
+		} else {
+			$categories[$cnum]['category']['synopsis'] = '';
 		}
 	}
 

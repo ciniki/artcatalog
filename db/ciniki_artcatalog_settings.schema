@@ -8,6 +8,9 @@
 # enable-tracking				- Should the tracking/Exhibited feature be displayed
 # enable-inspiration			- Should the inspiration field be displayed
 #
+# Category Descriptions
+# category-description-{name}	The description for the category {name}
+#
 # Taxes:
 # taxes-default-taxtype		- The default tax type ID for art catalog items.
 #

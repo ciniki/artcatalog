@@ -30,6 +30,34 @@
 //
 function ciniki_artcatalog_web_categoryImages($ciniki, $settings, $business_id, $args) {
 
+	$album = array('name'=>'');
+	if( isset($args['type']) && $args['type'] == 'category' && isset($args['type_name'])) {
+		$album = array('name'=>$args['type_name'], 'description'=>'');
+		$strsql = "SELECT detail_key, detail_value "
+			. "FROM ciniki_artcatalog_settings "
+			. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' ";
+			
+		if( isset($args['artcatalog_type']) && $args['artcatalog_type'] != '' ) {
+			$strsql .= "AND (detail_key LIKE 'category-description-" . ciniki_core_dbQuote($ciniki, $args['type_name']) . "' "
+				. "OR detail_key LIKE 'category-description-" . ciniki_core_dbQuote($ciniki, $args['artcatalog_type']) . "-" . $args['type_name'] . "' )";
+		} else {
+			$strsql .= "AND detail_key LIKE 'category-description-" . ciniki_core_dbQuote($ciniki, $args['type_name']) . "' )";
+		}
+		$rc = ciniki_core_dbHashIDQuery($ciniki, $strsql, 'ciniki.artcatalog', 'settings', 'detail_key');
+		if( $rc['stat'] != 'ok' ) {
+			error_log('ERR: Unable to get album description');
+		}
+
+		if( isset($args['artcatalog_type']) && $args['artcatalog_type'] > 0 
+			&& isset($rc['settings']['category-description-' . $args['artcatalog_type'] . '-' . $args['type_name']]['detail_value']) ) {
+			$album['description'] = $rc['settings']['category-description-' . $args['artcatalog_type'] . '-' . $args['type_name']]['detail_value'];
+			
+		} elseif( isset($rc['settings']['category-description-' . $args['type_name']]) ) {
+			$album['description'] = $rc['settings']['category-description-' . $args['type_name']]['detail_value'];
+		}
+	}
+
+	
 	$strsql = "SELECT ciniki_artcatalog.id, "
 		. "name AS title, permalink, image_id, media, size, framed_size, price, "
 		. "IF((flags&0x02)=0x02, 'yes', 'no') AS sold, "
@@ -91,6 +119,6 @@ function ciniki_artcatalog_web_categoryImages($ciniki, $settings, $business_id, 
 			'caption'=>$caption, 'sold'=>$row['sold'], 'last_updated'=>$row['last_updated']));
 	}
 	
-	return array('stat'=>'ok', 'images'=>$images);
+	return array('stat'=>'ok', 'album'=>$album, 'images'=>$images);
 }
 ?>

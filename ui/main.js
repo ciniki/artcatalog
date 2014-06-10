@@ -894,10 +894,13 @@ function ciniki_artcatalog_main() {
 		this.tools.data = {};
 		this.tools.sections = {
 			'tools':{'label':'Adjustments', 'list':{
-				'categories':{'label':'Edit Categories', 'fn':'M.startApp(\'ciniki.artcatalog.fieldupdate\', null, \'M.ciniki_artcatalog_main.tools.show();\',\'mc\',{\'field\':\'category\',\'fieldname\':\'Categories\'});'},
-				'media':{'label':'Edit Media', 'fn':'M.startApp(\'ciniki.artcatalog.fieldupdate\', null, \'M.ciniki_artcatalog_main.tools.show();\',\'mc\',{\'field\':\'media\',\'fieldname\':\'Media\'});'},
-				'location':{'label':'Edit Locations', 'fn':'M.startApp(\'ciniki.artcatalog.fieldupdate\', null, \'M.ciniki_artcatalog_main.tools.show();\',\'mc\',{\'field\':\'location\',\'fieldname\':\'Locations\'});'},
-				'years':{'label':'Edit Years', 'fn':'M.startApp(\'ciniki.artcatalog.fieldupdate\', null, \'M.ciniki_artcatalog_main.tools.show();\',\'mc\',{\'field\':\'year\',\'fieldname\':\'Years\'});'},
+				'categories':{'label':'Update Category Names', 'fn':'M.startApp(\'ciniki.artcatalog.fieldupdate\', null, \'M.ciniki_artcatalog_main.tools.show();\',\'mc\',{\'field\':\'category\',\'fieldname\':\'Categories\'});'},
+				'media':{'label':'Update Media', 'fn':'M.startApp(\'ciniki.artcatalog.fieldupdate\', null, \'M.ciniki_artcatalog_main.tools.show();\',\'mc\',{\'field\':\'media\',\'fieldname\':\'Media\'});'},
+				'location':{'label':'Update Locations', 'fn':'M.startApp(\'ciniki.artcatalog.fieldupdate\', null, \'M.ciniki_artcatalog_main.tools.show();\',\'mc\',{\'field\':\'location\',\'fieldname\':\'Locations\'});'},
+				'years':{'label':'Update Years', 'fn':'M.startApp(\'ciniki.artcatalog.fieldupdate\', null, \'M.ciniki_artcatalog_main.tools.show();\',\'mc\',{\'field\':\'year\',\'fieldname\':\'Years\'});'},
+			}},
+			'tools1':{'label':'', 'list':{
+				'_cats':{'label':'Category Details', 'fn':'M.startApp(\'ciniki.artcatalog.categories\', null, \'M.ciniki_artcatalog_main.tools.show();\');'},
 			}},
 			};
 		this.tools.addClose('Back');

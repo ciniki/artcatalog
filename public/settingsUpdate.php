@@ -63,6 +63,7 @@ function ciniki_artcatalog_settingsUpdate(&$ciniki) {
 		return $rc;
 	}   
 
+
 	//
 	// The list of allowed fields for updating
 	//
@@ -72,6 +73,29 @@ function ciniki_artcatalog_settingsUpdate(&$ciniki) {
 		'enable-inspiration',
 		'taxes-default-taxtype',
 		);
+
+	//
+	// Get the list of categories
+	//
+	$strsql = "SELECT DISTINCT category "
+		. "FROM ciniki_artcatalog "
+		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+		. "";
+	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', 'category');
+	if( $rc['stat'] != 'ok' ) {
+		return $rc;
+	}
+	foreach($rc['rows'] as $row) {
+		if( $row['category'] != '' ) {
+			$changelog_fields[] = 'category-description-' . $row['category'];
+			$changelog_fields[] = 'category-synopsis-' . $row['category'];
+			for($i=1;$i<10;$i++) {
+				$changelog_fields[] = "category-description-$i-" . $row['category'];
+				$changelog_fields[] = "category-synopsis-$i-" . $row['category'];
+			}
+		}
+	}
+
 	//
 	// Check each valid setting and see if a new value was passed in the arguments for it.
 	// Insert or update the entry in the ciniki_artcatalog_settings table
@@ -98,6 +122,10 @@ function ciniki_artcatalog_settingsUpdate(&$ciniki) {
 				'args'=>array('id'=>$field));
 		}
 	}
+
+	//
+	// Check for category-descriptions
+	//
 
 	//
 	// Commit the database changes
