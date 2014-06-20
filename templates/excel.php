@@ -47,6 +47,7 @@ function ciniki_artcatalog_templates_excel($ciniki, $business_id, $sections, $ar
 
 	$titles = array(
 		'catalog_number'=>'Catalog Number',
+		'name'=>'Name',
 		'title'=>'Title',
 		'category'=>'Category',
 		'media'=>'Media',
