@@ -1162,14 +1162,14 @@ function ciniki_artcatalog_main() {
 			this.list.cb = cb;
 		}
 		if( this.statsmenu.sections.types.visible == 'yes' && this.statsmenu.sections.types.selected != '' ) {
-			this.list.downloadFn = 'M.ciniki_artcatalog_main.showDownload(\'M.ciniki_artcatalog_main.showList();\',\'ciniki.artcatalog.listWithImages\',\'' + this.list.current_section + '\',\'' + this.list.current_name + '\',\'' + this.statsmenu.sections.types.selected + '\',\'' + this.list.current_name + '\');';
+			this.list.downloadFn = 'M.ciniki_artcatalog_main.showDownload(\'M.ciniki_artcatalog_main.showList();\',\'ciniki.artcatalog.listWithImages\',\'' + this.list.current_section + '\',\'' + escape(this.list.current_name) + '\',\'' + this.statsmenu.sections.types.selected + '\',\'' + escape(this.list.current_name) + '\');';
 			var rsp = M.api.getJSONCb('ciniki.artcatalog.listWithImages', 
 				{'business_id':M.curBusinessID, 'section':this.list.current_section, 
 					'name':this.list.current_name, 
 					'type':this.statsmenu.sections.types.selected}, 
 				M.ciniki_artcatalog_main.showListFinish);
 		} else {
-			this.list.downloadFn = 'M.ciniki_artcatalog_main.showDownload(\'M.ciniki_artcatalog_main.showList();\',\'ciniki.artcatalog.listWithImages\',\'' + this.list.current_section + '\',\'' + this.list.current_name + '\',\'\',\'' + this.list.current_name + '\');';
+			this.list.downloadFn = 'M.ciniki_artcatalog_main.showDownload(\'M.ciniki_artcatalog_main.showList();\',\'ciniki.artcatalog.listWithImages\',\'' + this.list.current_section + '\',\'' + escape(this.list.current_name) + '\',\'\',\'' + escape(this.list.current_name) + '\');';
 			var rsp = M.api.getJSONCb('ciniki.artcatalog.listWithImages', 
 				{'business_id':M.curBusinessID, 'section':this.list.current_section, 
 					'name':this.list.current_name}, 
@@ -1231,10 +1231,10 @@ function ciniki_artcatalog_main() {
 		this.downloadpdf.reset();
 		this.downloadpdf.method = method;
 		this.downloadpdf.list_section = section;
-		this.downloadpdf.list_name = name;
+		this.downloadpdf.list_name = unescape(name);
 		this.downloadpdf.list_type = type;
 		this.downloadpdf.list_artcatalog_id = null;
-		this.downloadpdf.data = {'pagetitle':M.curBusiness.name + (pagetitle!=''?' - ' + pagetitle:''),
+		this.downloadpdf.data = {'pagetitle':M.curBusiness.name + (pagetitle!=''?' - ' + unescape(pagetitle):''),
 			'catalog_number':'include',
 			'name':'include',
 			'category':'include',
