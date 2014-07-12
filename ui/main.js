@@ -303,7 +303,7 @@ function ciniki_artcatalog_main() {
 			'_image':{'label':'Image', 'aside':'yes', 'fields':{
 				'image_id':{'label':'', 'type':'image_id', 'hidelabel':'yes', 'history':'no'},
 			}},
-			'info':{'label':'Public Information', 'list':{
+			'info':{'label':'Public Information', 'aside':'yes', 'list':{
 				'type_text':{'label':'Type'},
 				'name':{'label':'Title', 'type':'text'},
 				'category':{'label':'Category'},
@@ -509,7 +509,7 @@ function ciniki_artcatalog_main() {
 			'_image':{'label':'Image', 'aside':'yes', 'fields':{
 				'image_id':{'label':'', 'type':'image_id', 'hidelabel':'yes', 'controls':'all', 'history':'no'},
 			}},
-			'info':{'label':'Public Information', 'type':'simpleform', 'fields':{
+			'info':{'label':'Public Information', 'aside':'yes', 'type':'simpleform', 'fields':{
 				'name':{'label':'Title', 'type':'text'},
 				'category':{'label':'Category', 'type':'text', 'livesearch':'yes', 'livesearchempty':'yes'},
 				'size':{'label':'Size', 'type':'text', 'size':'small'},
@@ -518,12 +518,6 @@ function ciniki_artcatalog_main() {
 				'flags':{'label':'', 'type':'flags', 'join':'yes', 'flags':this.itemFlags},
 				'webflags':{'label':'Website', 'type':'flags', 'join':'yes', 'flags':this.webFlags},
 			}},
-			'_description':{'label':'Description', 'type':'simpleform', 'fields':{
-				'description':{'label':'', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
-			}},
-			'_awards':{'label':'Awards', 'type':'simpleform', 'fields':{
-				'awards':{'label':'', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
-			}},
 			'ainfo':{'label':'Private Information', 'type':'simpleform', 'fields':{
 				'catalog_number':{'label':'Number', 'type':'text', 'size':'small'},
 				'year':{'label':'Year', 'type':'text', 'size':'small', 'livesearch':'yes', 'livesearchempty':'yes'},
@@ -531,6 +525,12 @@ function ciniki_artcatalog_main() {
 				'day':{'label':'Day', 'type':'select', 'options':this.dayOptions},
 				'media':{'label':'Media', 'type':'text', 'size':'small', 'livesearch':'yes', 'livesearchempty':'yes'},
 				'location':{'label':'Location', 'type':'text', 'livesearch':'yes', 'livesearchempty':'yes'},
+			}},
+			'_description':{'label':'Description', 'type':'simpleform', 'fields':{
+				'description':{'label':'', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
+			}},
+			'_awards':{'label':'Awards', 'type':'simpleform', 'fields':{
+				'awards':{'label':'', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
 			}},
 			'_lists':{'label':'Lists', 'type':'simpleform', 'fields':{
 				'lists':{'label':'', 'active':'no', 'hidelabel':'yes', 'type':'tags', 'tags':[], 'hint':'New List'},
@@ -550,18 +550,12 @@ function ciniki_artcatalog_main() {
 			'_image':{'label':'Image', 'aside':'yes', 'fields':{
 				'image_id':{'label':'', 'type':'image_id', 'hidelabel':'yes', 'controls':'all', 'history':'no'},
 			}},
-			'info':{'label':'Public Information', 'type':'simpleform', 'fields':{
+			'info':{'label':'Public Information', 'aside':'yes', 'type':'simpleform', 'fields':{
 				'name':{'label':'Title', 'type':'text'},
 				'category':{'label':'Category', 'type':'text', 'livesearch':'yes', 'livesearchempty':'yes'},
 				'price':{'label':'Price', 'type':'text', 'size':'small'},
 				'flags':{'label':'', 'type':'flags', 'join':'yes', 'flags':this.itemFlags},
 				'webflags':{'label':'Website', 'type':'flags', 'join':'yes', 'flags':this.webFlags},
-			}},
-			'_description':{'label':'Description', 'type':'simpleform', 'fields':{
-				'description':{'label':'', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
-			}},
-			'_awards':{'label':'Awards', 'type':'simpleform', 'fields':{
-				'awards':{'label':'', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
 			}},
 			'ainfo':{'label':'Private Information', 'type':'simpleform', 'fields':{
 				'catalog_number':{'label':'Number', 'type':'text', 'size':'small'},
@@ -569,6 +563,12 @@ function ciniki_artcatalog_main() {
 				'month':{'label':'Month', 'type':'select', 'options':this.monthOptions},
 				'day':{'label':'Day', 'type':'select', 'options':this.dayOptions},
 				'location':{'label':'Location', 'type':'text', 'livesearch':'yes', 'livesearchempty':'yes'},
+			}},
+			'_description':{'label':'Description', 'type':'simpleform', 'fields':{
+				'description':{'label':'', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
+			}},
+			'_awards':{'label':'Awards', 'type':'simpleform', 'fields':{
+				'awards':{'label':'', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
 			}},
 			'_lists':{'label':'Lists', 'type':'simpleform', 'fields':{
 				'lists':{'label':'', 'active':'no', 'hidelabel':'yes', 'type':'tags', 'tags':[], 'hint':'New List'},
@@ -588,18 +588,12 @@ function ciniki_artcatalog_main() {
 			'_image':{'label':'Image', 'aside':'yes', 'fields':{
 				'image_id':{'label':'', 'type':'image_id', 'hidelabel':'yes', 'controls':'all', 'history':'no'},
 			}},
-			'info':{'label':'Public Information', 'type':'simpleform', 'fields':{
+			'info':{'label':'Public Information', 'aside':'yes', 'type':'simpleform', 'fields':{
 				'name':{'label':'Title', 'type':'text'},
 				'category':{'label':'Category', 'type':'text', 'livesearch':'yes', 'livesearchempty':'yes'},
 				'price':{'label':'Price', 'type':'text', 'size':'small'},
 				'flags':{'label':'', 'type':'flags', 'join':'yes', 'flags':this.itemFlags},
 				'webflags':{'label':'Website', 'type':'flags', 'join':'yes', 'flags':this.webFlags},
-			}},
-			'_description':{'label':'Description', 'type':'simpleform', 'fields':{
-				'description':{'label':'', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
-			}},
-			'_awards':{'label':'Awards', 'type':'simpleform', 'fields':{
-				'awards':{'label':'', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
 			}},
 			'ainfo':{'label':'Private Information', 'type':'simpleform', 'fields':{
 				'catalog_number':{'label':'Number', 'type':'text', 'size':'small'},
@@ -608,6 +602,12 @@ function ciniki_artcatalog_main() {
 				'day':{'label':'Day', 'type':'select', 'options':this.dayOptions},
 				'media':{'label':'Media', 'type':'text', 'size':'small', 'livesearch':'yes', 'livesearchempty':'yes'},
 				'location':{'label':'Location', 'type':'text', 'livesearch':'yes', 'livesearchempty':'yes'},
+			}},
+			'_description':{'label':'Description', 'type':'simpleform', 'fields':{
+				'description':{'label':'', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
+			}},
+			'_awards':{'label':'Awards', 'type':'simpleform', 'fields':{
+				'awards':{'label':'', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
 			}},
 			'_lists':{'label':'Lists', 'type':'simpleform', 'fields':{
 				'lists':{'label':'', 'active':'no', 'hidelabel':'yes', 'type':'tags', 'tags':[], 'hint':'New List'},
@@ -627,19 +627,13 @@ function ciniki_artcatalog_main() {
 			'_image':{'label':'Image', 'aside':'yes', 'fields':{
 				'image_id':{'label':'', 'type':'image_id', 'hidelabel':'yes', 'controls':'all', 'history':'no'},
 			}},
-			'info':{'label':'Public Information', 'type':'simpleform', 'fields':{
+			'info':{'label':'Public Information', 'aside':'yes', 'type':'simpleform', 'fields':{
 				'name':{'label':'Title', 'type':'text'},
 				'category':{'label':'Category', 'type':'text', 'livesearch':'yes', 'livesearchempty':'yes'},
 				'size':{'label':'Size', 'type':'text', 'size':'small'},
 				'price':{'label':'Price', 'type':'text', 'size':'small'},
 				'flags':{'label':'', 'type':'flags', 'join':'yes', 'flags':this.itemFlags},
 				'webflags':{'label':'Website', 'type':'flags', 'join':'yes', 'flags':this.webFlags},
-			}},
-			'_description':{'label':'Description', 'type':'simpleform', 'fields':{
-				'description':{'label':'', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
-			}},
-			'_awards':{'label':'Awards', 'type':'simpleform', 'fields':{
-				'awards':{'label':'', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
 			}},
 			'ainfo':{'label':'Private Information', 'type':'simpleform', 'fields':{
 				'catalog_number':{'label':'Number', 'type':'text', 'size':'small'},
@@ -648,6 +642,12 @@ function ciniki_artcatalog_main() {
 				'day':{'label':'Day', 'type':'select', 'options':this.dayOptions},
 				'media':{'label':'Media', 'type':'text', 'size':'small', 'livesearch':'yes', 'livesearchempty':'yes'},
 				'location':{'label':'Location', 'type':'text', 'livesearch':'yes', 'livesearchempty':'yes'},
+			}},
+			'_description':{'label':'Description', 'type':'simpleform', 'fields':{
+				'description':{'label':'', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
+			}},
+			'_awards':{'label':'Awards', 'type':'simpleform', 'fields':{
+				'awards':{'label':'', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
 			}},
 			'_lists':{'label':'Lists', 'type':'simpleform', 'fields':{
 				'lists':{'label':'', 'active':'no', 'hidelabel':'yes', 'type':'tags', 'tags':[], 'hint':'New List'},
@@ -667,19 +667,13 @@ function ciniki_artcatalog_main() {
 			'_image':{'label':'Image', 'aside':'yes', 'fields':{
 				'image_id':{'label':'', 'type':'image_id', 'hidelabel':'yes', 'controls':'all', 'history':'no'},
 			}},
-			'info':{'label':'Public Information', 'type':'simpleform', 'fields':{
+			'info':{'label':'Public Information', 'aside':'yes', 'type':'simpleform', 'fields':{
 				'name':{'label':'Title', 'type':'text'},
 				'category':{'label':'Category', 'type':'text', 'livesearch':'yes', 'livesearchempty':'yes'},
 				'size':{'label':'Size', 'type':'text', 'size':'small'},
 				'price':{'label':'Price', 'type':'text', 'size':'small'},
 				'flags':{'label':'', 'type':'flags', 'join':'yes', 'flags':this.itemFlags},
 				'webflags':{'label':'Website', 'type':'flags', 'join':'yes', 'flags':this.webFlags},
-			}},
-			'_description':{'label':'Description', 'type':'simpleform', 'fields':{
-				'description':{'label':'', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
-			}},
-			'_awards':{'label':'Awards', 'type':'simpleform', 'fields':{
-				'awards':{'label':'', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
 			}},
 			'ainfo':{'label':'Private Information', 'type':'simpleform', 'fields':{
 				'catalog_number':{'label':'Number', 'type':'text', 'size':'small'},
@@ -688,6 +682,12 @@ function ciniki_artcatalog_main() {
 				'day':{'label':'Day', 'type':'select', 'options':this.dayOptions},
 //				'media':{'label':'Media', 'type':'text', 'size':'small', 'livesearch':'yes', 'livesearchempty':'yes'},
 				'location':{'label':'Location', 'type':'text', 'livesearch':'yes', 'livesearchempty':'yes'},
+			}},
+			'_description':{'label':'Description', 'type':'simpleform', 'fields':{
+				'description':{'label':'', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
+			}},
+			'_awards':{'label':'Awards', 'type':'simpleform', 'fields':{
+				'awards':{'label':'', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
 			}},
 			'_lists':{'label':'Lists', 'type':'simpleform', 'fields':{
 				'lists':{'label':'', 'active':'no', 'hidelabel':'yes', 'type':'tags', 'tags':[], 'hint':'New List'},
