@@ -102,7 +102,7 @@ function ciniki_artcatalog_main() {
 						return '<img width="75px" height="75px" src=\'' + M.api.getBinaryURL('ciniki.artcatalog.getImage', {'business_id':M.curBusinessID, 'image_id':d.item.image_id, 'version':'thumbnail', 'maxwidth':'75'}) + '\' />'; 
 					}
 				} else {
-					return '<img width="75px" height="75px" src=\'/ciniki-manage-themes/default/img/noimage_75.jpg\' />';
+					return '<img width="75px" height="75px" src=\'/ciniki-mods/core/ui/themes/default/img/noimage_75.jpg\' />';
 				}
 			}
 			if( j == 1 ) { 
@@ -208,7 +208,7 @@ function ciniki_artcatalog_main() {
 						return '<img width="75px" height="75px" src=\'' + M.api.getBinaryURL('ciniki.artcatalog.getImage', {'business_id':M.curBusinessID, 'image_id':d.item.image_id, 'version':'thumbnail', 'maxwidth':'75'}) + '\' />'; 
 					}
 				} else {
-					return '<img width="75px" height="75px" src=\'/ciniki-manage-themes/default/img/noimage_75.jpg\' />';
+					return '<img width="75px" height="75px" src=\'/ciniki-mods/core/ui/themes/default/img/noimage_75.jpg\' />';
 				}
 			}
 			if( j == 1 ) { return '<span class="maintext">' + d.item.name + '</span><span class="subtext"><b>Media</b>: ' + d.item.media + ', <b>Size</b>: ' + d.item.size + ', <b>Framed</b>: ' + d.item.framed_size + ', <b>Price</b>: ' + d.item.price + '</span>'; }
@@ -262,7 +262,7 @@ function ciniki_artcatalog_main() {
 						return '<img width="75px" height="75px" src=\'' + M.api.getBinaryURL('ciniki.artcatalog.getImage', {'business_id':M.curBusinessID, 'image_id':d.item.image_id, 'version':'thumbnail', 'maxwidth':'75'}) + '\' />'; 
 					}
 				} else {
-					return '<img width="75px" height="75px" src=\'/ciniki-manage-themes/default/img/noimage_75.jpg\' />';
+					return '<img width="75px" height="75px" src=\'/ciniki-mods/core/ui/themes/default/img/noimage_75.jpg\' />';
 				}
 			}
 			if( j == 1 ) { 
@@ -445,7 +445,7 @@ function ciniki_artcatalog_main() {
 			if( d.image.image_data != null && d.image.image_data != '' ) {
 				return d.image.image_data;
 			} else {
-				return '/ciniki-manage-themes/default/img/noimage_75.jpg';
+				return '/ciniki-mods/core/ui/themes/default/img/noimage_75.jpg';
 			}
 		};
 		this.item.thumbTitle = function(s, i, d) {
