@@ -13,9 +13,9 @@
 // =======
 // <rsp stat="ok" />
 //
-function ciniki_artcatalog_sapos_itemSearch($ciniki, $business_id, $start_needle, $limit) {
+function ciniki_artcatalog_sapos_itemSearch($ciniki, $business_id, $args) {
 
-	if( $start_needle == '' ) {
+	if( $args['start_needle'] == '' ) {
 		return array('stat'=>'ok', 'items'=>array());
 	}
 
@@ -53,8 +53,8 @@ function ciniki_artcatalog_sapos_itemSearch($ciniki, $business_id, $start_needle
 		. "ciniki_artcatalog.media "
 		. "FROM ciniki_artcatalog "
 		. "WHERE ciniki_artcatalog.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
-		. "AND (ciniki_artcatalog.name LIKE '" . ciniki_core_dbQuote($ciniki, $start_needle) . "%' "
-			. "OR ciniki_artcatalog.name LIKE ' %" . ciniki_core_dbQuote($ciniki, $start_needle) . "%' "
+		. "AND (ciniki_artcatalog.name LIKE '" . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
+			. "OR ciniki_artcatalog.name LIKE ' %" . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
 			. ") "
 		. "";
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
