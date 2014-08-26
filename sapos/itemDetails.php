@@ -15,7 +15,7 @@
 //
 function ciniki_artcatalog_sapos_itemDetails($ciniki, $business_id, $object_id) {
 	if( $object_id == '' || $object_id < 1 ) {
-		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1152', 'msg'=>'Invalid item'));
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1939', 'msg'=>'Invalid item'));
 	}
 
 	//
@@ -59,7 +59,7 @@ function ciniki_artcatalog_sapos_itemDetails($ciniki, $business_id, $object_id) 
 		return $rc;
 	}
 	if( !isset($rc['item']) ) {
-		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1122', 'msg'=>'Item not found'));
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1938', 'msg'=>'Item not found'));
 	}
 	$item = $rc['item'];
 
