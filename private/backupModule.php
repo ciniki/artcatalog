@@ -77,7 +77,7 @@ function ciniki_artcatalog_backupModule(&$ciniki, $business) {
 			'maps'=>array('month'=>array('0'=>'', '1'=>'Jan', '2'=>'Feb', '3'=>'Mar',
 				'4'=>'Apr', '5'=>'May', '6'=>'Jun', '7'=>'Jul', '8'=>'Aug', '9'=>'Sep',
 				'10'=>'Oct', '11'=>'Nov', '12'=>'Dec')),
-			'dlists'=>array('lists'=>array('delimiter', ','))),
+			'dlists'=>array('lists'=>',')),
 		));
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
