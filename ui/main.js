@@ -441,21 +441,6 @@ function ciniki_artcatalog_main() {
 			}
 			return null;
 		};
-		this.item.thumbSrc = function(s, i, d) {
-			if( d.image.image_data != null && d.image.image_data != '' ) {
-				return d.image.image_data;
-			} else {
-				return '/ciniki-mods/core/ui/themes/default/img/noimage_75.jpg';
-			}
-		};
-		this.item.thumbTitle = function(s, i, d) {
-			if( d.image.name != null ) { return d.image.name; }
-			return '';
-		};
-		this.item.thumbID = function(s, i, d) {
-			if( d.image.id != null ) { return d.image.id; }
-			return 0;
-		};
 		this.item.thumbFn = function(s, i, d) {
 			return 'M.startApp(\'ciniki.artcatalog.images\',null,\'M.ciniki_artcatalog_main.showItem();\',\'mc\',{\'artcatalog_image_id\':\'' + d.image.id + '\'});';
 		};
