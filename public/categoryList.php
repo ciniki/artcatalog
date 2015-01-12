@@ -37,6 +37,16 @@ function ciniki_artcatalog_categoryList($ciniki) {
     }   
 
 	//
+	// Load the status maps for the text description of each status
+	//
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'artcatalog', 'private', 'maps');
+	$rc = ciniki_artcatalog_maps($ciniki);
+	if( $rc['stat'] != 'ok' ) {
+		return $rc;
+	}
+	$maps = $rc['maps'];
+
+	//
 	// Get the settings for the artcatalog
 	//
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuote');
@@ -64,7 +74,8 @@ function ciniki_artcatalog_categoryList($ciniki) {
 		$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
 			array('container'=>'types', 'fname'=>'type', 'name'=>'type',
 				'fields'=>array('number'=>'type', 'name'),
-				'maps'=>array('name'=>array('1'=>'Paintings', '2'=>'Photographs', '3'=>'Jewelry', '4'=>'Sculptures', '5'=>'Fibre Arts', '6'=>'Crafts'))),
+				'maps'=>array('name'=>$maps['item']['type'])),
+//				'maps'=>array('name'=>array('1'=>'Paintings', '2'=>'Photographs', '3'=>'Jewelry', '4'=>'Sculptures', '5'=>'Fibre Arts', '6'=>'Crafts', '8'=>'Pottery'))),
 			array('container'=>'categories', 'fname'=>'category', 'name'=>'category',
 				'fields'=>array('type', 'name'=>'category')),
 			));

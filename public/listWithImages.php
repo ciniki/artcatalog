@@ -72,27 +72,6 @@ function ciniki_artcatalog_listWithImages($ciniki) {
     }   
     $args = $rc['args'];
    
-   	//
-	// Map the types to an ID
-	//
-	if( isset($args['type']) && $args['type'] != '' ) {
-		if( $args['type'] == 'painting' ) {
-			$args['type_id'] = 1;
-		} elseif( $args['type'] == 'photograph' ) {
-			$args['type_id'] = 2;
-		} elseif( $args['type'] == 'jewelry' ) {
-			$args['type_id'] = 3;
-		} elseif( $args['type'] == 'sculpture' ) {
-			$args['type_id'] = 4;
-		} elseif( $args['type'] == 'fibreart' ) {
-			$args['type_id'] = 5;
-		} elseif( $args['type'] == 'clothing' ) {
-			$args['type_id'] = 6;
-		} else {
-			$args['type_id'] = 0;
-		}
-	}
-
     //  
     // Make sure this module is activated, and
     // check permission to run this function for this business
@@ -102,6 +81,45 @@ function ciniki_artcatalog_listWithImages($ciniki) {
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
+
+	//
+	// Load the status maps for the text description of each status
+	//
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'artcatalog', 'private', 'maps');
+	$rc = ciniki_artcatalog_maps($ciniki);
+	if( $rc['stat'] != 'ok' ) {
+		return $rc;
+	}
+	$maps = $rc['maps'];
+
+   	//
+	// Map the types to an ID
+	//
+	if( isset($args['type']) && $args['type'] != '' ) {
+		$args['type_id'] = 0;
+		foreach($maps['item']['typecode'] as $type_id => $code) {
+			if( $args['type'] == $code ) {
+				$args['type_id'] = $type_id;
+			}
+		}
+//		if( $args['type'] == 'painting' ) {
+//			$args['type_id'] = 1;
+//		} elseif( $args['type'] == 'photograph' ) {
+//			$args['type_id'] = 2;
+//		} elseif( $args['type'] == 'jewelry' ) {
+//			$args['type_id'] = 3;
+//		} elseif( $args['type'] == 'sculpture' ) {
+//			$args['type_id'] = 4;
+//		} elseif( $args['type'] == 'fibreart' ) {
+//			$args['type_id'] = 5;
+//		} elseif( $args['type'] == 'clothing' ) {
+//			$args['type_id'] = 6;
+//		} elseif( $args['type'] == 'pottery' ) {
+//			$args['type_id'] = 8;
+//		} else {
+//			$args['type_id'] = 0;
+//		}
+	}
 
 	//
 	// Load INTL settings

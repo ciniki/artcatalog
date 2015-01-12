@@ -20,6 +20,7 @@
 //					4 - Sculpture
 //					5 - Fibre Art
 //					6 - Clothing *future*
+//					8 - Pottery 
 //
 // image_id:		(optional) The ID of the image in the images module to be displayed for the item.  This
 //					can be uploaded before or after the item is added to the artcatalog.

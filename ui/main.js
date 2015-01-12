@@ -489,6 +489,7 @@ function ciniki_artcatalog_main() {
 				'jewelry':{'label':'Jewelry', 'field_id':3},
 				'sculpture':{'label':'Sculpture', 'field_id':4},
 				'fibreart':{'label':'Fibre Art', 'field_id':5},
+				'pottery':{'label':'Pottery', 'field_id':8},
 				}};
 		this.edit.forms.painting = {
 			'_image':{'label':'Image', 'aside':'yes', 'fields':{
@@ -666,6 +667,46 @@ function ciniki_artcatalog_main() {
 				'month':{'label':'Month', 'type':'select', 'options':this.monthOptions},
 				'day':{'label':'Day', 'type':'select', 'options':this.dayOptions},
 //				'media':{'label':'Media', 'type':'text', 'size':'small', 'livesearch':'yes', 'livesearchempty':'yes'},
+				'location':{'label':'Location', 'type':'text', 'livesearch':'yes', 'livesearchempty':'yes'},
+			}},
+			'_description':{'label':'Description', 'type':'simpleform', 'fields':{
+				'description':{'label':'', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
+			}},
+			'_awards':{'label':'Awards', 'type':'simpleform', 'fields':{
+				'awards':{'label':'', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
+			}},
+			'_lists':{'label':'Lists', 'type':'simpleform', 'fields':{
+				'lists':{'label':'', 'active':'no', 'hidelabel':'yes', 'type':'tags', 'tags':[], 'hint':'New List'},
+			}},
+			'_inspiration':{'label':'Inspiration', 'type':'simpleform', 'fields':{
+				'inspiration':{'label':'', 'active':'no', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
+			}},
+			'_notes':{'label':'Notes', 'type':'simpleform', 'fields':{
+				'notes':{'label':'', 'type':'textarea', 'size':'medium', 'hidelabel':'yes'},
+			}},
+			'_buttons':{'label':'', 'buttons':{
+				'save':{'label':'Save', 'fn':'M.ciniki_artcatalog_main.saveItem();'},
+				'delete':{'label':'Delete', 'fn':'M.ciniki_artcatalog_main.deletePiece();'},
+			}},
+		};
+		this.edit.forms.pottery = {
+			'_image':{'label':'Image', 'aside':'yes', 'fields':{
+				'image_id':{'label':'', 'type':'image_id', 'hidelabel':'yes', 'controls':'all', 'history':'no'},
+			}},
+			'info':{'label':'Public Information', 'aside':'yes', 'type':'simpleform', 'fields':{
+				'name':{'label':'Title', 'type':'text'},
+				'category':{'label':'Category', 'type':'text', 'livesearch':'yes', 'livesearchempty':'yes'},
+				'size':{'label':'Size', 'type':'text', 'size':'small'},
+				'price':{'label':'Price', 'type':'text', 'size':'small'},
+				'flags':{'label':'', 'type':'flags', 'join':'yes', 'flags':this.itemFlags},
+				'webflags':{'label':'Website', 'type':'flags', 'join':'yes', 'flags':this.webFlags},
+			}},
+			'ainfo':{'label':'Private Information', 'type':'simpleform', 'fields':{
+				'catalog_number':{'label':'Number', 'type':'text', 'size':'small'},
+				'year':{'label':'Year', 'type':'text', 'size':'small', 'livesearch':'yes', 'livesearchempty':'yes'},
+				'month':{'label':'Month', 'type':'select', 'options':this.monthOptions},
+				'day':{'label':'Day', 'type':'select', 'options':this.dayOptions},
+				'media':{'label':'Media', 'type':'text', 'size':'small', 'livesearch':'yes', 'livesearchempty':'yes'},
 				'location':{'label':'Location', 'type':'text', 'livesearch':'yes', 'livesearchempty':'yes'},
 			}},
 			'_description':{'label':'Description', 'type':'simpleform', 'fields':{

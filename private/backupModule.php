@@ -69,7 +69,7 @@ function ciniki_artcatalog_backupModule(&$ciniki, $business) {
 	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
 		array('container'=>'types', 'fname'=>'type', 'name'=>'type',
 			'fields'=>array('type', 'name'=>'type_name'),
-			'maps'=>array('type_name'=>array('1'=>'Paintings', '2'=>'Photographs', '3'=>'Jewelry', '4'=>'Sculptures', '5'=>'Fibre Arts'))),
+			'maps'=>array('type_name'=>array('1'=>'Paintings', '2'=>'Photographs', '3'=>'Jewelry', '4'=>'Sculptures', '5'=>'Fibre Arts', '8'=>'Pottery'))),
 		array('container'=>'items', 'fname'=>'id', 'name'=>'item',
 			'fields'=>array('id', 'uuid', 'name', 'type', 'flags', 'webflags', 'image_id', 'image_original_filename',
 				'catalog_number', 'category', 'year', 'month', 'day', 'media', 'size', 'framed_size',
@@ -197,6 +197,12 @@ function ciniki_artcatalog_backupModule(&$ciniki, $business) {
 			$headers = array('ID', 'Name', 'Category', 'Options', 'Size', 'Price', 
 				'Image', 'Number', 'Date', 'Location', 'Description', 'Notes');
 			$fields = array('uuid', 'name', 'category', 'options', 'size', 'price',
+				'image_original_filename', 'catalog_number', 'date', 'location', 'description', 'notes');
+		} elseif( $type['type'] == 8 ) {
+			// Pottery 
+			$headers = array('ID', 'Name', 'Category', 'Options', 'Media', 'Size', 'Price', 
+				'Image', 'Number', 'Date', 'Location', 'Description', 'Notes');
+			$fields = array('uuid', 'name', 'category', 'options', 'media', 'size', 'price',
 				'image_original_filename', 'catalog_number', 'date', 'location', 'description', 'notes');
 		}
 

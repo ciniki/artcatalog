@@ -83,6 +83,16 @@ function ciniki_artcatalog_get($ciniki) {
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'users', 'private', 'dateFormat');
 	$date_format = ciniki_users_dateFormat($ciniki);
 
+	//
+	// Load the status maps for the text description of each status
+	//
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'artcatalog', 'private', 'maps');
+	$rc = ciniki_artcatalog_maps($ciniki);
+	if( $rc['stat'] != 'ok' ) {
+		return $rc;
+	}
+	$maps = $rc['maps'];
+
 	$strsql = "SELECT ciniki_artcatalog.id, ciniki_artcatalog.name, permalink, image_id, type, type AS type_text, "
 		. "ciniki_artcatalog.flags, "
 		. "IF((ciniki_artcatalog.flags&0x01)=0x01, 'yes', 'no') AS forsale, "
@@ -120,14 +130,7 @@ function ciniki_artcatalog_get($ciniki) {
 				'media', 'size', 'framed_size', 'forsale', 'sold', 'website', 'price', 'location', 
 				'description', 'inspiration', 'awards', 'notes', 'lists'),
 			'dlists'=>array('lists'=>'::'),
-			'maps'=>array('type_text'=>array('0'=>'Unknown', 
-				'1'=>'Painting', 
-				'2'=>'Photograph', 
-				'3'=>'Jewelry', 
-				'4'=>'Sculpture', 
-				'5'=>'Fibre Art',
-				)),
-			),
+			'maps'=>array('type_text'=>$maps['item']['type'])),
 //		array('container'=>'sales', 'fname'=>'customer_id', 'name'=>'customer',
 //			'fields'=>array('id'=>'customer_id', 'name'=>'customer_name', 'paid', 'trade', 'donation', 'gift', 'price'=>'customer_price', 'total'=>'customer_sale_total')),
 		));

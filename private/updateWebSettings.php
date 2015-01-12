@@ -41,17 +41,31 @@ function ciniki_artcatalog_updateWebSettings($ciniki, $business_id) {
 	}
 	$types = $rc['types'];
 
-	$maps = array(
-		'1'=>'paintings',
-		'2'=>'photographs',
-		'3'=>'jewelry',
-		'4'=>'sculptures',
-		'5'=>'fibrearts',
-		'6'=>'clothing',
-		);
+	//
+	// Load the status maps for the text description of each status
+	//
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'artcatalog', 'private', 'maps');
+	$rc = ciniki_artcatalog_maps($ciniki);
+	if( $rc['stat'] != 'ok' ) {
+		return $rc;
+	}
+	$maps = $rc['maps'];
+
+//	$maps = array(
+//		'1'=>'paintings',
+//		'2'=>'photographs',
+//		'3'=>'jewelry',
+//		'4'=>'sculptures',
+//		'5'=>'fibrearts',
+//		'6'=>'clothing',
+//		'8'=>'pottery',
+//		);
 
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbInsert');
-	foreach($maps as $type => $name) {
+	foreach($maps['item']['typepermalinks'] as $type => $name) {
+		if( $type == '' || $type == '0' ) {
+			continue;
+		}
 		$field = "page-gallery-artcatalog-$name";
 		//
 		// Turn on the flag when type exists

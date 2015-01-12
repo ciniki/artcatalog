@@ -62,25 +62,6 @@ function ciniki_artcatalog_stats($ciniki) {
     }   
     $args = $rc['args'];
 
-	if( isset($args['type']) && $args['type'] != '' ) {
-		if( $args['type'] == 'painting' ) {
-			$args['type_id'] = 1;
-		} elseif( $args['type'] == 'photograph' ) {
-			$args['type_id'] = 2;
-		} elseif( $args['type'] == 'jewelry' ) {
-			$args['type_id'] = 3;
-		} elseif( $args['type'] == 'sculpture' ) {
-			$args['type_id'] = 4;
-		} elseif( $args['type'] == 'fibreart' ) {
-			$args['type_id'] = 5;
-		} else {
-			$args['type_id'] = 0;
-		}
-	}
-
-	// Keep track of the total number of sections
-	$num_sections = 0;
-
     //  
     // Make sure this module is activated, and
     // check permission to run this function for this business
@@ -90,6 +71,43 @@ function ciniki_artcatalog_stats($ciniki) {
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }
+
+	//
+	// Load the status maps for the text description of each status
+	//
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'artcatalog', 'private', 'maps');
+	$rc = ciniki_artcatalog_maps($ciniki);
+	if( $rc['stat'] != 'ok' ) {
+		return $rc;
+	}
+	$maps = $rc['maps'];
+
+	if( isset($args['type']) && $args['type'] != '' ) {
+		$args['type_id'] = 0;
+		foreach($maps['item']['typecode'] as $type_id => $code) {
+			if( $args['type'] == $code ) {
+				$args['type_id'] = $type_id;
+			}
+		}
+/*		if( $args['type'] == 'painting' ) {
+			$args['type_id'] = 1;
+		} elseif( $args['type'] == 'photograph' ) {
+			$args['type_id'] = 2;
+		} elseif( $args['type'] == 'jewelry' ) {
+			$args['type_id'] = 3;
+		} elseif( $args['type'] == 'sculpture' ) {
+			$args['type_id'] = 4;
+		} elseif( $args['type'] == 'fibreart' ) {
+			$args['type_id'] = 5;
+		} elseif( $args['type'] == 'pottery' ) {
+			$args['type_id'] = 8;
+		} else {
+			$args['type_id'] = 0;
+		} */
+	}
+
+	// Keep track of the total number of sections
+	$num_sections = 0;
 
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuote');
 
@@ -107,8 +125,8 @@ function ciniki_artcatalog_stats($ciniki) {
 	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
 		array('container'=>'sections', 'fname'=>'type', 'name'=>'section',
 			'fields'=>array('type', 'name', 'count'), 
-			'maps'=>array('type'=>array(''=>'unknown', '1'=>'painting', '2'=>'photograph', '3'=>'jewelry', '4'=>'sculpture', '5'=>'fibreart'),
-				'name'=>array(''=>'Unknown', '1'=>'Paintings', '2'=>'Photographs', '3'=>'Jewelry', '4'=>'Sculptures', '5'=>'Fibre Arts'))),
+			'maps'=>array('type'=>$maps['item']['typecode'],
+				'name'=>$maps['item']['type'])),
 		));
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
