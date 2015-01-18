@@ -17,7 +17,7 @@
 #	
 #					0 - unknown
 #					1 - List
-#					2 - Category **future**
+#					20 - Category **future**
 #
 # tag_name:			The name of the tag, list or category.
 #

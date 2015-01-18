@@ -22,11 +22,11 @@ function ciniki_artcatalog_settings() {
 			'ciniki_artcatalog_settings', 'main',
 			'mc', 'narrow', 'sectioned', 'ciniki.artcatalog.settings.main');
 		this.main.sections = {
-			'advanced':{'label':'Advanced Features', 'fields':{
-				'enable-lists':{'label':'Lists', 'type':'multitoggle', 'default':'no', 'toggles':this.toggleOptions},
-				'enable-tracking':{'label':'Exhibited', 'type':'multitoggle', 'default':'no', 'toggles':this.toggleOptions},
-				'enable-inspiration':{'label':'Inspiration', 'type':'multitoggle', 'default':'no', 'toggles':this.toggleOptions},
-			}},
+//			'advanced':{'label':'Advanced Features', 'fields':{
+//				'enable-lists':{'label':'Lists', 'type':'multitoggle', 'default':'no', 'toggles':this.toggleOptions},
+//				'enable-tracking':{'label':'Exhibited', 'type':'multitoggle', 'default':'no', 'toggles':this.toggleOptions},
+//				'enable-inspiration':{'label':'Inspiration', 'type':'multitoggle', 'default':'no', 'toggles':this.toggleOptions},
+//			}},
 			'taxes':{'label':'Taxes', 'fields':{
 				'taxes-default-taxtype':{'label':'Default Tax Type', 'type':'select', 'options':{}},
 			}},
