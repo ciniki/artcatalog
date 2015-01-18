@@ -15,7 +15,7 @@ function ciniki_artcatalog_web_galleryNextPrev($ciniki, $settings, $business_id,
 	//
 	// Get the list of images for the current gallery
 	//
-	$strsql = "SELECT id, name, permalink "
+	$strsql = "SELECT id, name, image_id, permalink "
 		. "FROM ciniki_artcatalog "
 		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
 		. "AND image_id > 0 "
