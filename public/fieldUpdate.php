@@ -52,6 +52,7 @@ function ciniki_artcatalog_fieldUpdate(&$ciniki) {
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbTransactionCommit');
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuote');
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbUpdate');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbInsert');
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbAddModuleHistory');
 	$rc = ciniki_core_dbTransactionStart($ciniki, 'ciniki.artcatalog');
 	if( $rc['stat'] != 'ok' ) { 
@@ -64,7 +65,7 @@ function ciniki_artcatalog_fieldUpdate(&$ciniki) {
 	if( $args['field'] == 'category' && $args['old_value'] != $args['new_value'] ) {
 		ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbDetailsQueryDash');	
 		$rc = ciniki_core_dbDetailsQueryDash($ciniki, 'ciniki_artcatalog_settings', 
-			'business_id', $business_id, 'ciniki.artcatalog', 'settings', 'category');
+			'business_id', $args['business_id'], 'ciniki.artcatalog', 'settings', 'category');
 		if( $rc['stat'] != 'ok' ) {
 			return $rc;
 		}
@@ -111,7 +112,7 @@ function ciniki_artcatalog_fieldUpdate(&$ciniki) {
 			//
 			// Create new value, if it doesn't already exist
 			//
-			if( !isset($settings[$new_detail_key]) ) {
+			if( isset($old_setting) && !isset($settings[$new_detail_key]) ) {
 				$strsql = "INSERT INTO ciniki_artcatalog_settings (business_id, detail_key, detail_value, "
 					. "date_added, last_updated) VALUES ("
 					. "' " . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "

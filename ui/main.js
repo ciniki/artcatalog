@@ -325,7 +325,7 @@ function ciniki_artcatalog_main() {
 				'location':{'label':'Location'},
 				'lists':{'label':'Lists'},
 			}},
-			'tracking':{'label':'Exhibited', 'visible':'no', 'type':'simplegrid', 'num_cols':1,
+			'tracking':{'label':'Exhibited', 'visible':'yes', 'type':'simplegrid', 'num_cols':1,
 				'headerValues':null,
 				'cellClasses':['multiline', 'multiline'],
 				'addTxt':'Add Exhibited',
@@ -1130,11 +1130,13 @@ function ciniki_artcatalog_main() {
 			p.sections.types.selected = this.cur_type;
 		}
 //		if( M.curBusiness.artcatalog != null && M.curBusiness.artcatalog.settings['enable-lists'] == 'yes' ) {	
+		if( rsp.stats.lists != null ) {
 			p.sections.tabs.tabs['list'] = {'label':'Lists', 'fn':'M.ciniki_artcatalog_main.showMenu(null,\'list\');'};
-//		}
+		}
 //		if( M.curBusiness.artcatalog != null && M.curBusiness.artcatalog.settings['enable-tracking'] == 'yes' ) {	
+		if( rsp.stats.tracking != null ) {
 			p.sections.tabs.tabs['tracking'] = {'label':'Exhibited', 'fn':'M.ciniki_artcatalog_main.showMenu(null,\'tracking\');'};
-//		}
+		}
 
 		//
 		// If there is not many items of art, then it's easier to just display a list
@@ -1480,7 +1482,7 @@ function ciniki_artcatalog_main() {
 						if( p.forms[i]._lists != null ) {
 							p.forms[i]._lists.fields.lists.tags = tags;
 						}
-						p.forms[i]._buttons.buttons.delete.visible = 'no';
+						p.forms[i]._buttons.buttons.delete.visible = 'yes';
 					}
 //					p.forms.painting._lists.fields.lists.tags = tags;
 //					p.forms.photograph._lists.fields.lists.tags = tags;
