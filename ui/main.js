@@ -1101,11 +1101,11 @@ function ciniki_artcatalog_main() {
 //		var p = M.ciniki_artcatalog_main.statsmenu;
 		var p = M.ciniki_artcatalog_main.menu;
 		p.sections = {
-			'search':{'label':'', 'type':'livesearchgrid', 'livesearchcols':3, 'hint':'search',
-				'noData':'No art found',
-				'headerValues':null,
-				'cellClasses':['thumbnail', 'multiline', 'multiline'],
-				},
+//			'search':{'label':'', 'type':'livesearchgrid', 'livesearchcols':3, 'hint':'search',
+//				'noData':'No art found',
+//				'headerValues':null,
+//				'cellClasses':['thumbnail', 'multiline', 'multiline'],
+//				},
 			'types':{'label':'', 'visible':'no', 'type':'paneltabs', 'selected':'all', 'tabs':{}},
 			'tabs':{'label':'', 'type':'paneltabs', 'selected':p.listby, 'tabs':{
 				'category':{'label':'Category', 'fn':'M.ciniki_artcatalog_main.showMenu(null,\'category\');'},
@@ -1167,10 +1167,19 @@ function ciniki_artcatalog_main() {
 					};
 				}
 				if( rsp.sections.length == 0 ) {
-					p.data['_nodata'] = [{'label':'No items found.  '},];
-					p.sections['_nodata'] = {'label':' ', 'type':'simplelist', 'list':{
-						'nodata':{'label':'No items found'}}};
+					p.data = {};
+					p.data['nodata'] = {};
+					p.sections.tabs.visible = 'no';
+					p.sections['_nodata'] = {'label':'', 'type':'simplegrid', 'num_cols':1,
+						'addTxt':'Add your first item',
+						'addFn':'M.ciniki_artcatalog_main.showEdit(\'M.ciniki_artcatalog_main.showMenu();\',0);',
+						};
+
+//					p.data['_nodata'] = [{'label':'No items found.  '},];
+//					p.sections['_nodata'] = {'label':' ', 'type':'simplelist', 'list':{
+//						'nodata':{'label':'No items found'}}};
 				} else {
+					p.sections.tabs.visible = 'yes';
 					p.sections['_buttons'] = {'label':'', 'buttons':{
 						'pdf':{'label':'Download', 'fn':'M.ciniki_artcatalog_main.showDownload(\'M.ciniki_artcatalog_main.showMenu();\',\'ciniki.artcatalog.listWithImages\',\'' + p.listby + '\',\'\',\'\',\'Catalog\');'},
 						}};
