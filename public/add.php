@@ -220,6 +220,8 @@ function ciniki_artcatalog_add(&$ciniki) {
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'updateModuleChangeDate');
 	ciniki_businesses_updateModuleChangeDate($ciniki, $args['business_id'], 'ciniki', 'artcatalog');
 
+	$ciniki['fbrefreshqueue'][] = array('business_id'=>$args['business_id'], 'url'=>'/gallery/category/' . urlencode($args['category']) . '/' . $args['permalink']);
+
 	return array('stat'=>'ok', 'id'=>$artcatalog_id);
 }
 ?>

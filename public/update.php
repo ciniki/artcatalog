@@ -134,7 +134,8 @@ function ciniki_artcatalog_update(&$ciniki) {
 		//
 		// Make sure the permalink is unique
 		//
-		$strsql = "SELECT id, name, permalink FROM ciniki_artcatalog "
+		$strsql = "SELECT id, name, permalink "
+			. "FROM ciniki_artcatalog "
 			. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
 			. "AND permalink = '" . ciniki_core_dbQuote($ciniki, $args['permalink']) . "' "
 			. "AND id <> '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_id']) . "' "
@@ -147,6 +148,20 @@ function ciniki_artcatalog_update(&$ciniki) {
 			return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'600', 'msg'=>'You already have artwork with this name, please choose another name'));
 		}
 	}
+
+	//
+	// Get the existing information
+	//
+	$strsql = "SELECT id, name, category, permalink "
+		. "FROM ciniki_artcatalog "
+		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+		. "AND id = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_id']) . "' "
+		. "";
+	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', 'item');
+	if( $rc['stat'] != 'ok' ) {
+		return $rc;
+	}
+	$item = $rc['item'];
 
 	//  
 	// Turn off autocommit
@@ -211,6 +226,9 @@ function ciniki_artcatalog_update(&$ciniki) {
 	//
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'updateModuleChangeDate');
 	ciniki_businesses_updateModuleChangeDate($ciniki, $args['business_id'], 'ciniki', 'artcatalog');
+
+	$ciniki['fbrefreshqueue'][] = array('business_id'=>$args['business_id'], 
+		'url'=>'/gallery/category/' . urlencode(isset($args['category'])?$args['category']:$item['category']) . '/' . (isset($args['permalink'])?$args['permalink']:$item['permalink']));
 
 	return array('stat'=>'ok');
 }
