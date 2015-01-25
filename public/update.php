@@ -227,8 +227,11 @@ function ciniki_artcatalog_update(&$ciniki) {
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'updateModuleChangeDate');
 	ciniki_businesses_updateModuleChangeDate($ciniki, $args['business_id'], 'ciniki', 'artcatalog');
 
-	$ciniki['fbrefreshqueue'][] = array('business_id'=>$args['business_id'], 
-		'url'=>'/gallery/category/' . urlencode(isset($args['category'])?$args['category']:$item['category']) . '/' . (isset($args['permalink'])?$args['permalink']:$item['permalink']));
+	// Refresh facebook cache if image was updated
+	if( isset($args['image_id']) ) {
+		$ciniki['fbrefreshqueue'][] = array('business_id'=>$args['business_id'], 
+			'url'=>'/gallery/category/' . urlencode(isset($args['category'])?$args['category']:$item['category']) . '/' . (isset($args['permalink'])?$args['permalink']:$item['permalink']));
+	}
 
 	return array('stat'=>'ok');
 }
