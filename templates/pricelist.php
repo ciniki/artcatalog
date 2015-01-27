@@ -45,6 +45,8 @@ function ciniki_artcatalog_templates_pricelist($ciniki, $business_id, $sections,
 	//
 	if( isset($args['fields']) && $args['fields'] != '' ) {
 		$fields = explode(',', $args['fields']);
+	} else {
+		$fields = array();
 	}
 
 	//

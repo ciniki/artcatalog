@@ -45,6 +45,8 @@ function ciniki_artcatalog_templates_single($ciniki, $business_id, $sections, $a
 	//
 	if( isset($args['fields']) && $args['fields'] != '' ) {
 		$fields = explode(',', $args['fields']);
+	} else {
+		$fields = array();
 	}
 
 	//
