@@ -24,7 +24,7 @@ function ciniki_artcatalog_web_categories($ciniki, $settings, $business_id, $arg
 	$strsql = "SELECT DISTINCT category AS name "
 		. "FROM ciniki_artcatalog "
 		. "WHERE ciniki_artcatalog.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
-		. "AND (ciniki_artcatalog.webflags&0x01) = 0 "
+		. "AND (ciniki_artcatalog.webflags&0x01) = 1 "
 		. "AND ciniki_artcatalog.image_id > 0 "
 		. "";
 	if( isset($args['artcatalog_type']) && $args['artcatalog_type'] > 0 ) {
@@ -63,7 +63,7 @@ function ciniki_artcatalog_web_categories($ciniki, $settings, $business_id, $arg
 			$strsql .= "AND ciniki_artcatalog.type = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_type']) . "' ";
 		}
 		$strsql .= "AND ciniki_artcatalog.image_id = ciniki_images.id "
-			. "AND (ciniki_artcatalog.webflags&0x01) = 0 "
+			. "AND (ciniki_artcatalog.webflags&0x01) = 1 "
 			. "ORDER BY (ciniki_artcatalog.webflags&0x10) DESC, "
 			. "ciniki_artcatalog.year DESC, "
 			. "ciniki_artcatalog.month DESC, "

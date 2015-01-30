@@ -65,7 +65,7 @@ function ciniki_artcatalog_web_categoryImages($ciniki, $settings, $business_id, 
 		. "LEFT JOIN ciniki_images ON (ciniki_artcatalog.image_id = ciniki_images.id) "
 		. "WHERE ciniki_artcatalog.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
 		. "AND ciniki_artcatalog.image_id > 0 "
-		. "AND (webflags&0x01) = 0 "
+		. "AND (webflags&0x01) = 1 "
 		. "";
 	if( isset($args['artcatalog_type']) && $args['artcatalog_type'] != '' ) {
 		$strsql .= "AND ciniki_artcatalog.type = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_type']) . "' ";

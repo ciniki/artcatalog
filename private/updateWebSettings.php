@@ -32,7 +32,7 @@ function ciniki_artcatalog_updateWebSettings($ciniki, $business_id) {
 	$strsql = "SELECT DISTINCT type "
 		. "FROM ciniki_artcatalog "
 		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
-		. "AND (webflags&0x01) = 0 "
+		. "AND (webflags&0x01) = 1 "
 		. "";
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
 	$rc = ciniki_core_dbHashIDQuery($ciniki, $strsql, 'ciniki.artcatalog', 'types', 'type');
@@ -70,7 +70,7 @@ function ciniki_artcatalog_updateWebSettings($ciniki, $business_id) {
 		//
 		// Turn on the flag when type exists
 		//
-		if( isset($types[$type]) && (!isset($settings[$field]) || $settings[$field] != 'yes') ) {
+		if( isset($types[$type]) ) { //&& (!isset($settings[$field]) || $settings[$field] != 'yes') ) {
 			$strsql = "INSERT INTO ciniki_web_settings (business_id, detail_key, detail_value, "
 				. "date_added, last_updated) "
 				. "VALUES ('" . ciniki_core_dbQuote($ciniki, $business_id) . "'"
@@ -93,7 +93,7 @@ function ciniki_artcatalog_updateWebSettings($ciniki, $business_id) {
 		//
 		// Turn off when type doesn't exist
 		//
-		elseif( !isset($types[$type]) && (!isset($settings[$field]) || $settings[$field] != 'no') ) {
+		else { //if( !isset($types[$type]) || (isset($settings[$field]) && $settings[$field] == 'no') ) {
 			$strsql = "INSERT INTO ciniki_web_settings (business_id, detail_key, detail_value, "
 				. "date_added, last_updated) "
 				. "VALUES ('" . ciniki_core_dbQuote($ciniki, $business_id) . "'"

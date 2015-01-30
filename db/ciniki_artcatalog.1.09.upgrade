@@ -1,0 +1,6 @@
+#
+# This file will upgrade the database table ciniki_artcatalog to version 1.09
+#
+ALTER TABLE ciniki_artcatalog MODIFY flags int unsigned not null;
+ALTER TABLE ciniki_artcatalog MODIFY webflags int unsigned not null;
+ALTER TABLE ciniki_artcatalog COMMENT='v1.09';

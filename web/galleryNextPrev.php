@@ -19,7 +19,7 @@ function ciniki_artcatalog_web_galleryNextPrev($ciniki, $settings, $business_id,
 		. "FROM ciniki_artcatalog "
 		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
 		. "AND image_id > 0 "
-		. "AND (webflags&0x01) = 0 ";
+		. "AND (webflags&0x01) = 1 ";
 	if( isset($args['artcatalog_type']) && $args['artcatalog_type'] > 0 ) {
 		$strsql .= "AND ciniki_artcatalog.type = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_type']) . "' ";
 	}

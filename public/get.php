@@ -97,7 +97,7 @@ function ciniki_artcatalog_get($ciniki) {
 		. "ciniki_artcatalog.flags, "
 		. "IF((ciniki_artcatalog.flags&0x01)=0x01, 'yes', 'no') AS forsale, "
 		. "IF((ciniki_artcatalog.flags&0x02)=0x02, 'yes', 'no') AS sold, "
-		. "CONCAT_WS('', IF((ciniki_artcatalog.webflags&0x01)=0x01, 'hidden', 'visible'), IF((ciniki_artcatalog.webflags&0x10)=0x10, ', category highlight', '')) AS website , "
+		. "CONCAT_WS('', IF((ciniki_artcatalog.webflags&0x01)=0x01, 'visible', 'hidden'), IF((ciniki_artcatalog.webflags&0x10)=0x10, ', category highlight', '')) AS website , "
 		. "webflags, catalog_number, category, year, month, day, "
 		. "media, size, framed_size, ciniki_artcatalog.price, ciniki_artcatalog.location, "
 		. "ciniki_artcatalog.description, inspiration, awards, ciniki_artcatalog.notes, "

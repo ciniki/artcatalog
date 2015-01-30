@@ -117,6 +117,8 @@ function ciniki_artcatalog_update(&$ciniki) {
     }   
     $args = $rc['args'];
 
+	error_log(print_r($args, true));
+
     //  
     // Make sure this module is activated, and
     // check permission to run this function for this business

@@ -9,8 +9,12 @@ function ciniki_artcatalog_main() {
 		'1':{'name':'For Sale'},
 		'2':{'name':'Sold'},
 		};
+	this.noyesToggles = {
+		'no':'No',
+		'yes':'Yes',
+		};
 	this.webFlags = {
-		'1':{'name':'Hidden'},
+		'1':{'name':'Hide'},
 		'5':{'name':'Category Highlight'},
 		};
 	this.monthOptions = {
@@ -114,19 +118,16 @@ function ciniki_artcatalog_main() {
 				if( d.item.price != '' ) {
 					price += d.item.price;
 				}
-				if( d.item.type == 1 ) {
-					return '<span class="maintext">' + d.item.name + '</span><span class="subtext"><b>Media</b>: ' + d.item.media + ', <b>Size</b>: ' + d.item.size + ', <b>Framed</b>: ' + d.item.framed_size + ', ' + price + sold + '</span>'; 
-				} else if( d.item.type == 2 ) {
-					return '<span class="maintext">' + d.item.name + '</span><span class="subtext">' + price + sold + '</span>'; 
-				} else if( d.item.type == 3 ) {
-					return '<span class="maintext">' + d.item.name + '</span><span class="subtext"><b>Size</b>: ' + d.item.size + ', ' + price + sold + '</span>'; 
-				} else if( d.item.type == 4 ) {
-					return '<span class="maintext">' + d.item.name + '</span><span class="subtext">' + price + sold + '</span>'; 
-				} else if( d.item.type == 5 ) {
-					return '<span class="maintext">' + d.item.name + '</span><span class="subtext">' + price + sold + '</span>'; 
-				}
+				var subtxt = '';
+				subtxt += (d.item.media!=''?(subtxt!=''?', ':'') + '<b>Media</b>: ' + d.item.media:'');
+				subtxt += (d.item.size!=''?(subtxt!=''?', ':'') + '<b>Size</b>: ' + d.item.size:'');
+				subtxt += (d.item.framed_size!=''?(subtxt!=''?', ':'') + '<b>Framed</b>: ' + d.item.framed_size:'');
+				subtxt += (d.item.price!='$0.00'||sold!=''?(subtxt!=''?', ':'') + price + sold:'');
+				return '<span class="maintext">' + d.item.name + '</span>'
+					+ (subtxt!=''?'<span class="subtext">'+subtxt+'</span>':'');
 			}
-			if( j == 2 ) { return '<span class="maintext">' + d.item.catalog_number + '</span><span class="subtext">' + d.item.location + '</span>'; }
+			if( j == 2 ) { return '<span class="maintext">' + d.item.catalog_number + '</span>'
+				+ '<span class="subtext">' + d.item.location + '</span>'; }
 		};
 		this.menu.rowFn = function(s, i, d) {
 			return 'M.ciniki_artcatalog_main.showItem(\'M.ciniki_artcatalog_main.showMenu(null);\', \'' + d.item.id + '\',M.ciniki_artcatalog_main.menu.data[unescape(\'' + escape(s) + '\')]);'; 
@@ -270,12 +271,18 @@ function ciniki_artcatalog_main() {
 			}
 			if( j == 1 ) { 
 				var sold = '';
-				var price = ', <b>Price</b>: ';
+				var price = '<b>Price</b>: ';
 				if( d.item.sold == 'yes' ) { sold = ' <b>SOLD</b>'; }
 				if( d.item.price != '' ) {
 					price += d.item.price;
 				}
-				return '<span class="maintext">' + d.item.name + '</span><span class="subtext"><b>Media</b>: ' + d.item.media + ', <b>Size</b>: ' + d.item.size + ', <b>Framed</b>: ' + d.item.framed_size + price + sold + '</span>'; 
+				var subtxt = '';
+				subtxt += (d.item.media!=''?(subtxt!=''?', ':'') + '<b>Media</b>: ' + d.item.media:'');
+				subtxt += (d.item.size!=''?(subtxt!=''?', ':'') + '<b>Size</b>: ' + d.item.size:'');
+				subtxt += (d.item.framed_size!=''?(subtxt!=''?', ':'') + '<b>Framed</b>: ' + d.item.framed_size:'');
+				subtxt += (d.item.price!='$0.00'||sold!=''?(subtxt!=''?', ':'') + price + sold:'');
+				return '<span class="maintext">' + d.item.name + '</span>'
+					+ (subtxt!=''?'<span class="subtext">'+subtxt+'</span>':'');
 			}
 			if( j == 2 ) { return '<span class="maintext">' + d.item.catalog_number + '</span><span class="subtext">' + d.item.location + '</span>'; }
 		};
@@ -374,8 +381,12 @@ function ciniki_artcatalog_main() {
 				}
 				return com + this.data['year'];
 			}
-			if( i == 'size' && this.data['framed_size'] != '' ) {
-				return this.data[i] + ' (framed: ' + this.data['framed_size'] + ')';
+			if( i == 'size' && (this.data.flags&0x10) > 0 ) {
+				if( this.data['framed_size'] != '' ) {
+					return this.data[i] + ' (framed: ' + this.data['framed_size'] + ')';
+				} else {
+					return this.data[i] + ' framed';
+				}
 			}
 			if( i == 'forsale' && this.data['sold'] == 'yes' ) {	
 				return this.data[i] + ', SOLD';
@@ -386,9 +397,6 @@ function ciniki_artcatalog_main() {
 				}
 				return '';
 			}
-//			if( i == 'awards' || i == 'notes' || i == 'description' ) {
-//				return this.data[i].replace(/\n/g, '<br/>');
-//			}
 			if( s == '_images' ) {
 				return d.label;
 			}
@@ -486,105 +494,298 @@ function ciniki_artcatalog_main() {
 		this.edit.data = null;
 		this.edit.cb = null;
 		this.edit.forms = {};
-		this.edit.formtabs = {'label':'', 'field':'type', 'tabs':{
+		this.edit.gstep = 1;
+//		this.edit.gsaveBtn = {'label':'Save', 'fn':'M.ciniki_artcatalog_main.saveItem();'};
+		this.edit.formtabs = {'label':'', 'gstep':1, 'field':'type', 
+			'gtitle':'What type of artwork is this?',
+			'gtext':'',
+			'tabs':{
 				'painting':{'label':'Painting', 'field_id':1},
 				'photograph':{'label':'Photograph', 'field_id':2},
 				'jewelry':{'label':'Jewelry', 'field_id':3},
 				'sculpture':{'label':'Sculpture', 'field_id':4},
 				'fibreart':{'label':'Fibre Art', 'field_id':5},
 				'pottery':{'label':'Pottery', 'field_id':8},
-				}};
+			}};
 		this.edit.forms.painting = {
-			'_image':{'label':'Image', 'aside':'yes', 'fields':{
-				'image_id':{'label':'', 'type':'image_id', 'hidelabel':'yes', 'controls':'all', 'history':'no'},
-			}},
-			'info':{'label':'Public Information', 'aside':'yes', 'type':'simpleform', 'fields':{
-				'name':{'label':'Title', 'type':'text'},
-				'category':{'label':'Category', 'type':'text', 'livesearch':'yes', 'livesearchempty':'yes'},
-				'size':{'label':'Size', 'type':'text', 'size':'small'},
-				'framed_size':{'label':'Framed Size', 'type':'text', 'size':'small'},
-				'price':{'label':'Price', 'type':'text', 'size':'small'},
-				'flags':{'label':'', 'type':'flags', 'join':'yes', 'flags':this.itemFlags},
-				'webflags':{'label':'Website', 'type':'flags', 'join':'yes', 'flags':this.webFlags},
-			}},
-			'ainfo':{'label':'Private Information', 'type':'simpleform', 'fields':{
-				'catalog_number':{'label':'Number', 'type':'text', 'size':'small'},
-				'year':{'label':'Year', 'type':'text', 'size':'small', 'livesearch':'yes', 'livesearchempty':'yes'},
-				'month':{'label':'Month', 'type':'select', 'options':this.monthOptions},
-				'day':{'label':'Day', 'type':'select', 'options':this.dayOptions},
-				'media':{'label':'Media', 'type':'text', 'size':'small', 'livesearch':'yes', 'livesearchempty':'yes'},
-				'location':{'label':'Location', 'type':'text', 'livesearch':'yes', 'livesearchempty':'yes'},
-			}},
-			'_description':{'label':'Description', 'type':'simpleform', 'fields':{
-				'description':{'label':'', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
-			}},
-			'_awards':{'label':'Awards', 'type':'simpleform', 'fields':{
-				'awards':{'label':'', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
-			}},
-			'_lists':{'label':'Lists', 'type':'simpleform', 'fields':{
-				'lists':{'label':'', 'active':'no', 'hidelabel':'yes', 'type':'tags', 'tags':[], 'hint':'New List'},
-			}},
-			'_inspiration':{'label':'Inspiration', 'type':'simpleform', 'fields':{
-				'inspiration':{'label':'', 'active':'no', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
-			}},
-			'_notes':{'label':'Notes', 'type':'simpleform', 'fields':{
-				'notes':{'label':'', 'type':'textarea', 'size':'medium', 'hidelabel':'yes'},
-			}},
-			'_buttons':{'label':'', 'buttons':{
-				'save':{'label':'Save', 'fn':'M.ciniki_artcatalog_main.saveItem();'},
-				'delete':{'label':'Delete', 'fn':'M.ciniki_artcatalog_main.deletePiece();'},
-			}},
+			'_image':{'label':'Image', 'aside':'yes', 
+				'gstep':2,
+				'gtitle-add':'Do you have a photo of your artwork?',
+				'gtitle-edit':'Would you like to change the photo?',
+				'gtext-add':'Use the <b>Add Photo</b> button to select a photo from your computer or tablet.',
+				'gtext-edit':'Use the <b>Change Photo</b> button below to select a new photo from your computer or tablet.',
+				'fields':{
+					'image_id':{'label':'', 'type':'image_id', 'hidelabel':'yes', 'controls':'all', 'history':'no'},
+				}},
+			'info':{'label':'Catalog Information', 'aside':'yes', 'type':'simpleform', 
+				'gstep':3,
+				'gtitle':'Catalog Information',
+//				'gtext':'The following information will appear on your website. '
+//					+ ' If you don\'t want the painting to be shown, press <b>Hidden</b> below.',
+				'fields':{
+					'name':{'label':'Title', 'type':'text',
+						'gtitle':'What is the name of this painting?',
+						'gtext':'Each painting in your art catalog must have a unique name. '
+							+ ' If you do not name your paintings, then give each painting a unique number. '
+							+ ' The numbers can be any format you would like, eg: #134 or 2015-01.',
+						},
+					'category':{'label':'Category', 'type':'text', 
+						'gtitle':'What is the category for this painting?',
+						'livesearch':'yes', 'livesearchempty':'yes',
+						},
+					'size':{'label':'Size', 'type':'text', 'size':'small',
+						'gtitle':'What is the unframed size of your painting?',
+						},
+					'flags_5':{'label':'Framed', 'type':'flagtoggle', 'bit':0x10, 'field':'flags', 'default':'off',
+						'gtitle':'Is this item framed?',
+						'gtext':'',
+						'on_fields':['framed_size'],
+						},
+					'framed_size':{'label':'Framed Size', 'type':'text', 'size':'small',
+						'active':'yes', 
+						'visible':function() {
+							if( (M.ciniki_artcatalog_main.edit.data.flags&0x10) > 0 ) {
+								return 'yes';
+							} else {
+								return 'no';
+							}
+						}, 
+						'gtitle':'What is the framed size?',
+						},
+					'flags_1':{'label':'For Sale', 'type':'flagtoggle', 'bit':0x01, 'field':'flags', 'default':'off',
+						'gtitle':'Is this item for sale?',
+						'gtext':'',
+						},
+					'flags_2':{'label':'Sold', 'type':'flagtoggle', 'bit':0x02, 'field':'flags', 'default':'off',
+						'gtitle':'Is this item sold?',
+						'gtext':'',
+						},
+					'price':{'label':'Price', 'type':'text', 'size':'small',
+						'gtitle':'What is the price of your painting?',
+						'gtext':"(optional) You can leave this blank if you haven't priced this item.",
+						},
+				}},
+			'ainfo':{'label':'Additional Catalog Information', 'type':'simpleform', 
+				'gstep':4,
+				'gtext':'This information will not appear on your website, it is used to organized your catalog.',
+				'fields':{
+					'catalog_number':{'label':'Number', 'type':'text', 'size':'small'},
+					'year':{'label':'Year', 'type':'text', 'size':'small', 'livesearch':'yes', 'livesearchempty':'yes'},
+					'month':{'label':'Month', 'type':'select', 'options':this.monthOptions},
+					'day':{'label':'Day', 'type':'select', 'options':this.dayOptions},
+					'media':{'label':'Media', 'type':'text', 'size':'small', 'livesearch':'yes', 'livesearchempty':'yes'},
+					'location':{'label':'Location', 'type':'text', 'livesearch':'yes', 'livesearchempty':'yes'},
+				}},
+			'_lists':{'label':'Lists', 'type':'simpleform', 
+				'gstep':4,
+				'gtitle':'Any lists you want this painting on?',
+				'gtext':'These lists can be anything you want and are another way to organize your catalog.'
+					+ ' You use the <em>+</em> button to create a new list, or select any existing lists.',
+				'fields':{
+					'lists':{'label':'', 'active':'no', 'hidelabel':'yes', 'type':'tags', 'tags':[], 'hint':'New List'},
+				}},
+			'_description':{'label':'Description', 'aside':'yes', 'type':'simpleform', 
+				'gstep':6,
+				'gtitle':'What is the description of this painting?',
+				'gtext':'You can enter anything you want here, including what paint used and what material you painted on. For example: Acrylic on Canvas.',
+				'fields':{
+					'description':{'label':'', 'type':'textarea', 'size':'medium', 'hidelabel':'yes'},
+				}},
+			'_inspiration':{'label':'Inspiration', 'type':'simpleform', 
+				'gstep':7, 
+				'gtitle':'What was your inspiration for this painting?',
+				'fields':{
+					'inspiration':{'label':'', 'active':'no', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
+				}},
+			'_awards':{'label':'Awards', 'type':'simpleform', 
+				'gstep':7,
+				'gtitle':'Did this painting win any awards?',
+				'fields':{
+					'awards':{'label':'', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
+				}},
+			'_notes':{'label':'Notes', 'type':'simpleform', 
+				'gstep':8,
+				'gtitle':'Do you have any notes about this painting?',
+				'gmore':'These will not appear on your website, they are for any private notes about this painting.',
+				'fields':{
+					'notes':{'label':'', 'type':'textarea', 'size':'medium', 'hidelabel':'yes'},
+				}},
+			'_website':{'label':'Website Information', 'type':'simpleform', 
+				'gstep':9,
+				'gtitle':'Website Information',
+				'gtext':'What information about this item you would like to share with the public on your website?',
+				'fields':{
+					'webflags_1':{'label':'Visible', 'type':'flagtoggle', 'field':'webflags', 'bit':0x01, 'default':'on',
+						'gtitle':'Do you want this item to appear on your website?',
+						'on_fields':['webflags_5', 'webflags_12', 'webflags_9', 'webflags_10', 'webflags_11'],
+						},
+					'webflags_5':{'label':'Category Highlight', 'type':'flagtoggle', 'field':'webflags', 'bit':0x10, 'default':'off',
+						'visible':function() {
+							if( (M.ciniki_artcatalog_main.edit.data.webflags&0x01) > 0 ) {
+								return 'yes';
+							} else {
+								return 'no';
+							}
+						}, 
+						'gtitle':'Do you want this item to be the category thumbnail?',
+						'gtext':'When the list of categories is displayed on your website, the image for this item will be used as the thumbnail.',
+						},
+					'webflags_13':{'label':'Media', 'type':'flagtoggle', 'field':'webflags', 'bit':0x1000, 'default':'on',
+						'visible':function() {
+							if( (M.ciniki_artcatalog_main.edit.data.webflags&0x01) > 0 ) {
+								return 'yes';
+							} else {
+								return 'no';
+							}
+						}, 
+						'gtitle':'Do you want to show this items awards on your website?',
+						},
+					'webflags_12':{'label':'Price', 'type':'flagtoggle', 'field':'webflags', 'bit':0x0800, 'default':'on', 
+						'visible':function() {
+							if( (M.ciniki_artcatalog_main.edit.data.webflags&0x01) > 0 ) {
+								return 'yes';
+							} else {
+								return 'no';
+							}
+						}, 
+						'gtitle':'Do you want to show this items price on your website?',
+						'gtext':'If your item is for sale, the price will be displayed on your website. '
+							+ ' If the item is Sold, the word SOLD will be shown instead of the price.'
+						},
+					'webflags_9':{'label':'Description', 'type':'flagtoggle', 'field':'webflags', 'bit':0x0100, 'default':'on',
+						'visible':function() {
+							if( (M.ciniki_artcatalog_main.edit.data.webflags&0x01) > 0 ) {
+								return 'yes';
+							} else {
+								return 'no';
+							}
+						}, 
+						'gtitle':'Do you want to show this items description on your website?',
+						},
+					'webflags_10':{'label':'Inspiration', 'type':'flagtoggle', 'field':'webflags', 'bit':0x0200, 'default':'on',
+						'visible':function() {
+							if( (M.ciniki_artcatalog_main.edit.data.webflags&0x01) > 0 ) {
+								return 'yes';
+							} else {
+								return 'no';
+							}
+						}, 
+						'gtitle':'Do you want to show this items inspiration on your website?',
+						},
+					'webflags_11':{'label':'Awards', 'type':'flagtoggle', 'field':'webflags', 'bit':0x0400, 'default':'on',
+						'visible':function() {
+							if( (M.ciniki_artcatalog_main.edit.data.webflags&0x01) > 0 ) {
+								return 'yes';
+							} else {
+								return 'no';
+							}
+						}, 
+						'gtitle':'Do you want to show this items awards on your website?',
+						},
+					}},
+			'_buttons':{'label':'', 'gstep':'hide',
+				'buttons':{
+					'save':{'label':'Save', 'fn':'M.ciniki_artcatalog_main.saveItem();'},
+					'delete':{'label':'Delete', 'fn':'M.ciniki_artcatalog_main.deletePiece();'},
+				}},
 		};
 		this.edit.forms.photograph = {
-			'_image':{'label':'Image', 'aside':'yes', 'fields':{
-				'image_id':{'label':'', 'type':'image_id', 'hidelabel':'yes', 'controls':'all', 'history':'no'},
+			'_image':{'label':'Image', 'aside':'yes', 
+				'gstep':2,
+				'gtitle-add':'Do you have the image on your computer?',
+				'gtitle-edit':'Would you like to change the image?',
+				'gtext-add':'Use the <b>Add Photo</b> button to select the photo from your computer or tablet.',
+				'gtext-edit':'Use the <b>Change Photo</b> button below to select a new photo from your computer or tablet.',
+				'fields':{
+					'image_id':{'label':'', 'type':'image_id', 'hidelabel':'yes', 'controls':'all', 'history':'no'},
+				}},
+//			'_image':{'label':'Catalog and Website Information', 'aside':'yes', 'fields':{
+//				'image_id':{'label':'', 'type':'image_id', 'hidelabel':'yes', 'controls':'all', 'history':'no'},
+//			}},
+			'info':{'label':'Catalog Information', 'aside':'yes', 'type':'simpleform', 
+				'fields':{
+					'name':{'label':'Title', 'type':'text',
+						'gtitle':'What is the title of your photograph?',
+						'gtext':'Each photograph in your art catalog must have a unique name.'
+							+ " If you don't name your photographs, then give each photograph a unique number."
+							+ " The numbers can be any format you would like, eg: #134 or 2015-01.",
+						},
+				'category':{'label':'Category', 'type':'text', 'livesearch':'yes', 'livesearchempty':'yes',
+					'gtitle':'What is the category for this photograph?',
+					},
+				'flags_1':{'label':'For Sale', 'type':'flagtoggle', 'bit':0x01, 'field':'flags', 'default':'off',
+					'gtitle':'Is this item for sale?',
+					'gtext':'',
+					},
+				'price':{'label':'Price', 'type':'text', 'size':'small',
+					'gtitle':'What is the price of your photograph?',
+					'gtext':"(optional) You can leave this blank if you haven't priced this item.",
+					},
 			}},
-			'info':{'label':'Public Information', 'aside':'yes', 'type':'simpleform', 'fields':{
-				'name':{'label':'Title', 'type':'text'},
-				'category':{'label':'Category', 'type':'text', 'livesearch':'yes', 'livesearchempty':'yes'},
-				'price':{'label':'Price', 'type':'text', 'size':'small'},
-				'flags':{'label':'', 'type':'flags', 'join':'yes', 'flags':this.itemFlags},
-				'webflags':{'label':'Website', 'type':'flags', 'join':'yes', 'flags':this.webFlags},
-			}},
-			'ainfo':{'label':'Private Information', 'type':'simpleform', 'fields':{
+			'ainfo':{'label':'Additional Catalog Information', 'type':'simpleform', 'fields':{
 				'catalog_number':{'label':'Number', 'type':'text', 'size':'small'},
 				'year':{'label':'Year', 'type':'text', 'size':'small', 'livesearch':'yes', 'livesearchempty':'yes'},
 				'month':{'label':'Month', 'type':'select', 'options':this.monthOptions},
 				'day':{'label':'Day', 'type':'select', 'options':this.dayOptions},
 				'location':{'label':'Location', 'type':'text', 'livesearch':'yes', 'livesearchempty':'yes'},
 			}},
-			'_description':{'label':'Description', 'type':'simpleform', 'fields':{
-				'description':{'label':'', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
-			}},
-			'_awards':{'label':'Awards', 'type':'simpleform', 'fields':{
-				'awards':{'label':'', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
-			}},
-			'_lists':{'label':'Lists', 'type':'simpleform', 'fields':{
-				'lists':{'label':'', 'active':'no', 'hidelabel':'yes', 'type':'tags', 'tags':[], 'hint':'New List'},
-			}},
-			'_inspiration':{'label':'Inspiration', 'type':'simpleform', 'fields':{
-				'inspiration':{'label':'', 'active':'no', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
-			}},
-			'_notes':{'label':'Notes', 'type':'simpleform', 'fields':{
-				'notes':{'label':'', 'type':'textarea', 'size':'medium', 'hidelabel':'yes'},
-			}},
+			'_lists':this.edit.forms.painting._lists,
+			'_description':this.edit.forms.painting._description,
+			'_inspiration':this.edit.forms.painting._inspiration,
+			'_awards':this.edit.forms.painting._awards,
+			'_notes':this.edit.forms.painting._notes,
+			'_website':{'label':'Website Information', 'type':'simpleform', 
+				'gstep':9,
+				'gtitle':this.edit.forms.painting._website.gtitle,
+				'gtext':this.edit.forms.painting._website.gtext,
+				'fields':{
+					'webflags_1':this.edit.forms.painting._website.fields.webflags_1,
+					'webflags_5':this.edit.forms.painting._website.fields.webflags_5,
+					'webflags_12':this.edit.forms.painting._website.fields.webflags_12,
+					'webflags_9':this.edit.forms.painting._website.fields.webflags_9,
+					'webflags_10':this.edit.forms.painting._website.fields.webflags_10,
+					'webflags_11':this.edit.forms.painting._website.fields.webflags_11,
+				}},
 			'_buttons':{'label':'', 'buttons':{
 				'save':{'label':'Save', 'fn':'M.ciniki_artcatalog_main.saveItem();'},
 				'delete':{'label':'Delete', 'fn':'M.ciniki_artcatalog_main.deletePiece();'},
 			}},
 		};
 		this.edit.forms.jewelry = {
-			'_image':{'label':'Image', 'aside':'yes', 'fields':{
-				'image_id':{'label':'', 'type':'image_id', 'hidelabel':'yes', 'controls':'all', 'history':'no'},
-			}},
-			'info':{'label':'Public Information', 'aside':'yes', 'type':'simpleform', 'fields':{
-				'name':{'label':'Title', 'type':'text'},
-				'category':{'label':'Category', 'type':'text', 'livesearch':'yes', 'livesearchempty':'yes'},
-				'price':{'label':'Price', 'type':'text', 'size':'small'},
-				'flags':{'label':'', 'type':'flags', 'join':'yes', 'flags':this.itemFlags},
-				'webflags':{'label':'Website', 'type':'flags', 'join':'yes', 'flags':this.webFlags},
-			}},
-			'ainfo':{'label':'Private Information', 'type':'simpleform', 'fields':{
+			'_image':{'label':'Image', 'aside':'yes', 
+				'gstep':2,
+				'gtitle-add':'Do you have a photo of the jewelry?',
+				'gtitle-edit':'Would you like to change the photo?',
+				'gtext-add':'Use the <b>Add Photo</b> button to select the photo from your computer or tablet.',
+				'gtext-edit':'Use the <b>Change Photo</b> button below to select a new photo from your computer or tablet.',
+				'fields':{
+					'image_id':{'label':'', 'type':'image_id', 'hidelabel':'yes', 'controls':'all', 'history':'no'},
+				}},
+			'info':{'label':'Catalog Information', 'aside':'yes', 'type':'simpleform', 
+				'fields':{
+					'name':{'label':'Title', 'type':'text',
+						'gtitle':'What is the title of your item?',
+						'gtext':'Each item in your art catalog must have a unique name.'
+							+ " If you don't name your items, then give each item a unique number."
+							+ " The numbers can be any format you would like, eg: #134 or 2015-01.",
+						},
+				'category':{'label':'Category', 'type':'text', 'livesearch':'yes', 'livesearchempty':'yes',
+					'gtitle':'What is the category for this item?',
+					},
+				'flags_1':{'label':'For Sale', 'type':'flagtoggle', 'bit':0x01, 'field':'flags', 'default':'off',
+					'gtitle':'Is this item for sale?',
+					'gtext':'',
+					},
+				'flags_2':{'label':'Sold', 'type':'flagtoggle', 'bit':0x02, 'field':'flags', 'default':'off',
+					'gtitle':'Is this item sold?',
+					'gtext':'',
+					},
+				'price':{'label':'Price', 'type':'text', 'size':'small',
+					'gtitle':'What is the price of your item?',
+					'gtext':"(optional) You can leave this blank if you haven't priced this item.",
+					},
+				}},
+			'ainfo':{'label':'Additional Catalog Information', 'type':'simpleform', 'fields':{
 				'catalog_number':{'label':'Number', 'type':'text', 'size':'small'},
 				'year':{'label':'Year', 'type':'text', 'size':'small', 'livesearch':'yes', 'livesearchempty':'yes'},
 				'month':{'label':'Month', 'type':'select', 'options':this.monthOptions},
@@ -592,39 +793,69 @@ function ciniki_artcatalog_main() {
 				'media':{'label':'Media', 'type':'text', 'size':'small', 'livesearch':'yes', 'livesearchempty':'yes'},
 				'location':{'label':'Location', 'type':'text', 'livesearch':'yes', 'livesearchempty':'yes'},
 			}},
-			'_description':{'label':'Description', 'type':'simpleform', 'fields':{
-				'description':{'label':'', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
-			}},
-			'_awards':{'label':'Awards', 'type':'simpleform', 'fields':{
-				'awards':{'label':'', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
-			}},
-			'_lists':{'label':'Lists', 'type':'simpleform', 'fields':{
-				'lists':{'label':'', 'active':'no', 'hidelabel':'yes', 'type':'tags', 'tags':[], 'hint':'New List'},
-			}},
-			'_inspiration':{'label':'Inspiration', 'type':'simpleform', 'fields':{
-				'inspiration':{'label':'', 'active':'no', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
-			}},
-			'_notes':{'label':'Notes', 'type':'simpleform', 'fields':{
-				'notes':{'label':'', 'type':'textarea', 'size':'medium', 'hidelabel':'yes'},
-			}},
+			'_lists':this.edit.forms.painting._lists,
+			'_description':this.edit.forms.painting._description,
+			'_inspiration':this.edit.forms.painting._inspiration,
+			'_awards':this.edit.forms.painting._awards,
+			'_notes':this.edit.forms.painting._notes,
+			'_website':{'label':'Website Information', 'type':'simpleform', 
+				'gstep':9,
+				'gtitle':this.edit.forms.painting._website.gtitle,
+				'gtext':this.edit.forms.painting._website.gtext,
+				'fields':{
+					'webflags_1':this.edit.forms.painting._website.fields.webflags_1,
+					'webflags_5':this.edit.forms.painting._website.fields.webflags_5,
+					'webflags_12':this.edit.forms.painting._website.fields.webflags_12,
+					'webflags_9':this.edit.forms.painting._website.fields.webflags_9,
+					'webflags_10':this.edit.forms.painting._website.fields.webflags_10,
+					'webflags_11':this.edit.forms.painting._website.fields.webflags_11,
+				}},
 			'_buttons':{'label':'', 'buttons':{
 				'save':{'label':'Save', 'fn':'M.ciniki_artcatalog_main.saveItem();'},
 				'delete':{'label':'Delete', 'fn':'M.ciniki_artcatalog_main.deletePiece();'},
 			}},
 		};
 		this.edit.forms.sculpture = {
-			'_image':{'label':'Image', 'aside':'yes', 'fields':{
-				'image_id':{'label':'', 'type':'image_id', 'hidelabel':'yes', 'controls':'all', 'history':'no'},
-			}},
-			'info':{'label':'Public Information', 'aside':'yes', 'type':'simpleform', 'fields':{
-				'name':{'label':'Title', 'type':'text'},
-				'category':{'label':'Category', 'type':'text', 'livesearch':'yes', 'livesearchempty':'yes'},
-				'size':{'label':'Size', 'type':'text', 'size':'small'},
-				'price':{'label':'Price', 'type':'text', 'size':'small'},
-				'flags':{'label':'', 'type':'flags', 'join':'yes', 'flags':this.itemFlags},
-				'webflags':{'label':'Website', 'type':'flags', 'join':'yes', 'flags':this.webFlags},
-			}},
-			'ainfo':{'label':'Private Information', 'type':'simpleform', 'fields':{
+			'_image':{'label':'Image', 'aside':'yes', 
+				'gstep':2,
+				'gtitle-add':'Do you have a photo of the jewelry?',
+				'gtitle-edit':'Would you like to change the photo?',
+				'gtext-add':'Use the <b>Add Photo</b> button to select the photo from your computer or tablet.',
+				'gtext-edit':'Use the <b>Change Photo</b> button below to select a new photo from your computer or tablet.',
+				'fields':{
+					'image_id':{'label':'', 'type':'image_id', 'hidelabel':'yes', 'controls':'all', 'history':'no'},
+				}},
+			'info':{'label':'Catalog Information', 'aside':'yes', 'type':'simpleform', 
+				'gstep':3,
+				'gtitle':'Catalog Information',
+				'fields':{
+					'name':{'label':'Title', 'type':'text',
+						'gtitle':'What is the name of this sculpture?',
+						'gtext':'Each sculpture in your art catalog must have a unique name. '
+							+ " If you don't name your sculptures, then give each sculpture a unique number. "
+							+ " The numbers can be any format you would like, eg: #134 or 2015-01.",
+						},
+					'category':{'label':'Category', 'type':'text', 
+						'gtitle':'What is the category for this sculpture?',
+						'livesearch':'yes', 'livesearchempty':'yes',
+						},
+					'size':{'label':'Size', 'type':'text', 'size':'small',
+						'gtitle':'What is the size of your sculpture?',
+						},
+					'flags_1':{'label':'For Sale', 'type':'flagtoggle', 'bit':0x01, 'field':'flags', 'default':'off',
+						'gtitle':'Is this sculpture for sale?',
+						'gtext':'',
+						},
+					'flags_2':{'label':'Sold', 'type':'flagtoggle', 'bit':0x02, 'field':'flags', 'default':'off',
+						'gtitle':'Is this sculpture sold?',
+						'gtext':'',
+						},
+					'price':{'label':'Price', 'type':'text', 'size':'small',
+						'gtitle':'What is the price of your sculpture?',
+						'gtext':"(optional) You can leave this blank if you haven't priced this item.",
+						},
+				}},
+			'ainfo':{'label':'Additional Catalog Information', 'type':'simpleform', 'fields':{
 				'catalog_number':{'label':'Number', 'type':'text', 'size':'small'},
 				'year':{'label':'Year', 'type':'text', 'size':'small', 'livesearch':'yes', 'livesearchempty':'yes'},
 				'month':{'label':'Month', 'type':'select', 'options':this.monthOptions},
@@ -632,39 +863,69 @@ function ciniki_artcatalog_main() {
 				'media':{'label':'Media', 'type':'text', 'size':'small', 'livesearch':'yes', 'livesearchempty':'yes'},
 				'location':{'label':'Location', 'type':'text', 'livesearch':'yes', 'livesearchempty':'yes'},
 			}},
-			'_description':{'label':'Description', 'type':'simpleform', 'fields':{
-				'description':{'label':'', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
-			}},
-			'_awards':{'label':'Awards', 'type':'simpleform', 'fields':{
-				'awards':{'label':'', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
-			}},
-			'_lists':{'label':'Lists', 'type':'simpleform', 'fields':{
-				'lists':{'label':'', 'active':'no', 'hidelabel':'yes', 'type':'tags', 'tags':[], 'hint':'New List'},
-			}},
-			'_inspiration':{'label':'Inspiration', 'type':'simpleform', 'fields':{
-				'inspiration':{'label':'', 'active':'no', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
-			}},
-			'_notes':{'label':'Notes', 'type':'simpleform', 'fields':{
-				'notes':{'label':'', 'type':'textarea', 'size':'medium', 'hidelabel':'yes'},
-			}},
+			'_lists':this.edit.forms.painting._lists,
+			'_description':this.edit.forms.painting._description,
+			'_inspiration':this.edit.forms.painting._inspiration,
+			'_awards':this.edit.forms.painting._awards,
+			'_notes':this.edit.forms.painting._notes,
+			'_website':{'label':'Website Information', 'type':'simpleform', 
+				'gstep':9,
+				'gtitle':this.edit.forms.painting._website.gtitle,
+				'gtext':this.edit.forms.painting._website.gtext,
+				'fields':{
+					'webflags_1':this.edit.forms.painting._website.fields.webflags_1,
+					'webflags_5':this.edit.forms.painting._website.fields.webflags_5,
+					'webflags_12':this.edit.forms.painting._website.fields.webflags_12,
+					'webflags_9':this.edit.forms.painting._website.fields.webflags_9,
+					'webflags_10':this.edit.forms.painting._website.fields.webflags_10,
+					'webflags_11':this.edit.forms.painting._website.fields.webflags_11,
+				}},
 			'_buttons':{'label':'', 'buttons':{
 				'save':{'label':'Save', 'fn':'M.ciniki_artcatalog_main.saveItem();'},
 				'delete':{'label':'Delete', 'fn':'M.ciniki_artcatalog_main.deletePiece();'},
 			}},
 		};
 		this.edit.forms.fibreart = {
-			'_image':{'label':'Image', 'aside':'yes', 'fields':{
-				'image_id':{'label':'', 'type':'image_id', 'hidelabel':'yes', 'controls':'all', 'history':'no'},
-			}},
-			'info':{'label':'Public Information', 'aside':'yes', 'type':'simpleform', 'fields':{
-				'name':{'label':'Title', 'type':'text'},
-				'category':{'label':'Category', 'type':'text', 'livesearch':'yes', 'livesearchempty':'yes'},
-				'size':{'label':'Size', 'type':'text', 'size':'small'},
-				'price':{'label':'Price', 'type':'text', 'size':'small'},
-				'flags':{'label':'', 'type':'flags', 'join':'yes', 'flags':this.itemFlags},
-				'webflags':{'label':'Website', 'type':'flags', 'join':'yes', 'flags':this.webFlags},
-			}},
-			'ainfo':{'label':'Private Information', 'type':'simpleform', 'fields':{
+			'_image':{'label':'Image', 'aside':'yes', 
+				'gstep':2,
+				'gtitle-add':'Do you have a photo of the item?',
+				'gtitle-edit':'Would you like to change the photo?',
+				'gtext-add':'Use the <b>Add Photo</b> button to select the photo from your computer or tablet.',
+				'gtext-edit':'Use the <b>Change Photo</b> button below to select a new photo from your computer or tablet.',
+				'fields':{
+					'image_id':{'label':'', 'type':'image_id', 'hidelabel':'yes', 'controls':'all', 'history':'no'},
+				}},
+			'info':{'label':'Catalog Information', 'aside':'yes', 'type':'simpleform', 
+				'gstep':3,
+				'gtitle':'Catalog Information',
+				'fields':{
+					'name':{'label':'Title', 'type':'text',
+						'gtitle':'What is the name of this item?',
+						'gtext':'Each item in your art catalog must have a unique name. '
+							+ " If you don't name your items, then give each item a unique number. "
+							+ " The numbers can be any format you would like, eg: #134 or 2015-01.",
+						},
+					'category':{'label':'Category', 'type':'text', 
+						'gtitle':'What is the category for this item?',
+						'livesearch':'yes', 'livesearchempty':'yes',
+						},
+					'size':{'label':'Size', 'type':'text', 'size':'small',
+						'gtitle':'What is the size of your item?',
+						},
+					'flags_1':{'label':'For Sale', 'type':'flagtoggle', 'bit':0x01, 'field':'flags', 'default':'off',
+						'gtitle':'Is this item for sale?',
+						'gtext':'',
+						},
+					'flags_2':{'label':'Sold', 'type':'flagtoggle', 'bit':0x02, 'field':'flags', 'default':'off',
+						'gtitle':'Is this item sold?',
+						'gtext':'',
+						},
+					'price':{'label':'Price', 'type':'text', 'size':'small',
+						'gtitle':'What is the price of your item?',
+						'gtext':"(optional) You can leave this blank if you haven't priced this item.",
+						},
+				}},
+			'ainfo':{'label':'Additional Catalog Information', 'type':'simpleform', 'fields':{
 				'catalog_number':{'label':'Number', 'type':'text', 'size':'small'},
 				'year':{'label':'Year', 'type':'text', 'size':'small', 'livesearch':'yes', 'livesearchempty':'yes'},
 				'month':{'label':'Month', 'type':'select', 'options':this.monthOptions},
@@ -672,39 +933,40 @@ function ciniki_artcatalog_main() {
 //				'media':{'label':'Media', 'type':'text', 'size':'small', 'livesearch':'yes', 'livesearchempty':'yes'},
 				'location':{'label':'Location', 'type':'text', 'livesearch':'yes', 'livesearchempty':'yes'},
 			}},
-			'_description':{'label':'Description', 'type':'simpleform', 'fields':{
-				'description':{'label':'', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
-			}},
-			'_awards':{'label':'Awards', 'type':'simpleform', 'fields':{
-				'awards':{'label':'', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
-			}},
-			'_lists':{'label':'Lists', 'type':'simpleform', 'fields':{
-				'lists':{'label':'', 'active':'no', 'hidelabel':'yes', 'type':'tags', 'tags':[], 'hint':'New List'},
-			}},
-			'_inspiration':{'label':'Inspiration', 'type':'simpleform', 'fields':{
-				'inspiration':{'label':'', 'active':'no', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
-			}},
-			'_notes':{'label':'Notes', 'type':'simpleform', 'fields':{
-				'notes':{'label':'', 'type':'textarea', 'size':'medium', 'hidelabel':'yes'},
-			}},
+			'_lists':this.edit.forms.painting._lists,
+			'_description':this.edit.forms.painting._description,
+			'_inspiration':this.edit.forms.painting._inspiration,
+			'_awards':this.edit.forms.painting._awards,
+			'_notes':this.edit.forms.painting._notes,
+			'_website':{'label':'Website Information', 'type':'simpleform', 
+				'gstep':9,
+				'gtitle':this.edit.forms.painting._website.gtitle,
+				'gtext':this.edit.forms.painting._website.gtext,
+				'fields':{
+					'webflags_1':this.edit.forms.painting._website.fields.webflags_1,
+					'webflags_5':this.edit.forms.painting._website.fields.webflags_5,
+					'webflags_12':this.edit.forms.painting._website.fields.webflags_12,
+					'webflags_9':this.edit.forms.painting._website.fields.webflags_9,
+					'webflags_10':this.edit.forms.painting._website.fields.webflags_10,
+					'webflags_11':this.edit.forms.painting._website.fields.webflags_11,
+				}},
 			'_buttons':{'label':'', 'buttons':{
 				'save':{'label':'Save', 'fn':'M.ciniki_artcatalog_main.saveItem();'},
 				'delete':{'label':'Delete', 'fn':'M.ciniki_artcatalog_main.deletePiece();'},
 			}},
 		};
 		this.edit.forms.pottery = {
-			'_image':{'label':'Image', 'aside':'yes', 'fields':{
-				'image_id':{'label':'', 'type':'image_id', 'hidelabel':'yes', 'controls':'all', 'history':'no'},
-			}},
-			'info':{'label':'Public Information', 'aside':'yes', 'type':'simpleform', 'fields':{
-				'name':{'label':'Title', 'type':'text'},
-				'category':{'label':'Category', 'type':'text', 'livesearch':'yes', 'livesearchempty':'yes'},
-				'size':{'label':'Size', 'type':'text', 'size':'small'},
-				'price':{'label':'Price', 'type':'text', 'size':'small'},
-				'flags':{'label':'', 'type':'flags', 'join':'yes', 'flags':this.itemFlags},
-				'webflags':{'label':'Website', 'type':'flags', 'join':'yes', 'flags':this.webFlags},
-			}},
-			'ainfo':{'label':'Private Information', 'type':'simpleform', 'fields':{
+			'_image':{'label':'Image', 'aside':'yes', 
+				'gstep':2,
+				'gtitle-add':'Do you have a photo of the item?',
+				'gtitle-edit':'Would you like to change the photo?',
+				'gtext-add':'Use the <b>Add Photo</b> button to select the photo from your computer or tablet.',
+				'gtext-edit':'Use the <b>Change Photo</b> button below to select a new photo from your computer or tablet.',
+				'fields':{
+					'image_id':{'label':'', 'type':'image_id', 'hidelabel':'yes', 'controls':'all', 'history':'no'},
+				}},
+			'info':this.edit.forms.fibreart.info,
+			'ainfo':{'label':'Additional Catalog Information', 'type':'simpleform', 'fields':{
 				'catalog_number':{'label':'Number', 'type':'text', 'size':'small'},
 				'year':{'label':'Year', 'type':'text', 'size':'small', 'livesearch':'yes', 'livesearchempty':'yes'},
 				'month':{'label':'Month', 'type':'select', 'options':this.monthOptions},
@@ -712,21 +974,23 @@ function ciniki_artcatalog_main() {
 				'media':{'label':'Media', 'type':'text', 'size':'small', 'livesearch':'yes', 'livesearchempty':'yes'},
 				'location':{'label':'Location', 'type':'text', 'livesearch':'yes', 'livesearchempty':'yes'},
 			}},
-			'_description':{'label':'Description', 'type':'simpleform', 'fields':{
-				'description':{'label':'', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
-			}},
-			'_awards':{'label':'Awards', 'type':'simpleform', 'fields':{
-				'awards':{'label':'', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
-			}},
-			'_lists':{'label':'Lists', 'type':'simpleform', 'fields':{
-				'lists':{'label':'', 'active':'no', 'hidelabel':'yes', 'type':'tags', 'tags':[], 'hint':'New List'},
-			}},
-			'_inspiration':{'label':'Inspiration', 'type':'simpleform', 'fields':{
-				'inspiration':{'label':'', 'active':'no', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
-			}},
-			'_notes':{'label':'Notes', 'type':'simpleform', 'fields':{
-				'notes':{'label':'', 'type':'textarea', 'size':'medium', 'hidelabel':'yes'},
-			}},
+			'_lists':this.edit.forms.painting._lists,
+			'_description':this.edit.forms.painting._description,
+			'_inspiration':this.edit.forms.painting._inspiration,
+			'_awards':this.edit.forms.painting._awards,
+			'_notes':this.edit.forms.painting._notes,
+			'_website':{'label':'Website Information', 'type':'simpleform', 
+				'gstep':9,
+				'gtitle':this.edit.forms.painting._website.gtitle,
+				'gtext':this.edit.forms.painting._website.gtext,
+				'fields':{
+					'webflags_1':this.edit.forms.painting._website.fields.webflags_1,
+					'webflags_5':this.edit.forms.painting._website.fields.webflags_5,
+					'webflags_12':this.edit.forms.painting._website.fields.webflags_12,
+					'webflags_9':this.edit.forms.painting._website.fields.webflags_9,
+					'webflags_10':this.edit.forms.painting._website.fields.webflags_10,
+					'webflags_11':this.edit.forms.painting._website.fields.webflags_11,
+				}},
 			'_buttons':{'label':'', 'buttons':{
 				'save':{'label':'Save', 'fn':'M.ciniki_artcatalog_main.saveItem();'},
 				'delete':{'label':'Delete', 'fn':'M.ciniki_artcatalog_main.deletePiece();'},
@@ -735,10 +999,44 @@ function ciniki_artcatalog_main() {
 		this.edit.form_id = 1;
 		this.edit.sections = this.edit.forms.painting;
 		this.edit.fieldValue = function(s, i, d) { 
+//			if( i.match(/^flags_/) ) { console.log(d);console.log((this.data.flags&d.bit)>0?'on':'off');return (this.data.flags&d.bit)>0?'on':'off'; }
 			return this.data[i]; 
 		}
 		this.edit.sectionData = function(s) {
 			return this.data[s];
+		};
+		this.edit.sectionGuidedTitle = function(s) {
+			if( s == '_image' ) {
+				if( this.data.image_id != null && this.data.image_id > 0 ) {
+					return this.sections[s]['gtitle-edit'];
+				} else {
+					return this.sections[s]['gtitle-add'];
+				}
+			}
+			if( this.sections[s] != null && this.sections[s].gtitle != null ) { return this.sections[s].gtitle; }
+			return null;
+		};
+		this.edit.sectionGuidedText = function(s) {
+			if( s == '_image' ) {
+				if( this.data.image_id != null && this.data.image_id > 0 ) {
+					return this.sections[s]['gtext-edit'];
+				} else {
+					return this.sections[s]['gtext-add'];
+				}
+			}
+			if( this.sections[s].gtext != null ) { return this.sections[s].gtext; }
+			return null;
+		};
+		this.edit.sectionGuidedMore = function(s) {
+			if( s == '_image' ) {
+				if( this.data.image_id != null && this.data.image_id > 0 ) {
+					return this.sections[s]['gmore-edit'];
+				} else {
+					return this.sections[s]['gmore-add'];
+				}
+			}
+			if( this.sections[s] != null && this.sections[s].gmore != null ) { return this.sections[s].gmore; }
+			return null;
 		};
 		this.edit.liveSearchCb = function(s, i, value) {
 			if( i == 'category' || i == 'media' || i == 'location' || i == 'year' ) {
@@ -1470,6 +1768,8 @@ function ciniki_artcatalog_main() {
 	this.showEdit = function(cb, aid, section, name) {
 		if( aid != null ) { this.edit.artcatalog_id = aid; }
 		if( this.edit.artcatalog_id > 0 ) {
+			this.edit.gstep = 0;
+//			this.edit.size = 'mediumaside';
 //			this.edit.forms.painting._buttons.buttons.delete.visible = 'yes';
 //			this.edit.forms.photograph._buttons.buttons.delete.visible = 'yes';
 //			this.edit.forms.jewelry._buttons.buttons.delete.visible = 'yes';
@@ -1504,10 +1804,12 @@ function ciniki_artcatalog_main() {
 				});
 		} else {
 			this.edit.reset();
+			this.edit.gstep = 1;
+//			this.edit.size = 'medium';
 //			this.edit.forms.painting._buttons.buttons.delete.visible = 'no';
 //			this.edit.forms.photograph._buttons.buttons.delete.visible = 'no';
 //			this.edit.forms.jewelry._buttons.buttons.delete.visible = 'no';
-			this.edit.data = {'type':1};
+			this.edit.data = {'type':1, 'webflags':(0x01|0x0100|0x0800)};
 			if( section != null && section == 'category' && name != null && name != '' ) {
 				this.edit.data.category = decodeURIComponent(name);
 			} else if( section != null && section == 'media' && name != null && name != '' ) {
