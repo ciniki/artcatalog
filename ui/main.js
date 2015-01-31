@@ -498,7 +498,6 @@ function ciniki_artcatalog_main() {
 //		this.edit.gsaveBtn = {'label':'Save', 'fn':'M.ciniki_artcatalog_main.saveItem();'};
 		this.edit.formtabs = {'label':'', 'gstep':1, 'field':'type', 
 			'gtitle':'What type of artwork is this?',
-			'gtext':'',
 			'gmore':'The final step is deciding what information to show on your website.',
 			'tabs':{
 				'painting':{'label':'Painting', 'field_id':1},
