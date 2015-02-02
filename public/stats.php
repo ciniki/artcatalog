@@ -228,7 +228,7 @@ function ciniki_artcatalog_stats($ciniki) {
 	}
 	$strsql .= ""
 		. "GROUP BY year "
-		. "ORDER BY name "
+		. "ORDER BY year DESC "
 		. "";
 	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
 		array('container'=>'sections', 'fname'=>'name', 'name'=>'section',
