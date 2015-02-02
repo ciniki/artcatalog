@@ -234,12 +234,12 @@ function ciniki_artcatalog_main() {
 		};
 		this.statsmenu.rowFn = function(s, i, d) {
 			switch (s) {
-				case 'categories': return 'M.ciniki_artcatalog_main.showList(\'M.ciniki_artcatalog_main.showMenu();\',\'category\',\'' + escape(d.section.name) + '\');';
-				case 'media': return 'M.ciniki_artcatalog_main.showList(\'M.ciniki_artcatalog_main.showMenu();\',\'media\',\'' + escape(d.section.name) + '\');';
-				case 'locations': return 'M.ciniki_artcatalog_main.showList(\'M.ciniki_artcatalog_main.showMenu();\',\'location\',\'' + escape(d.section.name) + '\');';
-				case 'years': return 'M.ciniki_artcatalog_main.showList(\'M.ciniki_artcatalog_main.showMenu();\',\'year\',\'' + escape(d.section.name) + '\');';
-				case 'lists': return 'M.ciniki_artcatalog_main.showList(\'M.ciniki_artcatalog_main.showMenu();\',\'list\',\'' + escape(d.section.name) + '\');';
-				case 'tracking': return 'M.ciniki_artcatalog_main.showList(\'M.ciniki_artcatalog_main.showMenu();\',\'tracking\',\'' + escape(d.section.name) + '\');';
+				case 'categories': return 'M.ciniki_artcatalog_main.showList(\'M.ciniki_artcatalog_main.showMenu();\',\'category\',\'' + escape(d.section.name) + '\', M.ciniki_artcatalog_main.statsmenu.data.'+s+');';
+				case 'media': return 'M.ciniki_artcatalog_main.showList(\'M.ciniki_artcatalog_main.showMenu();\',\'media\',\'' + escape(d.section.name) + '\', M.ciniki_artcatalog_main.statsmenu.data.'+s+');';
+				case 'locations': return 'M.ciniki_artcatalog_main.showList(\'M.ciniki_artcatalog_main.showMenu();\',\'location\',\'' + escape(d.section.name) + '\', M.ciniki_artcatalog_main.statsmenu.data.'+s+');';
+				case 'years': return 'M.ciniki_artcatalog_main.showList(\'M.ciniki_artcatalog_main.showMenu();\',\'year\',\'' + escape(d.section.name) + '\', M.ciniki_artcatalog_main.statsmenu.data.'+s+');';
+				case 'lists': return 'M.ciniki_artcatalog_main.showList(\'M.ciniki_artcatalog_main.showMenu();\',\'list\',\'' + escape(d.section.name) + '\', M.ciniki_artcatalog_main.statsmenu.data.'+s+');';
+				case 'tracking': return 'M.ciniki_artcatalog_main.showList(\'M.ciniki_artcatalog_main.showMenu();\',\'tracking\',\'' + escape(d.section.name) + '\', M.ciniki_artcatalog_main.statsmenu.data.'+s+');';
 			}
 		};
 		this.statsmenu.addButton('add', 'Add', 'M.ciniki_artcatalog_main.showEdit(\'M.ciniki_artcatalog_main.showMenu();\',0);');
@@ -257,6 +257,8 @@ function ciniki_artcatalog_main() {
 		this.list.current_name = '';
 		this.list.sections = {};	// Sections are set in showPieces function
 		this.list.downloadFn = '';
+		this.list.next_list_name = '';
+		this.list.prev_list_name = '';
 		this.list.cellValue = function(s, i, j, d) {
 			if( j == 0 ) { 
 				if( d.item.image_id > 0 ) {
@@ -296,8 +298,22 @@ function ciniki_artcatalog_main() {
 			return d['label'];
 		};
 		this.list.noData = function(s) { return 'Nothing found'; }
+		this.list.prevButtonFn = function() {
+			if( this.prev_list_name != '' ) {
+				return 'M.ciniki_artcatalog_main.showList(null,null,\'' + escape(this.prev_list_name) + '\');';
+			}
+			return null;
+		};
+		this.list.nextButtonFn = function() {
+			if( this.next_list_name != '-1' && this.next_list_name != '' ) {
+				return 'M.ciniki_artcatalog_main.showList(null,null,\'' + escape(this.next_list_name) + '\');';
+			}
+			return null;
+		};
 		this.list.addButton('add', 'Add', 'M.ciniki_artcatalog_main.showEdit(\'M.ciniki_artcatalog_main.showList();\',0,M.ciniki_artcatalog_main.list.current_section,M.ciniki_artcatalog_main.list.current_name);');
+		this.list.addButton('next', 'next');
 		this.list.addClose('Back');
+		this.list.addLeftButton('prev', 'Prev');
 
 		//
 		// Display information about a item of art
@@ -1678,17 +1694,16 @@ function ciniki_artcatalog_main() {
 			});
 	};
 
-	this.showList = function(cb, section, name) {
+	this.showList = function(cb, section, name, list) {
 		if( section != null ) {
 			this.list.current_section = encodeURIComponent(unescape(section));
 		}
 		if( name != null ) {
 			this.list.current_name = unescape(name);
 		}
+		if( list != null ) { this.list.prevnextList = list; }
 		this.list.data = {};
-		if( cb != null ) {
-			this.list.cb = cb;
-		}
+		if( cb != null ) { this.list.cb = cb; }
 		if( this.statsmenu.sections.types.visible == 'yes' && this.statsmenu.sections.types.selected != '' ) {
 			this.list.downloadFn = 'M.ciniki_artcatalog_main.showDownload(\'M.ciniki_artcatalog_main.showList();\',\'ciniki.artcatalog.listWithImages\',\'' + this.list.current_section + '\',\'' + escape(this.list.current_name) + '\',\'' + this.statsmenu.sections.types.selected + '\',\'' + escape(this.list.current_name) + '\');';
 			var rsp = M.api.getJSONCb('ciniki.artcatalog.listWithImages', 
@@ -1710,10 +1725,26 @@ function ciniki_artcatalog_main() {
 			M.api.err(rsp);
 			return false;
 		}
+		var p = M.ciniki_artcatalog_main.list;
+		// Setup next/prev buttons
+		p.prev_list_name = '';
+		p.next_list_name = '';
+		if( p.prevnextList != null ) {
+			for(i in p.prevnextList) {
+				if( p.next_list_name == -1 ) {
+					p.next_list_name = p.prevnextList[i].section.name;
+					break;
+				} else if( p.prevnextList[i].section.name == p.current_name ) {
+					p.next_list_name = -1;
+				} else {
+					p.prev_list_name = p.prevnextList[i].section.name;
+				}
+			}
+		}
+
 		//
 		// If the last image was removed, close this section.
 		//
-		var p = M.ciniki_artcatalog_main.list;
 		if( p.current_section != null && rsp.sections.length == 0 ) {
 			p.close();
 		} else {
