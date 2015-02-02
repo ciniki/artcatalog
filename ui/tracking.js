@@ -10,20 +10,44 @@ function ciniki_artcatalog_tracking() {
 			'ciniki_artcatalog_tracking', 'edit',
 			'mc', 'medium', 'sectioned', 'ciniki.artcatalog.tracking.edit');
 		this.edit.data = {};
+		this.edit.gstep = 1;
 		this.edit.sections = {
-			'info':{'label':'Place', 'type':'simpleform', 'fields':{
-				'name':{'label':'Name', 'type':'text', 'livesearch':'yes', 'livesearchempty':'yes'},
-				'external_number':{'label':'Number', 'type':'text', 'size':'small'},
-				'start_date':{'label':'Start', 'type':'date'},
-				'end_date':{'label':'End', 'type':'date'},
-			}},
-			'_notes':{'label':'Notes', 'type':'simpleform', 'fields':{
-				'notes':{'label':'', 'type':'textarea', 'size':'medium', 'hidelabel':'yes'},
-			}},
-			'_buttons':{'label':'', 'buttons':{
-				'save':{'label':'Save', 'fn':'M.ciniki_artcatalog_tracking.saveTracking();'},
-				'delete':{'label':'Delete', 'fn':'M.ciniki_artcatalog_tracking.deleteTracking();'},
-			}},
+			'info':{'label':'Place', 'type':'simpleform', 
+				'gstep':1,
+				'gtitle':'Where was the item exhibited?',
+				'fields':{
+					'name':{'label':'Name', 'type':'text', 'livesearch':'yes', 'livesearchempty':'yes',
+						'gtitle':'What is the name of the venue?',
+						'htext':'The place where you displayed your work.'
+							+ " This can be a gallery, personal collection, show or anything else you want.",
+							},
+					'external_number':{'label':'Number', 'type':'text', 'size':'small',
+						'gtitle':'Did they give you an item number?',
+						'htext':'If the venue has their own item number, you can enter that here.'},
+					'start_date':{'label':'Start', 'type':'date',
+						'gtitle':'When was your item displayed?',
+						'htext':'The first day your item was on display.',
+						},
+					'end_date':{'label':'End', 'type':'date',
+						'htext':'The last day your item was on display.'},
+				}},
+			'_notes':{'label':'Notes', 'type':'simpleform', 
+				'gstep':2,
+				'gtitle':'Do you have any notes about the exhibition?',
+				'gmore':'Any private notes you want to keep about showing this item at this venue.',
+				'fields':{
+					'notes':{'label':'', 'type':'textarea', 'size':'medium', 'hidelabel':'yes'},
+				}},
+			'_buttons':{'label':'', 
+				'gstep':3,
+				'gtitle':'Save the exhibition information',
+				'gtext-add':'Press the save button this exhibited place.',
+				'gtext-edit':'Press the save button the changes.',
+				'gmore-edit':'If you want to remove this exhibited place for your item, press the Delete button.',
+				'buttons':{
+					'save':{'label':'Save', 'fn':'M.ciniki_artcatalog_tracking.saveTracking();'},
+					'delete':{'label':'Delete', 'visible':'no', 'fn':'M.ciniki_artcatalog_tracking.deleteTracking();'},
+				}},
 		};
 		this.edit.fieldHistoryArgs = function(s, i) {
 			return {'method':'ciniki.artcatalog.trackingHistory', 
@@ -63,6 +87,26 @@ function ciniki_artcatalog_tracking() {
 			}
 			this.removeLiveSearch(s, fid);
 		};
+		this.edit.sectionGuidedText = function(s) {
+			if( s == '_buttons' ) {
+				if( this.sections[s].buttons.delete.visible == 'yes' ) {
+					return this.sections[s]['gtext-edit'];
+				} else {
+					return this.sections[s]['gtext-add'];
+				}
+			}
+			if( this.sections[s] != null && this.sections[s].gtext != null ) { return this.sections[s].gtext; }
+			return null;
+		};
+		this.edit.sectionGuidedMore = function(s) {
+			if( s == '_buttons' ) {
+				if( this.sections[s].buttons.delete.visible == 'yes' ) {
+					return this.sections[s]['gmore-edit'];
+				}
+			}
+			if( this.sections[s] != null && this.sections[s].gmore != null ) { return this.sections[s].gmore; }
+			return null;
+		};
 		this.edit.addButton('save', 'Save', 'M.ciniki_artcatalog_tracking.saveTracking();');
 		this.edit.addClose('Cancel');
 
@@ -92,25 +136,24 @@ function ciniki_artcatalog_tracking() {
 	}
 
 	this.showEdit = function(cb, tid, aid) {
-		if( tid != null ) {
-			this.edit.tracking_id = tid;
-		}
-		if( aid != null ) {
-			this.edit.artcatalog_id = aid;
-		}
+		if( tid != null ) { this.edit.tracking_id = tid; }
+		if( aid != null ) { this.edit.artcatalog_id = aid; }
 		if( this.edit.tracking_id > 0 ) {
-			var rsp = M.api.getJSONCb('ciniki.artcatalog.trackingGet', 
+			this.edit.sections._buttons.buttons.delete.visible = 'yes';
+			M.api.getJSONCb('ciniki.artcatalog.trackingGet', 
 				{'business_id':M.curBusinessID, 'tracking_id':this.edit.tracking_id}, function(rsp) {
 					if( rsp.stat != 'ok' ) {
 						M.api.err(rsp);
 						return false;
 					}
-					M.ciniki_artcatalog_tracking.edit.data = rsp.place;
-					M.ciniki_artcatalog_tracking.edit.refresh();
-					M.ciniki_artcatalog_tracking.edit.show(cb);
+					var p = M.ciniki_artcatalog_tracking.edit;
+					p.data = rsp.place;
+					p.refresh();
+					p.show(cb);
 				});
 		} else {
 			this.edit.reset();
+			this.edit.sections._buttons.buttons.delete.visible = 'no';
 			this.edit.data = {};
 			this.edit.refresh();
 			this.edit.show(cb);

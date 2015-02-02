@@ -14,7 +14,7 @@
 # name:				The name for the image.
 # permalink:		The permalink for the image.
 # sequence:			The order the images should be displayed on the website.
-# webflags:			0x01 - Hidden, do not show on website.
+# webflags:			0x01 - Visible, publish on website.
 #
 # image_id:			The ID of the image to attach to the artcatalog item.
 #

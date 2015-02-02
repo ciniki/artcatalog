@@ -371,6 +371,7 @@ function ciniki_artcatalog_main() {
 				'edit':{'label':'Edit', 'fn':'M.ciniki_artcatalog_main.showEdit(\'M.ciniki_artcatalog_main.showItem();\',M.ciniki_artcatalog_main.item.artcatalog_id);'},
 				'pdf':{'label':'Download PDF', 'fn':'M.ciniki_artcatalog_main.showItemDownload(\'M.ciniki_artcatalog_main.showItem();\',\'ciniki.artcatalog.get\',\'\',M.ciniki_artcatalog_main.item.artcatalog_id);'},
 				'download':{'label':'Download Original', 'fn':'M.ciniki_artcatalog_main.downloadImage(M.ciniki_artcatalog_main.item.data.image_id,\'original\');'},
+				'delete':{'label':'Delete', 'fn':'M.ciniki_artcatalog_main.deletePiece();'},
 			}},
 			};
 		this.item.sectionData = function(s) {
@@ -648,7 +649,6 @@ function ciniki_artcatalog_main() {
 				}},
 			'_website':{'label':'Website Information', 'type':'simpleform', 
 				'gstep':9,
-				'gtitle':'What do you want on your website?',
 				'fields':{
 					'webflags_1':{'label':'Visible', 'type':'flagtoggle', 'field':'webflags', 'bit':0x01, 'default':'on',
 						'gtitle':'Do you want this item to appear on your website?',
@@ -715,10 +715,10 @@ function ciniki_artcatalog_main() {
 			'_buttons':{'label':'', 'gstep':10, 
 				'gtitle':'Save your work',
 				'gtext':"Press the save button to save the changes you've made.",
-				'gmore-edit':'If you want to remove this item from your catalog, press the Delete button.',
+//				'gmore-edit':'If you want to remove this item from your catalog, press the Delete button.',
 				'buttons':{
 					'save':{'label':'Save', 'fn':'M.ciniki_artcatalog_main.saveItem();'},
-					'delete':{'label':'Delete', 'fn':'M.ciniki_artcatalog_main.deletePiece();'},
+//					'delete':{'label':'Delete', 'fn':'M.ciniki_artcatalog_main.deletePiece();'},
 				}},
 		};
 		this.edit.forms.photograph = {
@@ -804,10 +804,10 @@ function ciniki_artcatalog_main() {
 			'_buttons':{'label':'', 'gstep':10, 
 				'gtitle':'Save your work',
 				'gtext':"Press the save button to save the changes you've made.",
-				'gmore-edit':'If you want to remove this item from your catalog, press the Delete button.',
+//				'gmore-edit':'If you want to remove this item from your catalog, press the Delete button.',
 				'buttons':{
 					'save':{'label':'Save', 'fn':'M.ciniki_artcatalog_main.saveItem();'},
-					'delete':{'label':'Delete', 'fn':'M.ciniki_artcatalog_main.deletePiece();'},
+//					'delete':{'label':'Delete', 'fn':'M.ciniki_artcatalog_main.deletePiece();'},
 				}},
 		};
 		this.edit.forms.jewelry = {
@@ -898,10 +898,10 @@ function ciniki_artcatalog_main() {
 			'_buttons':{'label':'', 'gstep':10, 
 				'gtitle':'Save your work',
 				'gtext':"Press the save button to save the changes you've made.",
-				'gmore-edit':'If you want to remove this item from your catalog, press the Delete button.',
+//				'gmore-edit':'If you want to remove this item from your catalog, press the Delete button.',
 				'buttons':{
 					'save':{'label':'Save', 'fn':'M.ciniki_artcatalog_main.saveItem();'},
-					'delete':{'label':'Delete', 'fn':'M.ciniki_artcatalog_main.deletePiece();'},
+//					'delete':{'label':'Delete', 'fn':'M.ciniki_artcatalog_main.deletePiece();'},
 				}},
 		};
 		this.edit.forms.sculpture = {
@@ -996,10 +996,10 @@ function ciniki_artcatalog_main() {
 			'_buttons':{'label':'', 'gstep':10, 
 				'gtitle':'Save your work',
 				'gtext':"Press the save button to save the changes you've made.",
-				'gmore-edit':'If you want to remove this item from your catalog, press the Delete button.',
+//				'gmore-edit':'If you want to remove this item from your catalog, press the Delete button.',
 				'buttons':{
 					'save':{'label':'Save', 'fn':'M.ciniki_artcatalog_main.saveItem();'},
-					'delete':{'label':'Delete', 'fn':'M.ciniki_artcatalog_main.deletePiece();'},
+//					'delete':{'label':'Delete', 'fn':'M.ciniki_artcatalog_main.deletePiece();'},
 				}},
 		};
 		this.edit.forms.fibreart = {
@@ -1089,10 +1089,10 @@ function ciniki_artcatalog_main() {
 			'_buttons':{'label':'', 'gstep':10, 
 				'gtitle':'Save your work',
 				'gtext':"Press the save button to save the changes you've made.",
-				'gmore-edit':'If you want to remove this item from your catalog, press the Delete button.',
+//				'gmore-edit':'If you want to remove this item from your catalog, press the Delete button.',
 				'buttons':{
 					'save':{'label':'Save', 'fn':'M.ciniki_artcatalog_main.saveItem();'},
-					'delete':{'label':'Delete', 'fn':'M.ciniki_artcatalog_main.deletePiece();'},
+//					'delete':{'label':'Delete', 'fn':'M.ciniki_artcatalog_main.deletePiece();'},
 				}},
 		};
 		this.edit.forms.pottery = {
@@ -1183,10 +1183,10 @@ function ciniki_artcatalog_main() {
 			'_buttons':{'label':'', 'gstep':10, 
 				'gtitle':'Save your work',
 				'gtext':"Press the save button to save the changes you've made.",
-				'gmore-edit':'If you want to remove this item from your catalog, press the Delete button.',
+//				'gmore-edit':'If you want to remove this item from your catalog, press the Delete button.',
 				'buttons':{
 					'save':{'label':'Save', 'fn':'M.ciniki_artcatalog_main.saveItem();'},
-					'delete':{'label':'Delete', 'fn':'M.ciniki_artcatalog_main.deletePiece();'},
+//					'delete':{'label':'Delete', 'fn':'M.ciniki_artcatalog_main.deletePiece();'},
 				}},
 		};
 		this.edit.form_id = 1;
@@ -1228,11 +1228,11 @@ function ciniki_artcatalog_main() {
 					return this.sections[s]['gmore-add'];
 				}
 			}
-			if( s == '_buttons' ) {
-				if( this.sections[s].buttons.delete.visible == 'yes' ) {
-					return this.sections[s]['gmore-edit'];
-				}
-			}
+//			if( s == '_buttons' ) {
+//				if( this.sections[s].buttons.delete.visible == 'yes' ) {
+//					return this.sections[s]['gmore-edit'];
+//				}
+//			}
 			if( this.sections[s] != null && this.sections[s].gmore != null ) { return this.sections[s].gmore; }
 			return null;
 		};
@@ -1993,9 +1993,6 @@ function ciniki_artcatalog_main() {
 		if( this.edit.artcatalog_id > 0 ) {
 			this.edit.gstep = 0;
 //			this.edit.size = 'mediumaside';
-//			this.edit.forms.painting._buttons.buttons.delete.visible = 'yes';
-//			this.edit.forms.photograph._buttons.buttons.delete.visible = 'yes';
-//			this.edit.forms.jewelry._buttons.buttons.delete.visible = 'yes';
 			var rsp = M.api.getJSONCb('ciniki.artcatalog.get', 
 				{'business_id':M.curBusinessID, 'artcatalog_id':this.edit.artcatalog_id}, function(rsp) {
 					if( rsp.stat != 'ok' ) {
@@ -2014,7 +2011,7 @@ function ciniki_artcatalog_main() {
 						if( p.forms[i]._lists != null ) {
 							p.forms[i]._lists.fields.lists.tags = tags;
 						}
-						p.forms[i]._buttons.buttons.delete.visible = 'yes';
+//						p.forms[i]._buttons.buttons.delete.visible = 'yes';
 					}
 //					p.forms.painting._lists.fields.lists.tags = tags;
 //					p.forms.photograph._lists.fields.lists.tags = tags;
@@ -2029,9 +2026,6 @@ function ciniki_artcatalog_main() {
 			this.edit.reset();
 			this.edit.gstep = 1;
 //			this.edit.size = 'medium';
-//			this.edit.forms.painting._buttons.buttons.delete.visible = 'no';
-//			this.edit.forms.photograph._buttons.buttons.delete.visible = 'no';
-//			this.edit.forms.jewelry._buttons.buttons.delete.visible = 'no';
 			this.edit.data = {'type':1, 'webflags':(0x01|0x0100|0x0800)};
 			if( section != null && section == 'category' && name != null && name != '' ) {
 				this.edit.data.category = decodeURIComponent(name);
@@ -2072,7 +2066,7 @@ function ciniki_artcatalog_main() {
 							if( p.forms[i]._lists != null ) {
 								p.forms[i]._lists.fields.lists.tags = tags;
 							}
-							p.forms[i]._buttons.buttons.delete.visible = 'no';
+//							p.forms[i]._buttons.buttons.delete.visible = 'no';
 						}
 //						p.forms.painting._lists.fields.lists.tags = tags;
 //						p.forms.photograph._lists.fields.lists.tags = tags;
@@ -2127,9 +2121,9 @@ function ciniki_artcatalog_main() {
 	};
 
 	this.deletePiece = function() {
-		if( confirm('Are you sure you want to delete \'' + this.edit.data.name + '\'?  All information, photos and exhibited information will be removed.') ) {
+		if( confirm('Are you sure you want to delete \'' + this.item.data.name + '\'?  All information, photos and exhibited information will be removed. There is no way to get the information back once deleted.') ) {
 			var rsp = M.api.getJSONCb('ciniki.artcatalog.delete', 
-				{'business_id':M.curBusinessID, 'artcatalog_id':this.edit.artcatalog_id}, function(rsp) {
+				{'business_id':M.curBusinessID, 'artcatalog_id':this.item.artcatalog_id}, function(rsp) {
 					if( rsp.stat != 'ok' ) {
 						M.api.err(rsp);
 						return false;
