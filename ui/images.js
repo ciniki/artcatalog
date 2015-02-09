@@ -21,7 +21,8 @@ function ciniki_artcatalog_images() {
 				'gtitle-add':'Do you have an additional photo to add?',
 				'gtitle-edit':'Would you like to change the photo?',
 				'gmore-add':'Use the <b>Add Photo</b> button to select a photo from your computer or tablet.',
-				'gmore-edit':'Use the <b>Change Photo</b> button below to select a new photo from your computer or tablet.',
+				'gmore-edit':'Use the <b>Change Photo</b> button below to select a new photo from your computer or tablet.'
+					+ ' If you would like to save the original photo to your computer, press the <span class="icon">G</span> button.',
 				'fields':{
 					'image_id':{'label':'', 'type':'image_id', 'hidelabel':'yes', 'controls':'all', 'history':'no'},
 				}},
@@ -52,12 +53,11 @@ function ciniki_artcatalog_images() {
 			'_buttons':{'label':'', 
 				'gstep':4,
 				'gtext-add':'Press the save button to add the additional image.',
-				'gtext-edit':'Press the save button to update the additional image.' 
-					+ ' If you would like to save the original photo to your computer, press the <em>Download Original</em> button.',
+				'gtext-edit':'Press the save button to update the additional image.',
+//					+ ' If you would like to save the original photo to your computer, press the <em><span class="icon">G</span></em> button.',
 				'gmore-edit':'If you want to remove this additional photo, press the <em>Delete</em> button.',
 				'buttons':{
 					'save':{'label':'Save', 'fn':'M.ciniki_artcatalog_images.saveImage();'},
-					'download':{'label':'Download Original', 'visible':'no', 'fn':'M.ciniki_artcatalog_images.downloadImage(M.ciniki_artcatalog_images.edit.data.image_id, \'original\');'},
 					'delete':{'label':'Delete', 'visible':'no', 'fn':'M.ciniki_artcatalog_images.deleteImage();'},
 				}},
 		};
@@ -151,7 +151,6 @@ function ciniki_artcatalog_images() {
 		if( eid != null ) { this.edit.artcatalog_id = eid; }
 		this.edit.reset();
 		if( this.edit.artcatalog_image_id > 0 ) {
-			this.edit.sections._buttons.buttons.download.visible = 'yes';
 			this.edit.sections._buttons.buttons.delete.visible = 'yes';
 			var rsp = M.api.getJSONCb('ciniki.artcatalog.imageGet', 
 				{'business_id':M.curBusinessID, 'artcatalog_image_id':this.edit.artcatalog_image_id}, function(rsp) {
@@ -165,7 +164,6 @@ function ciniki_artcatalog_images() {
 				});
 		} else {
 			this.edit.data = {};
-			this.edit.sections._buttons.buttons.download.visible = 'no';
 			this.edit.sections._buttons.buttons.delete.visible = 'no';
 			this.edit.refresh();
 			this.edit.show(cb);
@@ -203,11 +201,6 @@ function ciniki_artcatalog_images() {
 						}
 					});
 		}
-	};
-
-	this.downloadImage = function(iid, version) {
-		M.api.openFile('ciniki.images.get', {'business_id':M.curBusinessID,
-			'image_id':iid, 'version':version, 'attachment':'yes'});
 	};
 
 	this.deleteImage = function() {
