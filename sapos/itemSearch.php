@@ -71,6 +71,7 @@ function ciniki_artcatalog_sapos_itemSearch($ciniki, $business_id, $args) {
 			'object_id'=>$item['id'],
 			'description'=>$item['name'],
 			'quantity'=>1,
+			'flags'=>0x40,
 			'unit_amount'=>0,
 			'unit_discount_amount'=>0,
 			'unit_discount_percentage'=>0,

@@ -69,11 +69,15 @@ function ciniki_artcatalog_sapos_itemDetails($ciniki, $business_id, $object_id) 
 		'object_id'=>$object_id,
 		'description'=>$item['name'],
 		'quantity'=>1,
+		'flags'=>0,
+		'price_id'=>0,
+		'code'=>'',
 		'unit_amount'=>0,
 		'unit_discount_amount'=>0,
 		'unit_discount_percentage'=>0,
 		'taxtype_id'=>$taxtype_id, 
 		'notes'=>'',
+		'shipped_quantity'=>0,
 		);
 
 	if( $item['price'] != '' ) {
