@@ -18,6 +18,7 @@ function ciniki_artcatalog_images() {
 		this.edit.sections = {
 			'_image':{'label':'Image', 
 				'gstep':1,
+				'gtitle':function() { alert('test');},
 				'gtitle-add':'Do you have an additional photo to add?',
 				'gtitle-edit':'Would you like to change the photo?',
 				'gmore-add':'Use the <b>Add Photo</b> button to select a photo from your computer or tablet.',
