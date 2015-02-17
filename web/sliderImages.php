@@ -36,6 +36,7 @@ function ciniki_artcatalog_web_sliderImages($ciniki, $settings, $business_id, $l
 			. "LEFT JOIN ciniki_images ON (ciniki_artcatalog.image_id = ciniki_images.id) "
 			. "WHERE ciniki_artcatalog.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
 			. "AND (ciniki_artcatalog.webflags&0x01) = 1 "
+			. "AND ciniki_artcatalog.image_id > 0 "
 			. "";
 		if( $limit != '' && $limit > 0 && is_int($limit) ) {
 			$strsql .= "ORDER BY RAND() "
