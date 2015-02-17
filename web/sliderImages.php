@@ -28,7 +28,7 @@ function ciniki_artcatalog_web_sliderImages($ciniki, $settings, $business_id, $l
 
 
 	if( $list == 'random' ) {
-		$strsql = "SELECT ciniki_artcatalog.id, "
+		$strsql = "SELECT ciniki_artcatalog.id, ciniki_artcatalog.category, "
 			. "name AS title, permalink, image_id, media, size, framed_size, price, "
 			. "IF((flags&0x02)=0x02, 'yes', 'no') AS sold, "
 			. "IF(ciniki_images.last_updated > ciniki_artcatalog.last_updated, UNIX_TIMESTAMP(ciniki_images.last_updated), UNIX_TIMESTAMP(ciniki_artcatalog.last_updated)) AS last_updated "
@@ -46,7 +46,7 @@ function ciniki_artcatalog_web_sliderImages($ciniki, $settings, $business_id, $l
 				. "LIMIT 15 ";
 		}
 	} else {
-		$strsql = "SELECT ciniki_artcatalog.id, "
+		$strsql = "SELECT ciniki_artcatalog.id, ciniki_artcatalog.category, "
 			. "name AS title, permalink, image_id, media, size, framed_size, price, "
 			. "IF((flags&0x02)=0x02, 'yes', 'no') AS sold, "
 			. "IF(ciniki_images.last_updated > ciniki_artcatalog.last_updated, UNIX_TIMESTAMP(ciniki_images.last_updated), UNIX_TIMESTAMP(ciniki_artcatalog.last_updated)) AS last_updated "
@@ -92,6 +92,7 @@ function ciniki_artcatalog_web_sliderImages($ciniki, $settings, $business_id, $l
 			$caption .= ", " . $price;
 		}
 		array_push($images, array('id'=>$row['id'], 'title'=>$row['title'], 
+			'category'=>urlencode($row['category']),
 			'permalink'=>$row['permalink'], 'image_id'=>$row['image_id'],
 			'caption'=>$caption, 'sold'=>$row['sold'], 'last_updated'=>$row['last_updated']));
 	}
