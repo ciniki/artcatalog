@@ -33,7 +33,7 @@ function ciniki_artcatalog_categories() {
 			'mc', 'medium', 'sectioned', 'ciniki.artcatalog.categories.category');
 		this.category.sections = {
 			'_synopsis':{'label':'Synopsis', 'fields':{
-				'synopsis':{'label':'', 'hidelabel':'', 'type':'textarea', 'size':'small'},
+				'synopsis':{'label':'', 'hidelabel':'yes', 'type':'textarea', 'size':'small'},
 				}},
 			'_description':{'label':'Description', 'type':'simpleform', 'fields':{
 				'description':{'label':'', 'type':'textarea', 'size':'large', 'hidelabel':'yes'},
