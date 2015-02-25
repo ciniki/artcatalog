@@ -1903,7 +1903,7 @@ function ciniki_artcatalog_main() {
 		if( fields != '' ) {
 			args['fields'] = fields.substring(1);
 		}
-		M.api.openPDF(this.downloadpdf.method, args);
+		M.api.openFile(this.downloadpdf.method, args);
 //		window.open(M.api.getUploadURL(this.downloadpdf.method, args));
 	};
 
