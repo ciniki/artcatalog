@@ -160,15 +160,15 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 	if( !isset($args['section']) || $args['section'] == 'category' ) {
 		$strsql .= "IF(ciniki_artcatalog.category='', 'Unknown', ciniki_artcatalog.category) AS sname ";
 	} elseif( $args['section'] == 'media' ) {
-		$strsql .= "IF(ciniki_artcatalog.media='', '-', ciniki_artcatalog.media) AS sname ";
+		$strsql .= "IF(ciniki_artcatalog.media='', 'Unknown', ciniki_artcatalog.media) AS sname ";
 	} elseif( $args['section'] == 'location' ) {
-		$strsql .= "IF(ciniki_artcatalog.location='', '-', ciniki_artcatalog.location) AS sname ";
+		$strsql .= "IF(ciniki_artcatalog.location='', 'Unknown', ciniki_artcatalog.location) AS sname ";
 	} elseif( $args['section'] == 'year' ) {
-		$strsql .= "IF(ciniki_artcatalog.year='', '-', ciniki_artcatalog.year) AS sname ";
+		$strsql .= "IF(ciniki_artcatalog.year='', 'Unknown', ciniki_artcatalog.year) AS sname ";
 	} elseif( $args['section'] == 'list' ) {
-		$strsql .= "IF(ciniki_artcatalog_tags.tag_name='', '-', ciniki_artcatalog_tags.tag_name) AS sname ";
+		$strsql .= "IF(ciniki_artcatalog_tags.tag_name='', 'Unknown', ciniki_artcatalog_tags.tag_name) AS sname ";
 	} elseif( $args['section'] == 'tracking' ) {
-		$strsql .= "IF(ciniki_artcatalog_tracking.name='', '-', ciniki_artcatalog_tracking.name) AS sname ";
+		$strsql .= "IF(ciniki_artcatalog_tracking.name='', 'Unknown', ciniki_artcatalog_tracking.name) AS sname ";
 	}
 
 	if( isset($args['section']) && $args['section'] == 'list' ) {
