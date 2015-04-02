@@ -197,7 +197,7 @@ function ciniki_artcatalog_templates_pricelist($ciniki, $business_id, $sections,
 			}
 
 			$item_height = 25;
-			if( $pdf->getY() > ($pdf->getPageHeight() - 20 - $lh) ) {
+			if( $pdf->getY() > ($pdf->getPageHeight() - 22 - $lh) ) {
 				if( count($sections) > 1 ) {
 					$pdf->AddPage();
 					$pdf->SetFont('', '', 16);
