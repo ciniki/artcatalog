@@ -116,7 +116,7 @@ function ciniki_artcatalog_templates_pricelist($ciniki, $business_id, $sections,
 		//
 		// Check if we need a page break
 		//
-		if( $pdf->getY() > ($pdf->getPageHeight() - 45) ) {
+		if( $pdf->getY() > ($pdf->getPageHeight() - 55) ) {
 			$pdf->AddPage();
 		}
 
@@ -200,11 +200,10 @@ function ciniki_artcatalog_templates_pricelist($ciniki, $business_id, $sections,
 			if( $pdf->getY() > ($pdf->getPageHeight() - 22 - $lh) ) {
 				if( count($sections) > 1 ) {
 					$pdf->AddPage();
-					$pdf->SetFont('', '', 16);
 					$pdf->SetFont('helvetica', 'B', 16);
 					$pdf->Cell(0, 15, $section['section']['name'] . ' (continued)', 0, false, 'L', 0, '', 0, false, 'M', 'M');
 					$pdf->Ln(5);
-					$pdf->SetFont('', '', 12);
+					$pdf->SetFont('', 'B', 12);
 					// Add table headings
 					$pdf->SetCellPadding(2);
 					$pdf->SetFillColor(224);
