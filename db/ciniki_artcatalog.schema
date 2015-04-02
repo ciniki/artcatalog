@@ -30,7 +30,16 @@
 #					8 - Pottery
 #					9 - Knitting *future*
 #
-# flags:			0x01 - for sale
+# status:			The current status of the item.
+#
+#					0 - Unknown
+#					10 - NFS (Not For Sale)
+#					20 - For Sale
+#					50 - Sold
+#					60 - Private Collection
+#					70 - Collection of the Artist
+# 
+# flags:			0x01 - For Sale
 #					0x02 - Sold
 #					0x04 - 
 #					0x08 - 
@@ -100,6 +109,7 @@ create table ciniki_artcatalog (
 	name varchar(200) not null,
 	permalink varchar(200) not null,
 	type tinyint unsigned not null,
+	status tinyint unsigned not null,
 	flags int unsigned not null,
 	webflags int unsigned not null,
 	image_id int not null,
@@ -126,4 +136,4 @@ create table ciniki_artcatalog (
 	index (media),
 	index (location),
 	index (year, month, day)
-) ENGINE='InnoDB', COMMENT='v1.09';
+) ENGINE='InnoDB', COMMENT='v1.10';

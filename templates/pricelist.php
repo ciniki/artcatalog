@@ -109,7 +109,7 @@ function ciniki_artcatalog_templates_pricelist($ciniki, $business_id, $sections,
 	//
 	// Add the artcatalog items
 	//
-	$w = array(150, 30);
+	$w = array(140, 40);
 	$headings = array('Item', 'Price');
 	$section_count = 0;
 	foreach($sections as $sid => $section) {
@@ -231,10 +231,11 @@ function ciniki_artcatalog_templates_pricelist($ciniki, $business_id, $sections,
 			//
 			// Add the price
 			//
-			if( in_array('sold_label', $fields) && $item['sold'] == 'yes' ) {
-				$price = 'SOLD';
-			} else {
+			if( $item['status'] == 20 ) {
+//			if( in_array('sold_label', $fields) && $item['sold'] == 'yes' ) {
 				$price = numfmt_format_currency($intl_currency_fmt, $item['price'], $intl_currency);
+			} else {
+				$price = $item['status_text'];
 			}
 			$pdf->MultiCell($w[1], $lh, $price, 1, 'R', $fill, 
 				0, '', '', true, 0, false, true, 0, 'T', false);

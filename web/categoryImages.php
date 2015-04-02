@@ -59,7 +59,7 @@ function ciniki_artcatalog_web_categoryImages($ciniki, $settings, $business_id, 
 	
 	$strsql = "SELECT ciniki_artcatalog.id, "
 		. "name AS title, permalink, image_id, media, size, framed_size, price, "
-		. "IF((flags&0x02)=0x02, 'yes', 'no') AS sold, "
+		. "IF(status>=50, 'yes', 'no') AS sold, "
 		. "IF(ciniki_images.last_updated > ciniki_artcatalog.last_updated, UNIX_TIMESTAMP(ciniki_images.last_updated), UNIX_TIMESTAMP(ciniki_artcatalog.last_updated)) AS last_updated "
 		. "FROM ciniki_artcatalog "
 		. "LEFT JOIN ciniki_images ON (ciniki_artcatalog.image_id = ciniki_images.id) "

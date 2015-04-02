@@ -23,6 +23,7 @@ function ciniki_artcatalog_objects($ciniki) {
 			'name'=>array(),
 			'permalink'=>array(),
 			'type'=>array(),
+			'status'=>array(),
 			'flags'=>array(),
 			'webflags'=>array(),
 			'image_id'=>array('ref'=>'ciniki.images.image'),

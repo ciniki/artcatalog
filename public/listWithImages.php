@@ -141,6 +141,8 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 		. "ciniki_artcatalog.name, "
 		. "ciniki_artcatalog.category AS category_name, "
 		. "type, "
+		. "status, "
+		. "status AS status_text, "
 		. "year, "
 		. "media, "
 		. "catalog_number, "
@@ -153,20 +155,20 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 		. "ciniki_artcatalog.awards, "
 		. "ciniki_artcatalog.notes, "
 		. "ciniki_artcatalog.inspiration, "
-		. "IF((flags&0x02)=0x02,'yes','no') AS sold, "
+//		. "IF((flags&0x02)=0x02,'yes','no') AS sold, "
 		. "";
 	if( !isset($args['section']) || $args['section'] == 'category' ) {
-		$strsql .= "IF(ciniki_artcatalog.category='', '', ciniki_artcatalog.category) AS sname ";
+		$strsql .= "IF(ciniki_artcatalog.category='', 'Unknown', ciniki_artcatalog.category) AS sname ";
 	} elseif( $args['section'] == 'media' ) {
-		$strsql .= "IF(ciniki_artcatalog.media='', '', ciniki_artcatalog.media) AS sname ";
+		$strsql .= "IF(ciniki_artcatalog.media='', '-', ciniki_artcatalog.media) AS sname ";
 	} elseif( $args['section'] == 'location' ) {
-		$strsql .= "IF(ciniki_artcatalog.location='', '', ciniki_artcatalog.location) AS sname ";
+		$strsql .= "IF(ciniki_artcatalog.location='', '-', ciniki_artcatalog.location) AS sname ";
 	} elseif( $args['section'] == 'year' ) {
-		$strsql .= "IF(ciniki_artcatalog.year='', '', ciniki_artcatalog.year) AS sname ";
+		$strsql .= "IF(ciniki_artcatalog.year='', '-', ciniki_artcatalog.year) AS sname ";
 	} elseif( $args['section'] == 'list' ) {
-		$strsql .= "IF(ciniki_artcatalog_tags.tag_name='', '', ciniki_artcatalog_tags.tag_name) AS sname ";
+		$strsql .= "IF(ciniki_artcatalog_tags.tag_name='', '-', ciniki_artcatalog_tags.tag_name) AS sname ";
 	} elseif( $args['section'] == 'tracking' ) {
-		$strsql .= "IF(ciniki_artcatalog_tracking.name='', '', ciniki_artcatalog_tracking.name) AS sname ";
+		$strsql .= "IF(ciniki_artcatalog_tracking.name='', '-', ciniki_artcatalog_tracking.name) AS sname ";
 	}
 
 	if( isset($args['section']) && $args['section'] == 'list' ) {
@@ -227,9 +229,10 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 			'fields'=>array('name'=>'sname')),
 		array('container'=>'items', 'fname'=>'id', 'name'=>'item',
 			'fields'=>array('id', 'title'=>'name', 'name', 'category'=>'category_name', 
-				'image_id', 'type', 'year', 'media', 'catalog_number', 
-				'size', 'framed_size', 'price', 'sold', 'flags', 'location', 
-				'description', 'notes', 'awards', 'inspiration')),
+				'image_id', 'type', 'status', 'status_text', 'year', 'media', 'catalog_number', 
+				'size', 'framed_size', 'price', 'flags', 'location', 
+				'description', 'notes', 'awards', 'inspiration'),
+			'maps'=>array('status_text'=>$maps['item']['status'])),
 		));
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;

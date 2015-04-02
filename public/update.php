@@ -22,6 +22,14 @@
 //					6 - Clothing *future*
 //					8 - Pottery 
 //
+// status:			(optional) The current status of the item.
+//					
+//					10 - Not for sale (NFS)
+//					20 - For Sale
+//					50 - Sold
+//					60 - Private Collection
+//					70 - Collection of the Artist
+//
 // image_id:		(optional) The ID of the image in the images module to be displayed for the item.  This
 //					can be uploaded before or after the item is added to the artcatalog.
 //
@@ -92,6 +100,7 @@ function ciniki_artcatalog_update(&$ciniki) {
         'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
         'artcatalog_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Item'), 
 		'type'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Type'),
+		'status'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Status'),
 		'image_id'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Image'),
         'flags'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Flags'), 
         'webflags'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Web Flags'), 

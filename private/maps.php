@@ -46,6 +46,14 @@ function ciniki_artcatalog_maps($ciniki) {
 			'7'=>'Clothing',
 			'8'=>'Pottery',
 			),
+		'status'=>array(
+			'0'=>'',
+			'10'=>'NFS',
+			'20'=>'For Sale',
+			'50'=>'SOLD',
+			'60'=>'Private Collection',
+			'70'=>'Artist Collection',
+			),
 		);
 	
 	return array('stat'=>'ok', 'maps'=>$maps);

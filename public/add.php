@@ -22,6 +22,14 @@
 //					5 - Fibre Art
 //					6 - Clothing *future*
 //
+// status:			(optional) The current status of the item.
+//					
+//					10 - Not for sale (NFS)
+//					20 - For Sale
+//					50 - Sold
+//					60 - Private Collection
+//					70 - Collection of the Artist
+//
 // flags:			(optional) The bit flags for the item.
 //	
 //					0x01 - The item is for sale.
@@ -90,6 +98,7 @@ function ciniki_artcatalog_add(&$ciniki) {
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
         'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
 		'type'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Type'),
+		'status'=>array('required'=>'no', 'blank'=>'no', 'default'=>'10', 'name'=>'Status'),
         'flags'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'0', 'name'=>'Flags'), 
         'webflags'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'0', 'name'=>'Web Flags'), 
 		'image_id'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'0', 'name'=>'Image'),

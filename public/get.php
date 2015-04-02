@@ -94,6 +94,8 @@ function ciniki_artcatalog_get($ciniki) {
 	$maps = $rc['maps'];
 
 	$strsql = "SELECT ciniki_artcatalog.id, ciniki_artcatalog.name, permalink, image_id, type, type AS type_text, "
+		. "ciniki_artcatalog.status, "
+		. "ciniki_artcatalog.status AS status_text, "
 		. "ciniki_artcatalog.flags, "
 		. "IF((ciniki_artcatalog.flags&0x01)=0x01, 'yes', 'no') AS forsale, "
 		. "IF((ciniki_artcatalog.flags&0x02)=0x02, 'yes', 'no') AS sold, "
@@ -125,12 +127,12 @@ function ciniki_artcatalog_get($ciniki) {
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');
 	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
 		array('container'=>'items', 'fname'=>'id', 'name'=>'item',
-			'fields'=>array('id', 'name', 'permalink', 'image_id', 'type', 'type_text', 
+			'fields'=>array('id', 'name', 'permalink', 'image_id', 'type', 'type_text', 'status', 'status_text', 
 				'flags', 'webflags', 'catalog_number', 'category', 'year', 'month', 'day', 
 				'media', 'size', 'framed_size', 'forsale', 'sold', 'website', 'price', 'location', 
 				'description', 'inspiration', 'awards', 'notes', 'lists'),
 			'dlists'=>array('lists'=>'::'),
-			'maps'=>array('type_text'=>$maps['item']['type'])),
+			'maps'=>array('type_text'=>$maps['item']['type'], 'status_text'=>$maps['item']['status'])),
 //		array('container'=>'sales', 'fname'=>'customer_id', 'name'=>'customer',
 //			'fields'=>array('id'=>'customer_id', 'name'=>'customer_name', 'paid', 'trade', 'donation', 'gift', 'price'=>'customer_price', 'total'=>'customer_sale_total')),
 		));

@@ -1,0 +1,8 @@
+#
+# This file will upgrade the database table ciniki_artcatalog to version 1.09
+#
+ALTER TABLE ciniki_artcatalog ADD COLUMN status tinyint unsigned not null AFTER type;
+UPDATE ciniki_artcatalog SET status = 10;
+UPDATE ciniki_artcatalog SET status = 20 WHERE (flags&0x01) = 1;
+UPDATE ciniki_artcatalog SET status = 50 WHERE (flags&0x02) = 2;
+ALTER TABLE ciniki_artcatalog COMMENT='v1.10';

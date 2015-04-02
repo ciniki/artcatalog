@@ -24,6 +24,16 @@ function ciniki_artcatalog_web_imageDetails($ciniki, $settings, $business_id, $p
 	$intl_currency = $rc['settings']['intl-default-currency'];
 
 	//
+	// Load the status maps for the text description of each status
+	//
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'artcatalog', 'private', 'maps');
+	$rc = ciniki_artcatalog_maps($ciniki);
+	if( $rc['stat'] != 'ok' ) {
+		return $rc;
+	}
+	$maps = $rc['maps'];
+
+	//
 	// Get the details about the item
 	//
 	$strsql = "SELECT ciniki_artcatalog.id, "
@@ -31,13 +41,15 @@ function ciniki_artcatalog_web_imageDetails($ciniki, $settings, $business_id, $p
 		. "ciniki_artcatalog.permalink, "
 		. "ciniki_artcatalog.image_id, "
 		. "ciniki_artcatalog.type, "
+		. "ciniki_artcatalog.status, "
+		. "ciniki_artcatalog.status AS status_text, "
 		. "ciniki_artcatalog.catalog_number, "
 		. "ciniki_artcatalog.category, "
 		. "ciniki_artcatalog.year, "
 		. "ciniki_artcatalog.flags, "
 		. "ciniki_artcatalog.webflags, "
-		. "IF((ciniki_artcatalog.flags&0x01)=1, 'yes', 'no') AS forsale, "
-		. "IF((ciniki_artcatalog.flags&0x02)=2, 'yes', 'no') AS sold, "
+//		. "IF((ciniki_artcatalog.flags&0x01)=1, 'yes', 'no') AS forsale, "
+//		. "IF((ciniki_artcatalog.flags&0x02)=2, 'yes', 'no') AS sold, "
 		. "IF((ciniki_artcatalog.webflags&0x01)=0, 'yes', 'no') AS hidden, "
 		. "ciniki_artcatalog.media, "
 		. "ciniki_artcatalog.size, "
@@ -66,10 +78,11 @@ function ciniki_artcatalog_web_imageDetails($ciniki, $settings, $business_id, $p
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryIDTree');
 	$rc = ciniki_core_dbHashQueryIDTree($ciniki, $strsql, 'ciniki.artcatalog', array(
 		array('container'=>'items', 'fname'=>'id', 
-			'fields'=>array('id', 'title'=>'name', 'permalink', 'image_id', 'type', 'catalog_number', 
-				'category', 'year', 'flags', 'webflags', 'forsale', 'sold', 'hidden', 
+			'fields'=>array('id', 'title'=>'name', 'permalink', 'image_id', 'type', 'status', 'status_text', 'catalog_number', 
+				'category', 'year', 'flags', 'webflags', 'hidden', 
 				'media', 'size', 'framed_size', 'price',
-				'location', 'description', 'inspiration', 'awards', 'notes', 'date_added', 'last_updated')),
+				'location', 'description', 'inspiration', 'awards', 'notes', 'date_added', 'last_updated'),
+			'maps'=>array('status_text'=>$maps['item']['status'])),
 		array('container'=>'additionalimages', 'fname'=>'additional_id', 
 			'fields'=>array('id'=>'additional_id', 'image_id'=>'additional_image_id',
 				'permalink'=>'additional_permalink',
@@ -124,21 +137,26 @@ function ciniki_artcatalog_web_imageDetails($ciniki, $settings, $business_id, $p
 		$comma = ', ';
 	}
 	if( ($image['webflags']&0x0800) > 0 ) {
-		if( $image['price'] != '' && $image['price'] != '0' && $image['price'] != '0.00' 
-			&& $image['forsale'] == 'yes' ) {
-			if( is_numeric($image['price']) ) {
-				$image['price'] = numfmt_format_currency($intl_currency_fmt, $image['price'], $intl_currency);
-				$image['details'] .= $comma . $image['price'] . ' ' . $intl_currency;
-			} else {
-				$image['details'] .= $comma . $image['price'];
+		if( $image['status'] == 20 ) {
+			if( $image['price'] != '' && $image['price'] != '0' && $image['price'] != '0.00' ) {
+				if( is_numeric($image['price']) ) {
+					$image['price'] = numfmt_format_currency($intl_currency_fmt, $image['price'], $intl_currency);
+					$image['details'] .= $comma . $image['price'] . ' ' . $intl_currency;
+				} else {
+					$image['details'] .= $comma . $image['price'];
+				}
+		//		$image['details'] .= $comma . preg_replace('/^\s*([^$])/', '\$$1', $image['price']);
+				$comma = ', ';
 			}
-	//		$image['details'] .= $comma . preg_replace('/^\s*([^$])/', '\$$1', $image['price']);
+		} else {
+			$image['details'] .= $comma . " <b> " . $image['status_text'] . "</b>";
 			$comma = ', ';
 		}
-		if( isset($image['sold']) && $image['sold'] == 'yes' ) {
-			$image['details'] .= " <b> SOLD</b>";
-			$comma = ', ';
-		}
+
+//		if( isset($image['sold']) && $image['sold'] == 'yes' ) {
+//			$image['details'] .= " <b> SOLD</b>";
+//			$comma = ', ';
+//		}
 	}
 
 	$image['category_permalink'] = urlencode($image['category']);

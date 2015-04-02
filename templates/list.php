@@ -144,14 +144,21 @@ function ciniki_artcatalog_templates_list($ciniki, $business_id, $sections, $arg
 				if( $img_title != '' ) { $img_title .= ' - '; }
 				$img_title .= $item['name'];
 			}
-			if( in_array('price', $fields) && $item['price'] != '' ) {
-				if( $img_title != '' ) { $img_title .= ' - '; }
-				$img_title .= numfmt_format_currency($intl_currency_fmt, $item['price'], $intl_currency);
+			if( $item['status'] == 20 ) {
+				if( in_array('price', $fields) && $item['price'] != '' ) {
+					$img_title .= ($img_title != ''?' - ':'') . numfmt_format_currency($intl_currency_fmt, $item['price'], $intl_currency);
+				} elseif( in_array('status_text', $fields) && $item['status_text'] != '' ) {
+					$img_title .= ($img_title != ''?' - ':'') . $item['status_text'];
+				}
+			} else {
+				if( in_array('status_text', $fields) && $item['status_text'] != '' ) {
+					$img_title .= ($img_title != ''?' - ':'') . $item['status_text'];
+				}
 			}
-			if( in_array('sold_label', $fields) && $item['sold'] == 'yes' ) {
-				if( $img_title != '' ) { $img_title .= ' (SOLD)'; }
-				else { $img_title .= " SOLD"; }
-			}
+//			if( in_array('sold_label', $fields) && $item['sold'] == 'yes' ) {
+//				if( $img_title != '' ) { $img_title .= ' (SOLD)'; }
+//				else { $img_title .= " SOLD"; }
+//			}
 
 			//
 			// Add the other details

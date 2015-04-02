@@ -66,6 +66,13 @@ function ciniki_artcatalog_main() {
 		'30':'30',
 		'31':'31',
 		};
+	this.statusOptions = {
+		'10':'NFS',
+		'20':'For Sale',
+		'50':'Sold',
+		'60':'Private Collection',
+		'70':'Artist Collection',
+		};
 	this.cur_type = null;
 	this.init = function() {
 		//
@@ -114,20 +121,26 @@ function ciniki_artcatalog_main() {
 				var price = '<b>Price</b>: ';
 				var media = '';
 				var size = '';
-				if( d.item.sold == 'yes' ) { sold = ' <b>SOLD</b>'; }
+//				if( d.item.sold == 'yes' ) { sold = ' <b>SOLD</b>'; }
 				if( d.item.price != '' ) {
 					price += d.item.price;
 				}
 				var subtxt = '';
-				subtxt += (d.item.media!=''?(subtxt!=''?', ':'') + '<b>Media</b>: ' + d.item.media:'');
-				subtxt += (d.item.size!=''?(subtxt!=''?', ':'') + '<b>Size</b>: ' + d.item.size:'');
-				subtxt += (d.item.framed_size!=''?(subtxt!=''?', ':'') + '<b>Framed</b>: ' + d.item.framed_size:'');
-				subtxt += (d.item.price!='$0.00'||sold!=''?(subtxt!=''?', ':'') + price + sold:'');
+				subtxt += (d.item.catalog_number!=''?'<b>Number</b>: ' + d.item.catalog_number:'');
+				subtxt += (d.item.location!=''?(subtxt!=''?', ':'') + '<b>Location</b>: ' + d.item.location:'');
+				var subtxt2 = '';
+				subtxt2 += (d.item.media!=''?(subtxt2!=''?', ':'') + '<b>Media</b>: ' + d.item.media:'');
+				subtxt2 += (d.item.size!=''?(subtxt2!=''?', ':'') + '<b>Size</b>: ' + d.item.size:'');
+				subtxt2 += (d.item.framed_size!=''?(subtxt2!=''?', ':'') + '<b>Framed</b>: ' + d.item.framed_size:'');
+//				subtxt2 += (d.item.price!='$0.00'||sold!=''?(subtxt2!=''?', ':'') + price + sold:'');
+//				subtxt2 += (d.item.price!='$0.00'||sold!=''?(subtxt2!=''?', ':'') + price + sold:'');
+				if( subtxt != '' && subtxt2 != '' ) { subtxt += '<br/>'; }
+				subtxt += subtxt2;
 				return '<span class="maintext">' + d.item.name + '</span>'
 					+ (subtxt!=''?'<span class="subtext">'+subtxt+'</span>':'');
 			}
-			if( j == 2 ) { return '<span class="maintext">' + d.item.catalog_number + '</span>'
-				+ '<span class="subtext">' + d.item.location + '</span>'; }
+			if( j == 2 ) { return '<span class="maintext">' + d.item.status_text + '</span>'
+				+ '<span class="subtext">' + d.item.price + '</span>'; }
 		};
 		this.menu.rowFn = function(s, i, d) {
 			return 'M.ciniki_artcatalog_main.showItem(\'M.ciniki_artcatalog_main.showMenu(null);\', \'' + d.item.id + '\',M.ciniki_artcatalog_main.menu.data[unescape(\'' + escape(s) + '\')]);'; 
@@ -259,35 +272,36 @@ function ciniki_artcatalog_main() {
 		this.list.downloadFn = '';
 		this.list.next_list_name = '';
 		this.list.prev_list_name = '';
-		this.list.cellValue = function(s, i, j, d) {
-			if( j == 0 ) { 
-				if( d.item.image_id > 0 ) {
-					if( d.item.image != null && d.item.image != '' ) {
-						return '<img width="75px" height="75px" src=\'' + d.item.image + '\' />'; 
-					} else {
-						return '<img width="75px" height="75px" src=\'' + M.api.getBinaryURL('ciniki.artcatalog.getImage', {'business_id':M.curBusinessID, 'image_id':d.item.image_id, 'version':'thumbnail', 'maxwidth':'75'}) + '\' />'; 
-					}
-				} else {
-					return '<img width="75px" height="75px" src=\'/ciniki-mods/core/ui/themes/default/img/noimage_75.jpg\' />';
-				}
-			}
-			if( j == 1 ) { 
-				var sold = '';
-				var price = '<b>Price</b>: ';
-				if( d.item.sold == 'yes' ) { sold = ' <b>SOLD</b>'; }
-				if( d.item.price != '' ) {
-					price += d.item.price;
-				}
-				var subtxt = '';
-				subtxt += (d.item.media!=''?(subtxt!=''?', ':'') + '<b>Media</b>: ' + d.item.media:'');
-				subtxt += (d.item.size!=''?(subtxt!=''?', ':'') + '<b>Size</b>: ' + d.item.size:'');
-				subtxt += (d.item.framed_size!=''?(subtxt!=''?', ':'') + '<b>Framed</b>: ' + d.item.framed_size:'');
-				subtxt += (d.item.price!='$0.00'||sold!=''?(subtxt!=''?', ':'') + price + sold:'');
-				return '<span class="maintext">' + d.item.name + '</span>'
-					+ (subtxt!=''?'<span class="subtext">'+subtxt+'</span>':'');
-			}
-			if( j == 2 ) { return '<span class="maintext">' + d.item.catalog_number + '</span><span class="subtext">' + d.item.location + '</span>'; }
-		};
+//		this.list.cellValue = function(s, i, j, d) {
+//			if( j == 0 ) { 
+//				if( d.item.image_id > 0 ) {
+//					if( d.item.image != null && d.item.image != '' ) {
+//						return '<img width="75px" height="75px" src=\'' + d.item.image + '\' />'; 
+//					} else {
+//						return '<img width="75px" height="75px" src=\'' + M.api.getBinaryURL('ciniki.artcatalog.getImage', {'business_id':M.curBusinessID, 'image_id':d.item.image_id, 'version':'thumbnail', 'maxwidth':'75'}) + '\' />'; 
+//					}
+//				} else {
+//					return '<img width="75px" height="75px" src=\'/ciniki-mods/core/ui/themes/default/img/noimage_75.jpg\' />';
+//				}
+//			}
+//			if( j == 1 ) { 
+//				var sold = '';
+//				var price = '<b>Price</b>: ';
+//				if( d.item.sold == 'yes' ) { sold = ' <b>SOLD</b>'; }
+//				if( d.item.price != '' ) {
+//					price += d.item.price;
+//				}
+//				var subtxt = '';
+//				subtxt += (d.item.media!=''?(subtxt!=''?', ':'') + '<b>Media</b>: ' + d.item.media:'');
+//				subtxt += (d.item.size!=''?(subtxt!=''?', ':'') + '<b>Size</b>: ' + d.item.size:'');
+//				subtxt += (d.item.framed_size!=''?(subtxt!=''?', ':'') + '<b>Framed</b>: ' + d.item.framed_size:'');
+//				subtxt += (d.item.price!='$0.00'||sold!=''?(subtxt!=''?', ':'') + price + sold:'');
+//				return '<span class="maintext">' + d.item.name + '</span>'
+//					+ (subtxt!=''?'<span class="subtext">'+subtxt+'</span>':'');
+//			}
+//			if( j == 2 ) { return '<span class="maintext">' + d.item.catalog_number + '</span><span class="subtext">' + d.item.location + '</span>'; }
+//		};
+		this.list.cellValue = this.menu.cellValue;
 		this.list.rowFn = function(s, i, d) {
 			return 'M.ciniki_artcatalog_main.showItem(\'M.ciniki_artcatalog_main.showList();\', \'' + d.item.id + '\',M.ciniki_artcatalog_main.list.data[unescape(\'' + escape(s) + '\')]);'; 
 		};
@@ -335,8 +349,9 @@ function ciniki_artcatalog_main() {
 				'category':{'label':'Category'},
 //				'date_completed':{'label':'Completed'},
 				'size':{'label':'Size'},
+				'status_text':{'label':'Status'},
 				'price':{'label':'Price'},
-				'forsale':{'label':'For sale'},
+//				'forsale':{'label':'For sale'},
 				'website':{'label':'Website', 'type':'flags', 'join':'yes', 'flags':this.webFlags},
 			}},
 			'description':{'label':'Description', 'type':'htmlcontent'},
@@ -570,14 +585,15 @@ function ciniki_artcatalog_main() {
 						}, 
 						'gtitle':'What is the framed size?',
 						},
-					'flags_1':{'label':'For Sale', 'type':'flagtoggle', 'bit':0x01, 'field':'flags', 'default':'off',
-						'gtitle':'Is this item for sale?',
-						'htext':'',
-						},
-					'flags_2':{'label':'Sold', 'type':'flagtoggle', 'bit':0x02, 'field':'flags', 'default':'off',
-						'gtitle':'Is this item sold?',
-						'htext':'',
-						},
+					'status':{'label':'Status', 'type':'select', 'options':this.statusOptions},
+//					'flags_1':{'label':'For Sale', 'type':'flagtoggle', 'bit':0x01, 'field':'flags', 'default':'off',
+//						'gtitle':'Is this item for sale?',
+//						'htext':'',
+//						},
+//					'flags_2':{'label':'Sold', 'type':'flagtoggle', 'bit':0x02, 'field':'flags', 'default':'off',
+//						'gtitle':'Is this item sold?',
+//						'htext':'',
+//						},
 					'price':{'label':'Price', 'type':'text', 'size':'small',
 						'gtitle':'What is the price of your painting?',
 						'htext':"(optional) You can leave this blank if you haven't priced this item.",
@@ -744,10 +760,11 @@ function ciniki_artcatalog_main() {
 						'htext':'It is recommended to make the category names plural. '
 							+ ' examples: Landscapes, Abstracts, Portraits, Regional Landscapes, etc.',
 						},
-					'flags_1':{'label':'For Sale', 'type':'flagtoggle', 'bit':0x01, 'field':'flags', 'default':'off',
-						'gtitle':'Is this item for sale?',
-						'htext':'',
-						},
+//					'flags_1':{'label':'For Sale', 'type':'flagtoggle', 'bit':0x01, 'field':'flags', 'default':'off',
+//						'gtitle':'Is this item for sale?',
+//						'htext':'',
+//						},
+					'status':{'label':'Status', 'type':'select', 'options':this.statusOptions},
 					'price':{'label':'Price', 'type':'text', 'size':'small',
 						'gtitle':'What is the price of your photograph?',
 						'htext':"(optional) You can leave this blank if you haven't priced this item.",
@@ -833,14 +850,15 @@ function ciniki_artcatalog_main() {
 						'htext':'It is recommended to make the category names plural. '
 							+ ' examples: Earrings, Braclets, Pendants, etc.',
 						},
-					'flags_1':{'label':'For Sale', 'type':'flagtoggle', 'bit':0x01, 'field':'flags', 'default':'off',
-						'gtitle':'Is this item for sale?',
-						'htext':'',
-						},
-					'flags_2':{'label':'Sold', 'type':'flagtoggle', 'bit':0x02, 'field':'flags', 'default':'off',
-						'gtitle':'Is this item sold?',
-						'htext':'',
-						},
+//					'flags_1':{'label':'For Sale', 'type':'flagtoggle', 'bit':0x01, 'field':'flags', 'default':'off',
+//						'gtitle':'Is this item for sale?',
+//						'htext':'',
+//						},
+//					'flags_2':{'label':'Sold', 'type':'flagtoggle', 'bit':0x02, 'field':'flags', 'default':'off',
+//						'gtitle':'Is this item sold?',
+//						'htext':'',
+//						},
+					'status':{'label':'Status', 'type':'select', 'options':this.statusOptions},
 					'price':{'label':'Price', 'type':'text', 'size':'small',
 						'gtitle':'What is the price of your item?',
 						'htext':"(optional) You can leave this blank if you haven't priced this item.",
@@ -932,14 +950,15 @@ function ciniki_artcatalog_main() {
 					'size':{'label':'Size', 'type':'text', 'size':'small',
 						'gtitle':'What is the size of your sculpture?',
 						},
-					'flags_1':{'label':'For Sale', 'type':'flagtoggle', 'bit':0x01, 'field':'flags', 'default':'off',
-						'gtitle':'Is this sculpture for sale?',
-						'htext':'',
-						},
-					'flags_2':{'label':'Sold', 'type':'flagtoggle', 'bit':0x02, 'field':'flags', 'default':'off',
-						'gtitle':'Is this sculpture sold?',
-						'htext':'',
-						},
+//					'flags_1':{'label':'For Sale', 'type':'flagtoggle', 'bit':0x01, 'field':'flags', 'default':'off',
+//						'gtitle':'Is this sculpture for sale?',
+//						'htext':'',
+//						},
+//					'flags_2':{'label':'Sold', 'type':'flagtoggle', 'bit':0x02, 'field':'flags', 'default':'off',
+//						'gtitle':'Is this sculpture sold?',
+//						'htext':'',
+//						},
+					'status':{'label':'Status', 'type':'select', 'options':this.statusOptions},
 					'price':{'label':'Price', 'type':'text', 'size':'small',
 						'gtitle':'What is the price of your sculpture?',
 						'htext':"(optional) You can leave this blank if you haven't priced this item.",
@@ -1030,14 +1049,15 @@ function ciniki_artcatalog_main() {
 					'size':{'label':'Size', 'type':'text', 'size':'small',
 						'gtitle':'What is the size of your item?',
 						},
-					'flags_1':{'label':'For Sale', 'type':'flagtoggle', 'bit':0x01, 'field':'flags', 'default':'off',
-						'gtitle':'Is this item for sale?',
-						'htext':'',
-						},
-					'flags_2':{'label':'Sold', 'type':'flagtoggle', 'bit':0x02, 'field':'flags', 'default':'off',
-						'gtitle':'Is this item sold?',
-						'htext':'',
-						},
+//					'flags_1':{'label':'For Sale', 'type':'flagtoggle', 'bit':0x01, 'field':'flags', 'default':'off',
+//						'gtitle':'Is this item for sale?',
+//						'htext':'',
+//						},
+//					'flags_2':{'label':'Sold', 'type':'flagtoggle', 'bit':0x02, 'field':'flags', 'default':'off',
+//						'gtitle':'Is this item sold?',
+//						'htext':'',
+//						},
+					'status':{'label':'Status', 'type':'select', 'options':this.statusOptions},
 					'price':{'label':'Price', 'type':'text', 'size':'small',
 						'gtitle':'What is the price of your item?',
 						'htext':"(optional) You can leave this blank if you haven't priced this item.",
@@ -1123,14 +1143,15 @@ function ciniki_artcatalog_main() {
 					'size':{'label':'Size', 'type':'text', 'size':'small',
 						'gtitle':'What is the size of your item?',
 						},
-					'flags_1':{'label':'For Sale', 'type':'flagtoggle', 'bit':0x01, 'field':'flags', 'default':'off',
-						'gtitle':'Is this item for sale?',
-						'htext':'',
-						},
-					'flags_2':{'label':'Sold', 'type':'flagtoggle', 'bit':0x02, 'field':'flags', 'default':'off',
-						'gtitle':'Is this item sold?',
-						'htext':'',
-						},
+//					'flags_1':{'label':'For Sale', 'type':'flagtoggle', 'bit':0x01, 'field':'flags', 'default':'off',
+//						'gtitle':'Is this item for sale?',
+//						'htext':'',
+//						},
+//					'flags_2':{'label':'Sold', 'type':'flagtoggle', 'bit':0x02, 'field':'flags', 'default':'off',
+//						'gtitle':'Is this item sold?',
+//						'htext':'',
+//						},
+					'status':{'label':'Status', 'type':'select', 'options':this.statusOptions},
 					'price':{'label':'Price', 'type':'text', 'size':'small',
 						'gtitle':'What is the price of your item?',
 						'htext':"(optional) You can leave this blank if you haven't priced this item.",
@@ -1305,11 +1326,12 @@ function ciniki_artcatalog_main() {
 			'details':{'label':'', 'fields':{
 				'pagetitle':{'label':'Page Title', 'type':'text'},
 				'catalog_number':{'label':'Catalog Number', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
-				'sold_label':{'label':'Sold Label', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
+//				'sold_label':{'label':'Sold Label', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 				'media':{'label':'Media', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 				'size':{'label':'Size', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 				'framed_size':{'label':'Framed Size', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 				'location':{'label':'Location', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
+//				'status_text':{'label':'Status', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 //				'price':{'label':'Price', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 				}},
 			'_buttons':{'label':'', 'buttons':{
@@ -1320,10 +1342,11 @@ function ciniki_artcatalog_main() {
 			'details':{'label':'', 'fields':{
 				'pagetitle':{'label':'Page Title', 'type':'text'},
 				'catalog_number':{'label':'Catalog Number', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
-				'sold_label':{'label':'Sold Label', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
+//				'sold_label':{'label':'Sold Label', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 				'media':{'label':'Media', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 				'size':{'label':'Size', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 				'framed_size':{'label':'Framed Size', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
+				'status_text':{'label':'Status', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 				'price':{'label':'Price', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 				'location':{'label':'Location', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 				'description':{'label':'Description', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
@@ -1354,10 +1377,11 @@ function ciniki_artcatalog_main() {
 			'details':{'label':'', 'fields':{
 				'pagetitle':{'label':'Page Title', 'type':'text'},
 				'catalog_number':{'label':'Catalog Number', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
-				'sold_label':{'label':'Sold Label', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
+//				'sold_label':{'label':'Sold Label', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 				'media':{'label':'Media', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 				'size':{'label':'Size', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 				'framed_size':{'label':'Framed Size', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
+				'status_text':{'label':'Status', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 				'price':{'label':'Price', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 				'location':{'label':'Location', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 				'description':{'label':'Description', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
@@ -1376,10 +1400,11 @@ function ciniki_artcatalog_main() {
 				'catalog_number':{'label':'Catalog Number', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 				'name':{'label':'Title', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 				'category':{'label':'Category', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
-				'sold_label':{'label':'Sold Label', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
+//				'sold_label':{'label':'Sold Label', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 				'media':{'label':'Media', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 				'size':{'label':'Size', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 				'framed_size':{'label':'Framed Size', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
+				'status_text':{'label':'Status', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 				'price':{'label':'Price', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 				'location':{'label':'Location', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 				'description':{'label':'Description', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
@@ -1800,7 +1825,7 @@ function ciniki_artcatalog_main() {
 			'size':'include',
 			'framed_size':'include',
 			'price':'include',
-			'sold_label':'include',
+			'status_text':'include',
 			'location':'include',
 			'description':'include',
 			'awards':'include',
