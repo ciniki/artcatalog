@@ -78,6 +78,7 @@ function ciniki_artcatalog_objects($ciniki) {
 		'fields'=>array(
 			'artcatalog_id'=>array('ref'=>'ciniki.artcatalog.item'),
 			'name'=>array(),
+			'permalink'=>array(),
 			'external_number'=>array(),
 			'start_date'=>array(),
 			'end_date'=>array(),

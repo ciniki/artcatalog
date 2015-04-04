@@ -53,6 +53,30 @@ function ciniki_artcatalog_trackingUpdate(&$ciniki) {
     }   
 
 	//
+	// Check if permalink needs updating
+	//
+	if( isset($args['name']) || isset($args['start_date']) ) {
+		ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'makePermalink');
+		ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'objectGet');
+		$rc = ciniki_core_objectGet($ciniki, $args['business_id'], 'ciniki.artcatalog.place', $args['tracking_id']);
+		if( $rc['stat'] != 'ok' ) {
+			return $rc;
+		}
+		if( !isset($rc['object']) ) {
+			return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2327', 'msg'=>'Unable to find exhibition'));
+		}
+		error_log(print_r($rc['object'], true));
+		if( isset($args['name']) && isset($args['start_date']) ) {
+			$args['permalink'] = ciniki_core_makePermalink($ciniki, $args['name'] . '-' . ($args['start_date']==''?'0000-00-00':$args['start_date']));
+		} elseif( isset($args['name']) ) {
+			$args['permalink'] = ciniki_core_makePermalink($ciniki, $args['name'] . '-' . $rc['object']['start_date']);
+		} elseif( isset($args['start_date']) ) {
+			$args['permalink'] = ciniki_core_makePermalink($ciniki, $rc['object']['name'] . '-' . ($args['start_date']==''?'0000-00-00':$args['start_date']));
+		}
+
+	}
+
+	//
 	// Update tracking
 	//
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'objectUpdate');

@@ -1,0 +1,6 @@
+#
+# This file will upgrade the database table ciniki_artcatalog to version 1.09
+#
+ALTER TABLE ciniki_artcatalog_tracking ADD COLUMN permalink varchar(250) not null AFTER name;
+UPDATE ciniki_artcatalog_tracking SET permalink = REPLACE(REPLACE(CONCAT_WS('-',LOWER(name),start_date), ' ', '-'), "'", '');
+ALTER TABLE ciniki_artcatalog_tracking COMMENT='v1.02';

@@ -56,6 +56,11 @@ function ciniki_artcatalog_trackingAdd(&$ciniki) {
         return $rc;
     }   
 
+	if( isset($args['name']) ) {
+		ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'makePermalink');
+		$args['permalink'] = ciniki_core_makePermalink($ciniki, $args['name'] . '-' . ($args['start_date']==''?'0000-00-00':$args['start_date']));
+	}
+
 	//
 	// Update tracking
 	//
