@@ -43,10 +43,10 @@ function ciniki_artcatalog_tracking() {
 				'gtitle':'Save the exhibition information',
 				'gtext-add':'Press the save button this exhibited place.',
 				'gtext-edit':'Press the save button the changes.',
-				'gmore-edit':'If you want to remove this exhibited place for your item, press the Delete button.',
+				'gmore-edit':'If you want to remove this exhibited place for your item, press the Remove button.',
 				'buttons':{
 					'save':{'label':'Save', 'fn':'M.ciniki_artcatalog_tracking.saveTracking();'},
-					'delete':{'label':'Delete', 'visible':'no', 'fn':'M.ciniki_artcatalog_tracking.deleteTracking();'},
+					'delete':{'label':'Remove', 'visible':'no', 'fn':'M.ciniki_artcatalog_tracking.deleteTracking();'},
 				}},
 		};
 		this.edit.fieldHistoryArgs = function(s, i) {
@@ -193,7 +193,8 @@ function ciniki_artcatalog_tracking() {
 	};
 
 	this.deleteTracking = function() {
-		if( confirm('Are you sure you want to delete \'' + this.edit.data.name + '\' from exhibited?  All information about it will be removed and unrecoverable.') ) {
+		console.log(M.ciniki_artcatalog_main.item.data.name);
+		if( confirm('Are you sure you want to remove \'' + M.ciniki_artcatalog_main.item.data.name + '\' from the exhibited list \'' + this.edit.data.name + '\'?') ) {
 			var rsp = M.api.getJSONCb('ciniki.artcatalog.trackingDelete', {'business_id':M.curBusinessID, 
 				'tracking_id':this.edit.tracking_id}, function(rsp) {
 					if( rsp.stat != 'ok' ) {
