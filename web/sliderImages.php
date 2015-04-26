@@ -72,7 +72,7 @@ function ciniki_artcatalog_web_sliderImages($ciniki, $settings, $business_id, $l
 			$strsql .= "LIMIT 15";
 		}
 	}
-    require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbHashQuery.php');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
 	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', '');
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;

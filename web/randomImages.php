@@ -47,7 +47,7 @@ function ciniki_artcatalog_web_randomImages($ciniki, $settings, $business_id, $l
 			. "LIMIT 6 ";
 	}
 
-    require_once($ciniki['config']['core']['modules_dir'] . '/core/private/dbHashQuery.php');
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
 	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', '');
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
