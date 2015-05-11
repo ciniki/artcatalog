@@ -11,12 +11,13 @@ function ciniki_artcatalog_fieldupdate() {
 		this.list.sections = {
 			'items':{'label':'Fields', 'fields':{}},
 			'buttons':{'label':'', 'buttons':{
-				'save':{'label':'Update', 'fn':'M.ciniki_artcatalog_fieldupdate.save();'},
+				'save':{'label':'Save', 'fn':'M.ciniki_artcatalog_fieldupdate.save();'},
 				}},
 			};
 		this.list.fieldValue = function(s, i, d) {
 			return this.data[i].item.name;
 		};
+		this.list.addButton('save', 'Save', 'M.ciniki_artcatalog_fieldupdate.save();');
 		this.list.addClose('Cancel');
 	}
 
