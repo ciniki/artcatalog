@@ -1317,16 +1317,19 @@ function ciniki_artcatalog_main() {
 			'excel':{'label':'Excel', 'field_id':'excel'},
 			}};
 		this.downloadpdf.forms.thumbnails = {
-			'details':{'label':'', 'fields':{
-				'pagetitle':{'label':'Page Title', 'type':'text'},
+			'details':{'label':'Title', 'fields':{
+				'pagetitle':{'label':'', 'hidelabel':'yes', 'type':'text'},
 				}},
+			'information':{'label':'', 'visible':'no'},
 			'_buttons':{'label':'', 'buttons':{
 				'download':{'label':'Download', 'fn':'M.ciniki_artcatalog_main.downloadPDF();'},
 				}},
 		};
 		this.downloadpdf.forms.pricelist = {
-			'details':{'label':'', 'fields':{
-				'pagetitle':{'label':'Page Title', 'type':'text'},
+			'details':{'label':'Title', 'fields':{
+				'pagetitle':{'label':'', 'hidelabel':'yes', 'type':'text'},
+				}},
+			'information':{'label':'Information to include', 'fields':{
 				'catalog_number':{'label':'Catalog Number', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 //				'sold_label':{'label':'Sold Label', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 				'media':{'label':'Media', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
@@ -1341,8 +1344,10 @@ function ciniki_artcatalog_main() {
 				}},
 		};
 		this.downloadpdf.forms.list = {
-			'details':{'label':'', 'fields':{
-				'pagetitle':{'label':'Page Title', 'type':'text'},
+			'details':{'label':'Title', 'fields':{
+				'pagetitle':{'label':'', 'hidelabel':'yes', 'type':'text'},
+				}},
+			'information':{'label':'Information to include', 'fields':{
 				'catalog_number':{'label':'Catalog Number', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 //				'sold_label':{'label':'Sold Label', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 				'media':{'label':'Media', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
@@ -1358,8 +1363,10 @@ function ciniki_artcatalog_main() {
 				}},
 		};
 //		this.downloadpdf.forms.quad = {
-//			'details':{'label':'', 'fields':{
-//				'pagetitle':{'label':'Title', 'type':'text'},
+//			'details':{'label':'Title', 'fields':{
+//				'pagetitle':{'label':'', 'hidelabel':'yes', 'type':'text'},
+//				}},
+//			'information':{'label':'Information to include', 'fields':{
 //				'catalog_number':{'label':'Catalog Number', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 //				'media':{'label':'Media', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 //				'size':{'label':'Size', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
@@ -1376,8 +1383,10 @@ function ciniki_artcatalog_main() {
 //				}},
 //		};
 		this.downloadpdf.forms.single = {
-			'details':{'label':'', 'fields':{
-				'pagetitle':{'label':'Page Title', 'type':'text'},
+			'details':{'label':'Title', 'fields':{
+				'pagetitle':{'label':'', 'hidelabel':'yes', 'type':'text'},
+				}},
+			'information':{'label':'Information to include', 'fields':{
 				'catalog_number':{'label':'Catalog Number', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 //				'sold_label':{'label':'Sold Label', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 				'media':{'label':'Media', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
@@ -1397,8 +1406,10 @@ function ciniki_artcatalog_main() {
 				}},
 		};
 		this.downloadpdf.forms.excel = {
-			'details':{'label':'', 'fields':{
-				'pagetitle':{'label':'File Name', 'type':'text'},
+			'details':{'label':'File Name', 'fields':{
+				'pagetitle':{'label':'', 'hidelabel':'yes', 'type':'text'},
+				}},
+			'information':{'label':'Information to include', 'fields':{
 				'catalog_number':{'label':'Catalog Number', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 				'name':{'label':'Title', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 				'category':{'label':'Category', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
@@ -1893,7 +1904,7 @@ function ciniki_artcatalog_main() {
 		args['pagetitle'] = t;
 		var fields = '';
 		var flds = ['catalog_number','media','size','framed_size','price','location','description','awards','notes','inspiration'];
-		for(i in this.downloadpdf.sections.details.fields) {
+		for(i in this.downloadpdf.sections.information.fields) {
 			if( this.downloadpdf.formFieldValue(this.downloadpdf.formField(i), i) == 'yes' ) {
 				fields += ',' + i;
 			}
@@ -1925,7 +1936,7 @@ function ciniki_artcatalog_main() {
 		args['pagetitle'] = t;
 		var fields = '';
 		var flds = ['catalog_number','title', 'category', 'media','size','framed_size','price','location','description','awards','notes','inspiration'];
-		for(i in this.downloadpdf.sections.details.fields) {
+		for(i in this.downloadpdf.sections.information.fields) {
 			if( this.downloadpdf.formFieldValue(this.downloadpdf.formField(i), i) == 'include' ) {
 				fields += ',' + i;
 			}
