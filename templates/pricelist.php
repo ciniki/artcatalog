@@ -53,8 +53,16 @@ function ciniki_artcatalog_templates_pricelist($ciniki, $business_id, $sections,
 	// Create a custom class for this document
 	//
 	class MYPDF extends TCPDF {
+		// set margins
+		public $header_height = 30;
+		public $footer_height = 12;
+		public $top_margin = 13;
+		public $left_margin = 18;
+		public $right_margin = 18;
 		public $business_name = '';
 		public $title = '';
+		public $pagenumbers = 'yes';
+
 		public function Header() {
 			$this->SetFont('helvetica', 'B', 20);
 			$this->Cell(0, 20, $this->title, 0, false, 'C', 0, '', 0, false, 'M', 'B');
@@ -62,19 +70,19 @@ function ciniki_artcatalog_templates_pricelist($ciniki, $business_id, $sections,
 
 		// Page footer
 		public function Footer() {
-			// Position at 15 mm from bottom
-			$this->SetY(-15);
-			// Set font
-			$this->SetFont('helvetica', 'I', 8);
-			$this->Cell(0, 10, 'Page ' . $this->pageNo().'/'.$this->getAliasNbPages(), 
-				0, false, 'C', 0, '', 0, false, 'T', 'M');
+			if( $this->pagenumbers == 'yes' ) {
+				$this->SetY(-15);
+				$this->SetFont('helvetica', 'I', 8);
+				$this->Cell(0, 10, 'Page ' . $this->pageNo().'/'.$this->getAliasNbPages(), 
+					0, false, 'C', 0, '', 0, false, 'T', 'M');
+			}
 		}
 	}
 
 	//
 	// Start a new document
 	//
-	$pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+	$pdf = new MYPDF('P', PDF_UNIT, 'LETTER', true, 'UTF-8', false);
 
 	$filename = '';
 	$pdf->title = $args['pagetitle'];
@@ -90,10 +98,9 @@ function ciniki_artcatalog_templates_pricelist($ciniki, $business_id, $sections,
 	$pdf->SetKeywords('');
 
 	// set margins
-	$header_height = 25;
-	$pdf->SetMargins(PDF_MARGIN_LEFT, 25, PDF_MARGIN_RIGHT);
-	$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-	$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+	$pdf->SetMargins($pdf->left_margin, $pdf->header_height, $pdf->right_margin);
+	$pdf->SetHeaderMargin($pdf->top_margin);
+	$pdf->SetFooterMargin($pdf->footer_height);
 
 	// Set font
 	$pdf->SetFont('times', 'BI', 12);

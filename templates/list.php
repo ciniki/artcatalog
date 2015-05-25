@@ -53,33 +53,44 @@ function ciniki_artcatalog_templates_list($ciniki, $business_id, $sections, $arg
 	// Create a custom class for this document
 	//
 	class MYPDF extends TCPDF {
+		// set margins
+		public $header_height = 32;
+		public $footer_height = 10;
+		public $top_margin = 13;
+		public $left_margin = 21;
+		public $right_margin = 21;
 		public $business_name = '';
+		public $pagenumbers = 'no';
 		public $title = '';
+
 		public function Header() {
 			$this->SetFont('helvetica', 'B', 20);
-			$this->Cell(0, 20, $this->title, 0, false, 'C', 0, '', 0, false, 'M', 'B');
+			$this->Cell(0, 15, $this->title, 0, false, 'C', 0, '', 0, false, 'M', 'B');
 		}
 
 		// Page footer
 		public function Footer() {
-			// Position at 15 mm from bottom
-			$this->SetY(-15);
-			// Set font
-			$this->SetFont('helvetica', 'I', 8);
-			$this->Cell(0, 10, 'Page ' . $this->pageNo().'/'.$this->getAliasNbPages(), 
-				0, false, 'C', 0, '', 0, false, 'T', 'M');
+			if( $this->pagenumbers == 'yes' ) {
+				$this->SetY(-15);
+				$this->SetFont('helvetica', 'I', 8);
+				$this->Cell(0, 10, 'Page ' . $this->pageNo().'/'.$this->getAliasNbPages(), 
+					0, false, 'C', 0, '', 0, false, 'T', 'M');
+			}
 		}
 	}
 
 	//
 	// Start a new document
 	//
-	$pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+	$pdf = new MYPDF('P', PDF_UNIT, 'LETTER', true, 'UTF-8', false);
 
 	$filename = '';
 	$pdf->title = $args['pagetitle'];
 	if( $args['pagetitle'] != '' ) {
 		$filename = preg_replace('/[^a-zA-Z0-9_]/', '', preg_replace('/ /', '_', $args['pagetitle']));
+	}
+	if( in_array('pagenumbers', $fields) ) {
+		$pdf->pagenumbers = 'yes';
 	}
 
 	// Set PDF basics
@@ -90,9 +101,8 @@ function ciniki_artcatalog_templates_list($ciniki, $business_id, $sections, $arg
 	$pdf->SetKeywords('');
 
 	// set margins
-	$header_height = 25;
-	$pdf->SetMargins(PDF_MARGIN_LEFT, 25, PDF_MARGIN_RIGHT);
-	$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+	$pdf->SetMargins($pdf->left_margin, $pdf->header_height, $pdf->right_margin);
+	$pdf->SetHeaderMargin($pdf->top_margin);
 	$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
 	// Set font
@@ -109,11 +119,11 @@ function ciniki_artcatalog_templates_list($ciniki, $business_id, $sections, $arg
 	//
 	// Add the artcatalog items
 	//
-	$w = array(30, 120, 30);
 	foreach($sections as $sid => $section) {
 		//
 		// Check if we need a page break
 		//
+//		if( $pdf->getY() > ($pdf->getPageHeight() - $pdf->header_height - $pdf->footer_height) ) {
 		if( $pdf->getY() > ($pdf->getPageHeight() - 55) ) {
 			$pdf->AddPage();
 		}
@@ -130,7 +140,7 @@ function ciniki_artcatalog_templates_list($ciniki, $business_id, $sections, $arg
 		}
 	
 		foreach($section['section']['items'] as $iid => $item) {
-			$cur_x = 17;
+			$cur_x = $pdf->left_margin;
 			$item = $item['item'];
 
 			//
@@ -255,8 +265,10 @@ function ciniki_artcatalog_templates_list($ciniki, $business_id, $sections, $arg
 			
 			$diff_y = $pdf->getY() - $item_y;
 			if( $diff_y > 0 && $diff_y < 36 ) {
-				$pdf->Ln((36-$diff_y) + 5);
+				error_log('test2');
+				$pdf->Ln((36-$diff_y) + 2);
 			} else {
+				error_log('test1');
 				$pdf->Ln(12);
 			}
 		}
