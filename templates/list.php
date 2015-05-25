@@ -265,10 +265,8 @@ function ciniki_artcatalog_templates_list($ciniki, $business_id, $sections, $arg
 			
 			$diff_y = $pdf->getY() - $item_y;
 			if( $diff_y > 0 && $diff_y < 36 ) {
-				error_log('test2');
 				$pdf->Ln((36-$diff_y) + 2);
 			} else {
-				error_log('test1');
 				$pdf->Ln(12);
 			}
 		}
