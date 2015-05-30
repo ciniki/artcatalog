@@ -56,6 +56,45 @@ function ciniki_artcatalog_delete(&$ciniki) {
 	}
 	$uuid = $rc['artcatalog']['uuid'];
 
+	//
+	// Check if any products still exist
+	//
+	$strsql = "SELECT id, uuid "
+		. "FROM ciniki_artcatalog_products "
+		. "WHERE artcatalog_id = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_id']) . "' "
+		. "AND business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+		. "";
+	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', 'product');
+	if( $rc['stat'] != 'ok' ) {
+		ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
+		return $rc;
+	}
+	if( isset($rc['rows']) && count($rc['rows']) > 0 ) {
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2408', 'msg'=>'You must remove all products for this item first.'));
+	}
+
+	//
+	// Check if artcatalog item is used anywhere
+	//
+	foreach($ciniki['business']['modules'] as $module => $m) {
+		list($pkg, $mod) = explode('.', $module);
+		$rc = ciniki_core_loadMethod($ciniki, $pkg, $mod, 'hooks', 'checkObjectUsed');
+		if( $rc['stat'] == 'ok' ) {
+			$fn = $rc['function_call'];
+			$rc = $fn($ciniki, $args['business_id'], array(
+				'object'=>'ciniki.artcatalog.item', 
+				'object_id'=>$args['artcatalog_id'],
+				));
+			if( $rc['stat'] != 'ok' ) {
+				return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2418', 'msg'=>'Unable to check if item is still be used', 'err'=>$rc['err']));
+			}
+			if( $rc['used'] != 'no' ) {
+				return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2419', 'msg'=>"Item is still in use. " . $rc['msg']));
+			}
+		}
+	}
+
+
 	//  
 	// Turn off autocommit
 	// 

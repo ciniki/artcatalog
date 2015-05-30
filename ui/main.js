@@ -377,6 +377,12 @@ function ciniki_artcatalog_main() {
 				'addTxt':'Add Additional Image',
 				'addFn':'M.startApp(\'ciniki.artcatalog.images\',null,\'M.ciniki_artcatalog_main.showItem();\',\'mc\',{\'artcatalog_id\':M.ciniki_artcatalog_main.item.artcatalog_id,\'add\':\'yes\'});',
 				},
+			'products':{'label':'Products', 'visible':'no', 'type':'simplegrid', 'num_cols':3,
+				'headerValues':['Product', 'Inv', 'Price'],
+				'cellClasses':['', '', ''],
+				'addTxt':'Add Product',
+				'addFn':'M.startApp(\'ciniki.artcatalog.products\',null,\'M.ciniki_artcatalog_main.showItem();\',\'mc\',{\'artcatalog_id\':M.ciniki_artcatalog_main.item.artcatalog_id,\'add\':\'yes\'});',
+				},
 			'invoices':{'label':'Sold to', 'visible':'no', 'type':'simplegrid', 'num_cols':'2',
 				'headerValues':null,
 				'cellClasses':['multiline','multiline'],
@@ -455,7 +461,14 @@ function ciniki_artcatalog_main() {
 				}
 				return '<span class="maintext">' + d.place.name + exnum + '</span><span class="subtext">' + dates + '</span>';
 			}
-			if( s == 'invoices' ) {
+			else if( s == 'products' ) {
+				switch (j) {
+					case 0: return d.product.name;
+					case 1: return d.product.inventory;
+					case 2: return d.product.price;
+				}
+			}
+			else if( s == 'invoices' ) {
 				if( j == 0 ) {
 					return '<span class="maintext">' + d.invoice.customer_name + '</span><span class="subtext">Invoice #' + d.invoice.invoice_number + ' - ' + d.invoice.invoice_date + '</span>';
 				} else if( j == 1 ) {
@@ -466,6 +479,7 @@ function ciniki_artcatalog_main() {
 		this.item.rowFn = function(s, i, d) {
 			switch(s) {
 				case 'tracking': return 'M.startApp(\'ciniki.artcatalog.tracking\',null,\'M.ciniki_artcatalog_main.showItem();\',\'mc\',{\'tracking_id\':' + d.place.id + '});';
+				case 'products': return 'M.startApp(\'ciniki.artcatalog.products\',null,\'M.ciniki_artcatalog_main.showItem();\',\'mc\',{\'product_id\':' + d.product.id + '});';
 				case 'invoices': return 'M.startApp(\'ciniki.sapos.invoice\',null,\'M.ciniki_artcatalog_main.showItem();\',\'mc\',{\'invoice_id\':' + d.invoice.id + '});';
 			}
 		};
@@ -1476,9 +1490,7 @@ function ciniki_artcatalog_main() {
 
 	this.start = function(cb, appPrefix, aG) {
 		args = {};
-		if( aG != null ) {
-			args = eval(aG);
-		}
+		if( aG != null ) { args = eval(aG); }
 
 		//
 		// Create container
@@ -1516,6 +1528,8 @@ function ciniki_artcatalog_main() {
 //				this.edit.forms[i]._inspiration.fields.inspiration.active = 'no';
 //			}
 		}
+
+		this.item.sections.products.visible = (M.curBusiness.modules['ciniki.artcatalog'].flags&0x02)>0?'yes':'no';
 
 		if( args.artcatalog_id != null && args.artcatalog_id == 0 ) {
 			this.showEdit(cb, 0);
@@ -1959,7 +1973,7 @@ function ciniki_artcatalog_main() {
 
 		var rsp = M.api.getJSONCb('ciniki.artcatalog.get', 
 			{'business_id':M.curBusinessID, 'artcatalog_id':this.item.artcatalog_id, 
-			'tracking':'yes', 'images':'yes', 'invoices':'yes'}, function(rsp) {
+			'tracking':'yes', 'images':'yes', 'invoices':'yes', 'products':'yes'}, function(rsp) {
 				if( rsp.stat != 'ok' ) {
 					M.api.err(rsp);
 					return false;

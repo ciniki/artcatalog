@@ -193,7 +193,6 @@ function ciniki_artcatalog_tracking() {
 	};
 
 	this.deleteTracking = function() {
-		console.log(M.ciniki_artcatalog_main.item.data.name);
 		if( confirm('Are you sure you want to remove \'' + M.ciniki_artcatalog_main.item.data.name + '\' from the exhibited list \'' + this.edit.data.name + '\'?') ) {
 			var rsp = M.api.getJSONCb('ciniki.artcatalog.trackingDelete', {'business_id':M.curBusinessID, 
 				'tracking_id':this.edit.tracking_id}, function(rsp) {

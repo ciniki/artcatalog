@@ -39,6 +39,7 @@ function ciniki_artcatalog_get($ciniki) {
 		'tracking'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Tracking'),
 		'images'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Images'),
 		'invoices'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Invoices'),
+		'products'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Products'),
 		// PDF options
         'output'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Output Type'), 
         'layout'=>array('required'=>'no', 'blank'=>'no', 'default'=>'list', 'name'=>'Layout',
@@ -199,6 +200,33 @@ function ciniki_artcatalog_get($ciniki) {
 		}
 		if( isset($rc['tracking']) ) {
 			$item['tracking'] = $rc['tracking'];
+		}
+	}
+
+	//
+	// Get the product list if requested
+	//
+	if( isset($args['products']) && $args['products'] == 'yes' 
+		&& ($ciniki['business']['modules']['ciniki.artcatalog']['flags']&0x02) > 0
+		) {
+		$strsql = "SELECT id, name, inventory, price "
+			. "FROM ciniki_artcatalog_products "
+			. "WHERE artcatalog_id = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_id']) . "' "
+			. "AND business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+			. "ORDER BY ciniki_artcatalog_products.name "
+			. "";
+		$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
+			array('container'=>'products', 'fname'=>'id', 'name'=>'product',
+				'fields'=>array('id', 'name', 'inventory', 'price')),
+			));
+		if( $rc['stat'] != 'ok' ) {	
+			return $rc;
+		}
+		if( isset($rc['products']) ) {
+			$item['products'] = $rc['products'];
+			foreach($item['products'] as $pid => $product) {
+				$item['products'][$pid]['product']['price'] = numfmt_format_currency($intl_currency_fmt, $product['product']['price'], $intl_currency);
+			}
 		}
 	}
 

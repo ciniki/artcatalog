@@ -86,6 +86,25 @@ function ciniki_artcatalog_objects($ciniki) {
 			),
 		'history_table'=>'ciniki_artcatalog_history',
 		);
+	$objects['product'] = array(
+		'name'=>'Product',
+		'sync'=>'yes',
+		'table'=>'ciniki_artcatalog_products',
+		'fields'=>array(
+			'artcatalog_id'=>array('ref'=>'ciniki.artcatalog.item'),
+			'name'=>array(),
+			'permalink'=>array(),
+			'flags'=>array('default'=>'0'),
+			'sequence'=>array('default'=>'0'),
+			'image_id'=>array('default'=>'0'),
+			'synopsis'=>array('default'=>''),
+			'description'=>array('default'=>''),
+			'price'=>array('default'=>'0'),
+			'taxtype_id'=>array('default'=>'0'),
+			'inventory'=>array('default'=>'0'),
+			),
+		'history_table'=>'ciniki_artcatalog_history',
+		);
 	$objects['setting'] = array(
 		'type'=>'settings',
 		'name'=>'Art Catalog Settings',
