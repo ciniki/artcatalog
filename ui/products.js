@@ -19,6 +19,7 @@ function ciniki_artcatalog_products() {
 				'price':{'label':'Price', 'type':'text', 'size':'small'},
 //				'taxtype_id':{'label':'Price', 'type':'text', 'size':'small'},
 				'inventory':{'label':'Inventory', 'type':'text', 'size':'small'},
+				'flags':{'label':'Website', 'type':'flags', 'flags':{'1':{'name':'Visible'}}},
 				}},
 			'_synopsis':{'label':'Synopsis', 'type':'simpleform', 'fields':{
 				'synopsis':{'label':'', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},

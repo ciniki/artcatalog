@@ -161,6 +161,43 @@ function ciniki_artcatalog_web_imageDetails($ciniki, $settings, $business_id, $p
 
 	$image['category_permalink'] = urlencode($image['category']);
 
+	//
+	// Get the list of products for the item
+	//
+	if( ($ciniki['business']['modules']['ciniki.artcatalog']['flags']&0x02) > 0 ) {
+		$strsql = "SELECT ciniki_artcatalog_products.id, "
+			. "ciniki_artcatalog_products.name AS title, "
+			. "ciniki_artcatalog_products.permalink, "
+			. "ciniki_artcatalog_products.flags, "
+			. "ciniki_artcatalog_products.synopsis AS description, "
+			. "'no' AS is_details, "
+//			. "IF(ciniki_artcatalog_products.description='','no','yes') AS is_details, "
+			. "ciniki_artcatalog_products.price, "
+			. "ciniki_artcatalog_products.taxtype_id, "
+			. "ciniki_artcatalog_products.inventory, "
+			. "ciniki_artcatalog_products.image_id "
+			. "FROM ciniki_artcatalog_products "
+//			. "LEFT JOIN ciniki_images ON ("
+//				. "ciniki_artcatalog_products.image_id = ciniki_images.id "
+//				. "AND ciniki_images.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+//				. ") "
+			. "WHERE ciniki_artcatalog_products.artcatalog_id = '" . ciniki_core_dbQuote($ciniki, $image['id']) . "' "
+			. "AND ciniki_artcatalog_products.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+			. "AND (ciniki_artcatalog_products.flags&0x01) > 0 "
+			. "ORDER BY sequence, name";
+		$rc = ciniki_core_dbHashQueryIDTree($ciniki, $strsql, 'ciniki.artcatalog', array(
+			array('container'=>'products', 'fname'=>'id',
+				'fields'=>array('id', 'title', 'permalink', 'image_id', 'description', 'is_details', 'price', 'taxtype_id', 'inventory')),
+			));
+		if( $rc['stat'] == 'ok' && isset($rc['products']) ) {
+			$image['products'] = $rc['products'];
+			//
+			// FIXME: Add code to create product information ready to display add to cart
+			//
+		}
+
+	}
+
 	return array('stat'=>'ok', 'image'=>$image);
 }
 ?>
