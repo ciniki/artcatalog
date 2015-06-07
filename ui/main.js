@@ -341,7 +341,7 @@ function ciniki_artcatalog_main() {
 		this.item.data = null;
 		this.item.artcatalog_id = 0;
 		this.item.sections = {
-			'_image':{'label':'Image', 'aside':'yes', 'fields':{
+			'_image':{'label':'Image', 'aside':'yes', 'type':'imageform', 'fields':{
 				'image_id':{'label':'', 'type':'image_id', 'hidelabel':'yes', 'history':'no'},
 			}},
 			'info':{'label':'Public Information', 'aside':'yes', 'list':{
@@ -555,7 +555,7 @@ function ciniki_artcatalog_main() {
 				'pottery':{'label':'Pottery', 'field_id':8},
 			}};
 		this.edit.forms.painting = {
-			'_image':{'label':'Image', 'aside':'yes', 
+			'_image':{'label':'Image', 'aside':'yes', 'type':'imageform', 
 				'gstep':2,
 				'gtitle-add':'Do you have a photo of your artwork?',
 				'gtitle-edit':'Would you like to change the photo?',
