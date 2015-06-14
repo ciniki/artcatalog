@@ -78,26 +78,18 @@ function ciniki_artcatalog_products() {
 	this.showEdit = function(cb, tid, aid) {
 		if( tid != null ) { this.edit.product_id = tid; }
 		if( aid != null ) { this.edit.artcatalog_id = aid; }
-		if( this.edit.product_id > 0 ) {
-			this.edit.sections._buttons.buttons.delete.visible = 'yes';
-			M.api.getJSONCb('ciniki.artcatalog.productGet', 
-				{'business_id':M.curBusinessID, 'product_id':this.edit.product_id}, function(rsp) {
-					if( rsp.stat != 'ok' ) {
-						M.api.err(rsp);
-						return false;
-					}
-					var p = M.ciniki_artcatalog_products.edit;
-					p.data = rsp.product;
-					p.refresh();
-					p.show(cb);
-				});
-		} else {
-			this.edit.reset();
-			this.edit.sections._buttons.buttons.delete.visible = 'no';
-			this.edit.data = {};
-			this.edit.refresh();
-			this.edit.show(cb);
-		}
+		this.edit.sections._buttons.buttons.delete.visible = (this.edit.product_id>0?'yes':'no');
+		M.api.getJSONCb('ciniki.artcatalog.productGet', 
+			{'business_id':M.curBusinessID, 'product_id':this.edit.product_id, 'artcatalog_id':this.edit.artcatalog_id}, function(rsp) {
+				if( rsp.stat != 'ok' ) {
+					M.api.err(rsp);
+					return false;
+				}
+				var p = M.ciniki_artcatalog_products.edit;
+				p.data = rsp.product;
+				p.refresh();
+				p.show(cb);
+			});
 	};
 
 	this.productSave = function() {
