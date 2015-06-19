@@ -13,6 +13,8 @@
 # artcatalog_id:	The ID of the artcatalog item being tracked.
 #
 # name:				The name of the place where the artwork is.
+# permalink:		The permalink for the product when it is displayed on the website. **future**
+#
 # external_number:	The number assigned by the gallery, store, etc.
 # start_date:		The date the artwork was placed in this location.
 # end_date:			The date the artwork was removed.
