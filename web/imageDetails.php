@@ -70,6 +70,7 @@ function ciniki_artcatalog_web_imageDetails($ciniki, $settings, $business_id, $p
 		. "FROM ciniki_artcatalog "
 		. "LEFT JOIN ciniki_artcatalog_images ON (ciniki_artcatalog.id = ciniki_artcatalog_images.artcatalog_id "
 			. "AND ciniki_artcatalog_images.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+			. "AND ciniki_artcatalog_images.image_id > 0 "
 			. "AND (ciniki_artcatalog_images.webflags&0x01) = 1 ) "
 		. "WHERE ciniki_artcatalog.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
 		. "AND ciniki_artcatalog.permalink = '" . ciniki_core_dbQuote($ciniki, $permalink) . "' "
