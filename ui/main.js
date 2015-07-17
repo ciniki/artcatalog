@@ -1954,13 +1954,14 @@ function ciniki_artcatalog_main() {
 		var fields = '';
 		var flds = ['catalog_number','title', 'category', 'media','size','framed_size','price','location','description','awards','notes','inspiration'];
 		for(i in this.downloadpdf.sections.information.fields) {
-			if( this.downloadpdf.formFieldValue(this.downloadpdf.formField(i), i) == 'include' ) {
+			if( this.downloadpdf.formFieldValue(this.downloadpdf.formField(i), i) == 'yes' ) {
 				fields += ',' + i;
 			}
 		}
 		if( fields != '' ) {
 			args['fields'] = fields.substring(1);
 		}
+
 		M.api.openFile(this.downloadpdf.method, args);
 //		window.open(M.api.getUploadURL(this.downloadpdf.method, args));
 	};

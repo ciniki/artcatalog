@@ -37,7 +37,7 @@
 //
 // webflags:		(optional) The flags for displaying the item on the business website.
 //
-//					0x01 - Private item, not to be displayed on the website
+//					0x01 - Public item, to be displayed on the website
 //					0x10 - Category highlight item
 //					0x20 - Media highlight item *future*
 //					0x40 - Location highlight item *future*
