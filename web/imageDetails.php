@@ -108,14 +108,11 @@ function ciniki_artcatalog_web_imageDetails($ciniki, $settings, $business_id, $p
 //		'date_added'=>$rc['piece']['date_added'],
 //		'last_updated'=>$rc['piece']['last_updated']);
 	$image['details'] = '';
-	$comma = '';
 	if( $image['media'] != '' && ($image['webflags']&0x1000) > 0 ) {
 		$image['details'] .= $image['media'];
-		$comma = ', ';
 	}
 	if( $image['size'] != '' ) {
-		$image['details'] .= $comma . $image['size'];
-		$comma = ', ';
+		$image['details'] .= ($image['details']!=''?', ':'') . $image['size'];
 	}
 //	if( $image['framed_size'] != '' && 
 	if( ($image['flags']&0x10) > 0 ) {
@@ -127,36 +124,30 @@ function ciniki_artcatalog_web_imageDetails($ciniki, $settings, $business_id, $p
 			}
 		} else {
 			if( $image['framed_size'] != '' ) {
-				$image['details'] .= 'Framed: ' . $image['framed_size'] . '';
+				$image['details'] .= ($image['details']!=''?', ':'') . 'Framed: ' . $image['framed_size'] . '';
 			} else {
-				$image['details'] .= 'Framed';
+				$image['details'] .= ($image['details']!=''?', ':'') . 'Framed';
 			}
 		}
-		$comma = ', ';
 	} elseif( $image['size'] != '' && $image['type'] == 1 && ($image['flags']&0x10) == 0 ) {
 		$image['details'] .= ' (unframed)';
-		$comma = ', ';
 	}
 	if( ($image['webflags']&0x0800) > 0 ) {
 		if( $image['status'] == 20 ) {
 			if( $image['price'] != '' && $image['price'] != '0' && $image['price'] != '0.00' ) {
 				if( is_numeric($image['price']) ) {
 					$image['price'] = numfmt_format_currency($intl_currency_fmt, $image['price'], $intl_currency);
-					$image['details'] .= $comma . $image['price'] . ' ' . $intl_currency;
+					$image['details'] .= ($image['details']!=''?', ':'') . $image['price'] . ' ' . $intl_currency;
 				} else {
-					$image['details'] .= $comma . $image['price'];
+					$image['details'] .= ($image['details']!=''?', ':'') . $image['price'];
 				}
-		//		$image['details'] .= $comma . preg_replace('/^\s*([^$])/', '\$$1', $image['price']);
-				$comma = ', ';
 			}
 		} else {
-			$image['details'] .= $comma . " <b> " . $image['status_text'] . "</b>";
-			$comma = ', ';
+			$image['details'] .= ($image['details']!=''?', ':'') . " <b> " . $image['status_text'] . "</b>";
 		}
 
 //		if( isset($image['sold']) && $image['sold'] == 'yes' ) {
 //			$image['details'] .= " <b> SOLD</b>";
-//			$comma = ', ';
 //		}
 	}
 
