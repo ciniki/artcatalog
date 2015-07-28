@@ -1572,7 +1572,7 @@ function ciniki_artcatalog_main() {
 						M.api.err(rsp);
 						return false;
 					}
-					if( rsp.total <= 20 ) {
+					if( rsp.total <= 5 ) {
 						M.ciniki_artcatalog_main.showMenuList(cb, rsp, this.cur_type);
 					} else {
 						M.ciniki_artcatalog_main.showMenuStats(cb, rsp);
@@ -1584,7 +1584,7 @@ function ciniki_artcatalog_main() {
 					M.api.err(rsp);
 					return false;
 				}
-				if( rsp.total <= 20 ) {
+				if( rsp.total <= 5 ) {
 					M.ciniki_artcatalog_main.showMenuList(cb, rsp, null);
 				} else {
 					M.ciniki_artcatalog_main.showMenuStats(cb, rsp);
