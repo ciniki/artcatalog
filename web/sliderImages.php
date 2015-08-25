@@ -48,6 +48,28 @@ function ciniki_artcatalog_web_sliderImages($ciniki, $settings, $business_id, $l
 			$strsql .= "ORDER BY RAND() "
 				. "LIMIT 15 ";
 		}
+	} elseif( $list == 'forsale' ) {
+		$strsql = "SELECT ciniki_artcatalog.id, ciniki_artcatalog.category, "
+			. "name AS title, permalink, image_id, media, size, framed_size, price, "
+			. "IF(status>=50, 'yes', 'no') AS sold, "
+			. "IF(ciniki_images.last_updated > ciniki_artcatalog.last_updated, UNIX_TIMESTAMP(ciniki_images.last_updated), UNIX_TIMESTAMP(ciniki_artcatalog.last_updated)) AS last_updated "
+			. "FROM ciniki_artcatalog "
+			. "LEFT JOIN ciniki_images ON ("
+				. "ciniki_artcatalog.image_id = ciniki_images.id "
+				. "AND ciniki_images.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+				. ") "
+			. "WHERE ciniki_artcatalog.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+			. "AND (ciniki_artcatalog.webflags&0x01) = 1 "
+			. "AND ciniki_artcatalog.image_id > 0 "
+			. "AND ciniki_artcatalog.status = 20 "
+			. "";
+		if( $limit != '' && $limit > 0 && is_int($limit) ) {
+			$strsql .= "ORDER BY RAND() "
+				. "LIMIT $limit ";
+		} else {
+			$strsql .= "ORDER BY RAND() "
+				. "LIMIT 15 ";
+		}
 	} else {
 		$strsql = "SELECT ciniki_artcatalog.id, ciniki_artcatalog.category, "
 			. "name AS title, permalink, image_id, media, size, framed_size, price, "
