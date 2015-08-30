@@ -1320,6 +1320,14 @@ function ciniki_artcatalog_main() {
 		this.downloadpdf.list_section = null;
 		this.downloadpdf.list_name = null;
 		this.downloadpdf.list_type = null;
+		this.downloadpdf.sortbylist = {
+			'category':'Category', 
+			'media':'Media', 
+			'location':'Location', 
+			'year':'Year', 
+			'tracking':'Exhibited', 
+			'catalognumber':'Catalog Number',
+			};
 		this.downloadpdf.forms = {};
 		this.downloadpdf.formtab = 'list';
 		this.downloadpdf.formtabs = {'label':'', 'field':'layout', 'tabs':{
@@ -1345,6 +1353,9 @@ function ciniki_artcatalog_main() {
 			'details':{'label':'Title', 'fields':{
 				'pagetitle':{'label':'', 'hidelabel':'yes', 'type':'text'},
 				}},
+			'sort':{'label':'', 'fields':{
+				'sortby':{'label':'Sort By', 'type':'toggle', 'default':'category', 'toggles':this.downloadpdf.sortbylist},
+				}},
 			'information':{'label':'Information to include', 'fields':{
 				'catalog_number':{'label':'Catalog Number', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
 //				'sold_label':{'label':'Sold Label', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
@@ -1362,6 +1373,9 @@ function ciniki_artcatalog_main() {
 		this.downloadpdf.forms.list = {
 			'details':{'label':'Title', 'fields':{
 				'pagetitle':{'label':'', 'hidelabel':'yes', 'type':'text'},
+				}},
+			'sort':{'label':'', 'fields':{
+				'sortby':{'label':'Sort By', 'type':'toggle', 'default':'category', 'toggles':this.downloadpdf.sortbylist},
 				}},
 			'information':{'label':'Information to include', 'fields':{
 				'catalog_number':{'label':'Catalog Number', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
@@ -1851,6 +1865,7 @@ function ciniki_artcatalog_main() {
 		this.downloadpdf.list_type = type;
 		this.downloadpdf.list_artcatalog_id = null;
 		this.downloadpdf.data = {'pagetitle':M.curBusiness.name + (pagetitle!=''?' - ' + unescape(pagetitle):''),
+			'sortby':section,
 			'catalog_number':'yes',
 			'name':'yes',
 			'category':'yes',
@@ -1919,6 +1934,9 @@ function ciniki_artcatalog_main() {
 		args['layout'] = this.downloadpdf.formtab;
 		var t = this.downloadpdf.formFieldValue(this.downloadpdf.formField('pagetitle'), 'pagetitle');
 		args['pagetitle'] = t;
+		if( args['layout'] == 'pricelist' || args['layout'] == 'list' ) {
+			args['sortby'] = this.downloadpdf.formFieldValue(this.downloadpdf.formField('sortby'), 'sortby');
+		}
 		var fields = '';
 		var flds = ['catalog_number','media','size','framed_size','price','location','description','awards','notes','inspiration'];
 		for(i in this.downloadpdf.sections.information.fields) {
@@ -2078,31 +2096,51 @@ function ciniki_artcatalog_main() {
 		} else {
 			this.edit.reset();
 			this.edit.gstep = 1;
-//			this.edit.size = 'medium';
-			this.edit.data = {'type':1, 'webflags':(0x01|0x0100|0x0800)};
-			if( section != null && section == 'category' && name != null && name != '' ) {
-				this.edit.data.category = decodeURIComponent(name);
-			} else if( section != null && section == 'media' && name != null && name != '' ) {
-				this.edit.data.media = decodeURIComponent(name);
-			} else if( section != null && section == 'location' && name != null && name != '' ) {
-				this.edit.data.location = decodeURIComponent(name);
-			} else if( section != null && section == 'year' && name != null && name != '' ) {
-				this.edit.data.year = decodeURIComponent(name);
-			} else if( section != null && section == 'list' && name != null && name != '' ) {
-				this.edit.data['lists'] = name;
-			}
-			if( this.statsmenu.sections.types.visible == 'yes' && this.statsmenu.sections.types.selected != 'all' ) {
-				this.edit.formtab = this.statsmenu.sections.types.selected;
-			} else {
-				var max = 0;
-				for(i in this.statsmenu.data.types) {
-					if( parseInt(this.statsmenu.data.types[i].section.count) > max ) {
-						this.edit.formtab = this.statsmenu.data.types[i].section.type;
-						max = parseInt(this.statsmenu.data.types[i].section.count);
+			M.api.getJSONCb('ciniki.artcatalog.get', {'business_id':M.curBusinessID, 'artcatalog_id':this.edit.artcatalog_id}, function(rsp) {
+				if( rsp.stat != 'ok' ) {
+					M.api.err(rsp);
+					return false;
+				}
+				var p = M.ciniki_artcatalog_main.edit;
+				p.formtab = null;
+				p.formtab_field_id = null;
+				p.sections._lists.fields.lists.tags = [];
+				var tags = [];
+				for(i in rsp.tags) {
+					tags.push(rsp.tags[i].tag.name);
+				}
+				for(i in p.forms) {
+					if( p.forms[i]._lists != null ) {
+						p.forms[i]._lists.fields.lists.tags = tags;
 					}
 				}
-			}
-
+				p.data = rsp.item;
+				if( section != null && section == 'category' && name != null && name != '' ) {
+					p.data.category = decodeURIComponent(name);
+				} else if( section != null && section == 'media' && name != null && name != '' ) {
+					p.data.media = decodeURIComponent(name);
+				} else if( section != null && section == 'location' && name != null && name != '' ) {
+					p.data.location = decodeURIComponent(name);
+				} else if( section != null && section == 'year' && name != null && name != '' ) {
+					p.data.year = decodeURIComponent(name);
+				} else if( section != null && section == 'list' && name != null && name != '' ) {
+					p.data['lists'] = name;
+				}
+				if( M.ciniki_artcatalog_main.statsmenu.sections.types.visible == 'yes' && M.ciniki_artcatalog_main.statsmenu.sections.types.selected != 'all' ) {
+					p.formtab = M.ciniki_artcatalog_main.statsmenu.sections.types.selected;
+				} else {
+					var max = 0;
+					for(i in M.ciniki_artcatalog_main.statsmenu.data.types) {
+						if( parseInt(M.ciniki_artcatalog_main.statsmenu.data.types[i].section.count) > max ) {
+							p.formtab = M.ciniki_artcatalog_main.statsmenu.data.types[i].section.type;
+							max = parseInt(M.ciniki_artcatalog_main.statsmenu.data.types[i].section.count);
+						}
+					}
+				}
+				p.refresh();
+				p.show(cb);
+			});
+/*
 //			if( M.curBusiness.artcatalog != null && M.curBusiness.artcatalog.settings['enable-lists'] == 'yes' ) {
 				M.api.getJSONCb('ciniki.artcatalog.getLists', 
 					{'business_id':M.curBusinessID, 'type':1}, function(rsp) {
@@ -2131,6 +2169,7 @@ function ciniki_artcatalog_main() {
 //				this.edit.refresh();
 //				this.edit.show(cb);
 //			}
+*/
 		}
 	};
 

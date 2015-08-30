@@ -57,6 +57,7 @@ function ciniki_artcatalog_listWithImages($ciniki) {
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
         'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
         'section'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Section'), 
+        'sortby'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Sort By'), 
 		'name'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Section Name'),
 		'type'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Type'),
         'limit'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Limit'), 
@@ -157,7 +158,19 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 		. "ciniki_artcatalog.inspiration, "
 //		. "IF((flags&0x02)=0x02,'yes','no') AS sold, "
 		. "";
-	if( !isset($args['section']) || $args['section'] == 'category' ) {
+	if( isset($args['sortby']) && $args['sortby'] == 'catalognumber' ) {
+		$strsql .= "'' AS sname ";
+	} elseif( isset($args['sortby']) && $args['sortby'] == 'category' ) {
+		$strsql .= "IF(ciniki_artcatalog.category='', 'Unknown', ciniki_artcatalog.category) AS sname ";
+	} elseif( isset($args['sortby']) && $args['sortby'] == 'media' ) {
+		$strsql .= "IF(ciniki_artcatalog.media='', 'Unknown', ciniki_artcatalog.media) AS sname ";
+	} elseif( isset($args['sortby']) && $args['sortby'] == 'location' ) {
+		$strsql .= "IF(ciniki_artcatalog.location='', 'Unknown', ciniki_artcatalog.location) AS sname ";
+	} elseif( isset($args['sortby']) && $args['sortby'] == 'year' ) {
+		$strsql .= "IF(ciniki_artcatalog.year='', 'Unknown', ciniki_artcatalog.year) AS sname ";
+	} elseif( isset($args['sortby']) && $args['sortby'] == 'tracking' ) {
+		$strsql .= "IF(ciniki_artcatalog_tracking.name='', 'Unknown', ciniki_artcatalog_tracking.name) AS sname ";
+	} elseif( !isset($args['section']) || $args['section'] == 'category' ) {
 		$strsql .= "IF(ciniki_artcatalog.category='', 'Unknown', ciniki_artcatalog.category) AS sname ";
 	} elseif( $args['section'] == 'media' ) {
 		$strsql .= "IF(ciniki_artcatalog.media='', 'Unknown', ciniki_artcatalog.media) AS sname ";
@@ -177,7 +190,7 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 			. "AND ciniki_artcatalog.id = ciniki_artcatalog_tags.artcatalog_id "
 			. "AND ciniki_artcatalog_tags.tag_type = 1 "
 			. "";
-	} elseif( isset($args['section']) && $args['section'] == 'tracking' ) {
+	} elseif( (isset($args['section']) && $args['section'] == 'tracking') || (isset($args['sortby']) && $args['sortby'] == 'tracking') ) {
 		$strsql .= "FROM ciniki_artcatalog, ciniki_artcatalog_tracking "
 			. "WHERE ciniki_artcatalog.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
 			. "AND ciniki_artcatalog.id = ciniki_artcatalog_tracking.artcatalog_id "
@@ -213,10 +226,29 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 	if( isset($args['type_id']) && $args['type_id'] > 0 ) {
 		$strsql .= "AND type = '" . ciniki_core_dbQuote($ciniki, $args['type_id']) . "' ";
 	}
-	if( isset($args['section']) && $args['section'] == 'year' ) {
+	//
+	// Check if output is PDF and sorted by catalog number instead of categories
+	//
+	if( isset($args['sortby']) && $args['sortby'] == 'catalognumber' ) {
+		$strsql .= "ORDER BY catalog_number, name ";
+	} elseif( isset($args['sortby']) && $args['sortby'] == 'year' ) {
+		$strsql .= "ORDER BY sname COLLATE latin1_general_cs DESC, name ";
+	} elseif( isset($args['sortby']) 
+		&& ($args['sortby'] == 'category' || $args['sortby'] == 'media' || $args['sortby'] == 'location' || $args['sortby'] == 'tracking') ) {
+		$strsql .= "ORDER BY sname COLLATE latin1_general_cs, name ";
+	} 
+
+	//
+	// Organized by year
+	//
+	elseif( isset($args['section']) && $args['section'] == 'year' ) {
 		$strsql .= "ORDER BY sname COLLATE latin1_general_cs DESC, name "
 			. "";
-	} else {
+	} 
+	//
+	// Organized by category, media, etc
+	//
+	else {
 		$strsql .= "ORDER BY sname COLLATE latin1_general_cs, name "
 			. "";
 	}
