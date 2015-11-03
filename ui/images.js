@@ -16,7 +16,7 @@ function ciniki_artcatalog_images() {
 		this.edit.data = {};
 		this.edit.artcatalog_id = 0;
 		this.edit.sections = {
-			'_image':{'label':'Image', 
+			'_image':{'label':'Image', 'type':'imageform',
 				'gstep':1,
 				'gtitle':function() { },
 				'gtitle-add':'Do you have an additional photo to add?',

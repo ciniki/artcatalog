@@ -753,7 +753,7 @@ function ciniki_artcatalog_main() {
 				}},
 		};
 		this.edit.forms.photograph = {
-			'_image':{'label':'Image', 'aside':'yes', 
+			'_image':{'label':'Image', 'aside':'yes', 'type':'imageform',
 				'gstep':2,
 				'gtitle-add':'Do you have the image on your computer?',
 				'gtitle-edit':'Would you like to change the image?',
@@ -843,7 +843,7 @@ function ciniki_artcatalog_main() {
 				}},
 		};
 		this.edit.forms.jewelry = {
-			'_image':{'label':'Image', 'aside':'yes', 
+			'_image':{'label':'Image', 'aside':'yes', 'type':'imageform',
 				'gstep':2,
 				'gtitle-add':'Do you have a photo of the jewelry?',
 				'gtitle-edit':'Would you like to change the photo?',
@@ -938,7 +938,7 @@ function ciniki_artcatalog_main() {
 				}},
 		};
 		this.edit.forms.sculpture = {
-			'_image':{'label':'Image', 'aside':'yes', 
+			'_image':{'label':'Image', 'aside':'yes', 'type':'imageform',
 				'gstep':2,
 				'gtitle-add':'Do you have a photo of the sculpture?',
 				'gtitle-edit':'Would you like to change the photo?',
@@ -1037,7 +1037,7 @@ function ciniki_artcatalog_main() {
 				}},
 		};
 		this.edit.forms.fibreart = {
-			'_image':{'label':'Image', 'aside':'yes', 
+			'_image':{'label':'Image', 'aside':'yes', 'type':'imageform',
 				'gstep':2,
 				'gtitle-add':'Do you have a photo of the item?',
 				'gtitle-edit':'Would you like to change the photo?',
@@ -1131,7 +1131,7 @@ function ciniki_artcatalog_main() {
 				}},
 		};
 		this.edit.forms.pottery = {
-			'_image':{'label':'Image', 'aside':'yes', 
+			'_image':{'label':'Image', 'aside':'yes', 'type':'imageform',
 				'gstep':2,
 				'gtitle-add':'Do you have a photo of the item?',
 				'gtitle-edit':'Would you like to change the photo?',
@@ -1339,8 +1339,8 @@ function ciniki_artcatalog_main() {
 			'excel':{'label':'Excel', 'field_id':'excel'},
 			}};
 		this.downloadpdf.forms.thumbnails = {
-			'details':{'label':'Title', 'fields':{
-				'pagetitle':{'label':'', 'hidelabel':'yes', 'type':'text'},
+			'details':{'label':'', 'fields':{
+				'pagetitle':{'label':'Title', 'hidelabel':'no', 'type':'text'},
 				}},
 			'information':{'label':'', 'visible':'yes', 'fields':{
 				'pagenumbers':{'label':'Page Numbers', 'type':'toggle', 'default':'yes', 'none':'yes', 'toggles':this.toggleOptions},
@@ -1350,8 +1350,8 @@ function ciniki_artcatalog_main() {
 				}},
 		};
 		this.downloadpdf.forms.pricelist = {
-			'details':{'label':'Title', 'fields':{
-				'pagetitle':{'label':'', 'hidelabel':'yes', 'type':'text'},
+			'details':{'label':'', 'fields':{
+				'pagetitle':{'label':'Title', 'hidelabel':'no', 'type':'text'},
 				}},
 			'sort':{'label':'', 'fields':{
 				'sortby':{'label':'Sort By', 'type':'toggle', 'default':'category', 'toggles':this.downloadpdf.sortbylist},
@@ -1371,8 +1371,8 @@ function ciniki_artcatalog_main() {
 				}},
 		};
 		this.downloadpdf.forms.list = {
-			'details':{'label':'Title', 'fields':{
-				'pagetitle':{'label':'', 'hidelabel':'yes', 'type':'text'},
+			'details':{'label':'', 'fields':{
+				'pagetitle':{'label':'Title', 'hidelabel':'no', 'type':'text'},
 				}},
 			'sort':{'label':'', 'fields':{
 				'sortby':{'label':'Sort By', 'type':'toggle', 'default':'category', 'toggles':this.downloadpdf.sortbylist},
@@ -1395,7 +1395,7 @@ function ciniki_artcatalog_main() {
 		};
 //		this.downloadpdf.forms.quad = {
 //			'details':{'label':'Title', 'fields':{
-//				'pagetitle':{'label':'', 'hidelabel':'yes', 'type':'text'},
+//				'pagetitle':{'label':'', 'hidelabel':'no', 'type':'text'},
 //				}},
 //			'information':{'label':'Information to include', 'fields':{
 //				'catalog_number':{'label':'Catalog Number', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
@@ -1414,8 +1414,8 @@ function ciniki_artcatalog_main() {
 //				}},
 //		};
 		this.downloadpdf.forms.single = {
-			'details':{'label':'Title', 'fields':{
-				'pagetitle':{'label':'', 'hidelabel':'yes', 'type':'text'},
+			'details':{'label':'', 'fields':{
+				'pagetitle':{'label':'Title', 'hidelabel':'no', 'type':'text'},
 				}},
 			'information':{'label':'Information to include', 'fields':{
 				'catalog_number':{'label':'Catalog Number', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
@@ -1437,8 +1437,8 @@ function ciniki_artcatalog_main() {
 				}},
 		};
 		this.downloadpdf.forms.excel = {
-			'details':{'label':'File Name', 'fields':{
-				'pagetitle':{'label':'', 'hidelabel':'yes', 'type':'text'},
+			'details':{'label':'', 'fields':{
+				'pagetitle':{'label':'File Name', 'hidelabel':'no', 'type':'text'},
 				}},
 			'information':{'label':'Information to include', 'fields':{
 				'catalog_number':{'label':'Catalog Number', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
