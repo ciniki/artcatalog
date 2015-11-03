@@ -11,7 +11,7 @@ function ciniki_artcatalog_products() {
 			'mc', 'medium mediumaside', 'sectioned', 'ciniki.artcatalog.products.edit');
 		this.edit.data = {};
 		this.edit.sections = {
-			'_image':{'label':'Image', 'aside':'yes', 'fields':{
+			'_image':{'label':'Image', 'aside':'yes', 'type':'imageform', 'fields':{
 				'image_id':{'label':'', 'type':'image_id', 'hidelabel':'yes', 'history':'no', 'controls':'all'},
 			}},
 			'info':{'label':'Place', 'aside':'yes', 'type':'simpleform', 'fields':{
