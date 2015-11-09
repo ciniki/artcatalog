@@ -526,9 +526,9 @@ function ciniki_artcatalog_main() {
 		};
 		this.item.addButton('edit', 'Edit', 'M.ciniki_artcatalog_main.showEdit(\'M.ciniki_artcatalog_main.showItem();\',M.ciniki_artcatalog_main.item.artcatalog_id);');
 		this.item.addButton('next', 'Next');
-		this.item.addLeftButton('website', 'Preview', 'M.showWebsite(\'/gallery/category/\'+M.ciniki_artcatalog_main.item.data.category+\'/\'+M.ciniki_artcatalog_main.item.data.permalink);');
 		this.item.addClose('Back');
 		this.item.addLeftButton('prev', 'Prev');
+		this.item.addLeftButton('website', 'Preview', 'M.showWebsite(\'/gallery/category/\'+M.ciniki_artcatalog_main.item.data.category+\'/\'+M.ciniki_artcatalog_main.item.data.permalink);');
 
 		//
 		// The panel to display the edit form
