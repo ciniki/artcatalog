@@ -156,7 +156,9 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 		. "ciniki_artcatalog.awards, "
 		. "ciniki_artcatalog.notes, "
 		. "ciniki_artcatalog.inspiration, "
-//		. "IF((flags&0x02)=0x02,'yes','no') AS sold, "
+		. "ciniki_artcatalog.last_updated, "
+		. "IF(status>=50, 'yes', 'no') AS sold, "
+//		. "IF((flags&0x01)=0x01,'yes','no') AS sold, "
 		. "";
 	if( isset($args['sortby']) && $args['sortby'] == 'catalognumber' ) {
 		$strsql .= "'' AS sname ";
@@ -263,8 +265,10 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 			'fields'=>array('id', 'title'=>'name', 'name', 'category'=>'category_name', 
 				'image_id', 'type', 'status', 'status_text', 'year', 'media', 'catalog_number', 
 				'size', 'framed_size', 'price', 'flags', 'location', 
-				'description', 'notes', 'awards', 'inspiration'),
-			'maps'=>array('status_text'=>$maps['item']['status'])),
+				'description', 'notes', 'awards', 'inspiration', 'sold', 'last_updated'),
+			'maps'=>array('status_text'=>$maps['item']['status']),
+			'utctots'=>array('last_updated'),
+			),
 		));
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
@@ -305,11 +309,12 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 	// Add thumbnail information into list
 	//
 	if( count($sections) > 0 ) {
-		ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'loadCacheThumbnail');
+		ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'hooks', 'loadThumbnail');
 		foreach($sections as $section_num => $section) {
 			foreach($section['section']['items'] as $inum => $item) {
 				if( isset($item['item']['image_id']) && $item['item']['image_id'] > 0 ) {
-					$rc = ciniki_images_loadCacheThumbnail($ciniki, $args['business_id'], $item['item']['image_id'], 75);
+					$rc = ciniki_images_hooks_loadThumbnail($ciniki, $args['business_id'], 
+						array('image_id'=>$item['item']['image_id'], 'maxlength'=>75, 'last_updated'=>$item['item']['last_updated'], 'reddot'=>$item['item']['sold']));
 					if( $rc['stat'] != 'ok' ) {
 						return $rc;
 					}

@@ -251,7 +251,7 @@ function ciniki_artcatalog_get($ciniki) {
 		// Get the additional images if requested
 		//
 		if( isset($args['images']) && $args['images'] == 'yes' ) {
-			ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'loadCacheThumbnail');
+			ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'hooks', 'loadThumbnail');
 			$strsql = "SELECT ciniki_artcatalog_images.id, "
 				. "ciniki_artcatalog_images.image_id, "
 				. "ciniki_artcatalog_images.name, "
@@ -274,7 +274,7 @@ function ciniki_artcatalog_get($ciniki) {
 				$item['images'] = $rc['images'];
 				foreach($item['images'] as $inum => $img) {
 					if( isset($img['image']['image_id']) && $img['image']['image_id'] > 0 ) {
-						$rc = ciniki_images_loadCacheThumbnail($ciniki, $args['business_id'], $img['image']['image_id'], 75);
+						$rc = ciniki_images_hooks_loadThumbnail($ciniki, $args['business_id'], array('image_id'=>$img['image']['image_id'], 'maxlength'=>75));
 						if( $rc['stat'] != 'ok' ) {
 							return $rc;
 						}

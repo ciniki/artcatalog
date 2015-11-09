@@ -13,7 +13,6 @@
 function ciniki_artcatalog_templates_pricelist($ciniki, $business_id, $sections, $args) {
 
 	require_once($ciniki['config']['ciniki.core']['lib_dir'] . '/tcpdf/tcpdf.php');
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'loadCacheThumbnail');
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'businessDetails');
 
 	//
