@@ -552,6 +552,7 @@ function ciniki_artcatalog_main() {
 				'jewelry':{'label':'Jewelry', 'field_id':3},
 				'sculpture':{'label':'Sculpture', 'field_id':4},
 				'fibreart':{'label':'Fibre Art', 'field_id':5},
+				'printmaking':{'label':'Print Making', 'field_id':6},
 				'pottery':{'label':'Pottery', 'field_id':8},
 			}};
 		this.edit.forms.painting = {
@@ -751,6 +752,18 @@ function ciniki_artcatalog_main() {
 					'save':{'label':'Save', 'fn':'M.ciniki_artcatalog_main.saveItem();'},
 //					'delete':{'label':'Delete', 'fn':'M.ciniki_artcatalog_main.deletePiece();'},
 				}},
+		};
+		this.edit.forms.printmaking = {
+            '_image':this.edit.forms.painting._image,
+            'info':this.edit.forms.painting.info,
+            'ainfo':this.edit.forms.painting.ainfo,
+            '_lists':this.edit.forms.painting._lists,
+            '_description':this.edit.forms.painting._description,
+            '_inspiration':this.edit.forms.painting._inspiration,
+            '_awards':this.edit.forms.painting._awards,
+            '_notes':this.edit.forms.painting._notes,
+            '_website':this.edit.forms.painting._website,
+            '_buttons':this.edit.forms.painting._buttons,
 		};
 		this.edit.forms.photograph = {
 			'_image':{'label':'Image', 'aside':'yes', 'type':'imageform',
