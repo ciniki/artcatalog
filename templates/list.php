@@ -62,6 +62,7 @@ function ciniki_artcatalog_templates_list($ciniki, $business_id, $sections, $arg
 		public $business_name = '';
 		public $pagenumbers = 'no';
 		public $title = '';
+        public $align = 'L';
 
 		public function Header() {
 			$this->SetFont('helvetica', 'B', 20);
@@ -108,6 +109,11 @@ function ciniki_artcatalog_templates_list($ciniki, $business_id, $sections, $arg
 	// Set font
 	$pdf->SetFont('times', 'BI', 12);
 	$pdf->SetCellPadding(0);
+    if( isset($args['align']) && $args['align'] == 'right' ) {
+        $pdf->align = 'R';
+    } else {
+        $pdf->align = 'L';
+    }
 
 	// Add a page
 	$pdf->AddPage();
@@ -134,7 +140,7 @@ function ciniki_artcatalog_templates_list($ciniki, $business_id, $sections, $arg
 		if( count($sections) > 1 ) {
 			$pdf->SetFont('', '', 16);
 			$pdf->SetFont('helvetica', 'B', 16);
-			$pdf->Cell(0, 15, $section['section']['name'], 0, false, 'L', 0, '', 0, false, 'M', 'M');
+			$pdf->Cell(0, 15, $section['section']['name'], 0, false, $pdf->align, 0, '', 0, false, 'M', 'M');
 			$pdf->Ln(12);
 			$pdf->SetFont('', '', 12);
 		}
@@ -218,7 +224,7 @@ function ciniki_artcatalog_templates_list($ciniki, $business_id, $sections, $arg
 					$pdf->AddPage();
 					$pdf->SetFont('', '', 16);
 					$pdf->SetFont('helvetica', 'B', 16);
-					$pdf->Cell(0, 15, $section['section']['name'] . ' (continued)', 0, false, 'L', 0, '', 0, false, 'M', 'M');
+					$pdf->Cell(0, 15, $section['section']['name'] . ' (continued)', 0, false, $pdf->align, 0, '', 0, false, 'M', 'M');
 					$pdf->Ln(12);
 					$pdf->SetFont('', '', 12);
 				} else {
@@ -227,10 +233,11 @@ function ciniki_artcatalog_templates_list($ciniki, $business_id, $sections, $arg
 			}
 
 			$item_y = $pdf->getY();
+
 			//
 			// Load the image
 			//
-			if( $item['image_id'] > 0 ) {
+			if( $item['image_id'] > 0 && $pdf->align == 'L' ) {
 				$rc = ciniki_images_hooks_loadThumbnail($ciniki, $business_id, array('image_id'=>$item['image_id'], 'maxlength'=>300));
 				if( $rc['stat'] == 'ok' ) {
 					$image = $rc['image'];
@@ -238,6 +245,14 @@ function ciniki_artcatalog_templates_list($ciniki, $business_id, $sections, $arg
 					$cur_x += 36;
 				}
 			}
+			if( $item['image_id'] > 0 && $pdf->align == 'R' ) {
+				$rc = ciniki_images_hooks_loadThumbnail($ciniki, $business_id, array('image_id'=>$item['image_id'], 'maxlength'=>300));
+				if( $rc['stat'] == 'ok' ) {
+					$image = $rc['image'];
+					$img = $pdf->Image('@'.$image, $pdf->left_margin + 144, '', 30, 30, 'JPEG', '', '', false, 150, '', false, false, 0);
+				}
+			}
+
 
 			//
 			// Add the image title
@@ -245,13 +260,13 @@ function ciniki_artcatalog_templates_list($ciniki, $business_id, $sections, $arg
 			if( $img_title != '' ) {
 				$pdf->SetX($cur_x);
 				$pdf->SetFont('', 'B', '12');
-				$pdf->Cell(140, 8, $img_title, 0, 2, 'L');
+				$pdf->Cell(140, 8, $img_title, 0, 2, $pdf->align);
 			}
 		
 			if( $details != '' ) {
 				$pdf->SetX($cur_x);
 				$pdf->SetFont('', '', '12');
-				$pdf->MultiCell(140, 8, $details, 0, 'L', false, 2, '', '', true, 0, false, true, 0, 'T');
+				$pdf->MultiCell(140, 8, $details, 0, $pdf->align, false, 2, '', '', true, 0, false, true, 0, 'T');
 			}
 			
 			//
@@ -260,8 +275,9 @@ function ciniki_artcatalog_templates_list($ciniki, $business_id, $sections, $arg
 			if( in_array('description', $fields) && $item['description'] != '' ) {
 				$pdf->SetX($cur_x);
 				$pdf->SetFont('', '', '12');
-				$pdf->MultiCell(140, 8, $item['description'], 0, 'L', false, 2, '', '', true, 0, false, true, 0, 'T');
+				$pdf->MultiCell(140, 8, $item['description'], 0, $pdf->align, false, 2, '', '', true, 0, false, true, 0, 'T');
 			}
+
 			
 			$diff_y = $pdf->getY() - $item_y;
 			if( $diff_y > 0 && $diff_y < 36 ) {

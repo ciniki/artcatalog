@@ -57,7 +57,6 @@ function ciniki_artcatalog_listWithImages($ciniki) {
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
         'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
         'section'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Section'), 
-        'sortby'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Sort By'), 
 		'name'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Section Name'),
 		'type'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Type'),
         'limit'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Limit'), 
@@ -66,6 +65,8 @@ function ciniki_artcatalog_listWithImages($ciniki) {
         'layout'=>array('required'=>'no', 'blank'=>'no', 'default'=>'list', 'name'=>'Layout',
 			'validlist'=>array('pricelist', 'thumbnails', 'list', 'quad', 'single', 'excel')), 
         'pagetitle'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Title'), 
+        'sortby'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Sort By'), 
+        'align'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Align'), 
         'fields'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Fields'), 
         )); 
     if( $rc['stat'] != 'ok' ) { 

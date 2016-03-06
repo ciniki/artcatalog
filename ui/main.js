@@ -1396,6 +1396,7 @@ function ciniki_artcatalog_main() {
 				}},
 			'sort':{'label':'', 'fields':{
 				'sortby':{'label':'Sort By', 'type':'toggle', 'default':'category', 'toggles':this.downloadpdf.sortbylist},
+				'align':{'label':'Align', 'type':'toggle', 'default':'left', 'toggles':{'left':'Left', 'right':'Right'}},
 				}},
 			'information':{'label':'Information to include', 'fields':{
 				'catalog_number':{'label':'Catalog Number', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
@@ -1886,6 +1887,7 @@ function ciniki_artcatalog_main() {
 		this.downloadpdf.list_artcatalog_id = null;
 		this.downloadpdf.data = {'pagetitle':M.curBusiness.name + (pagetitle!=''?' - ' + unescape(pagetitle):''),
 			'sortby':section,
+            'align':'left',
 			'catalog_number':'yes',
 			'name':'yes',
 			'category':'yes',
@@ -1957,6 +1959,9 @@ function ciniki_artcatalog_main() {
 		if( args['layout'] == 'pricelist' || args['layout'] == 'list' ) {
 			args['sortby'] = this.downloadpdf.formFieldValue(this.downloadpdf.formField('sortby'), 'sortby');
 		}
+		if( args['layout'] == 'list' ) {
+			args['align'] = this.downloadpdf.formFieldValue(this.downloadpdf.formField('align'), 'align');
+        }
 		var fields = '';
 		var flds = ['catalog_number','media','size','framed_size','price','location','description','awards','notes','inspiration'];
 		for(i in this.downloadpdf.sections.information.fields) {
