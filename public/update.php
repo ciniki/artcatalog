@@ -120,6 +120,7 @@ function ciniki_artcatalog_update(&$ciniki) {
         'awards'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Awards'), 
         'notes'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Notes'),
 		'lists'=>array('required'=>'no', 'blank'=>'yes', 'type'=>'list', 'delimiter'=>'::', 'name'=>'Lists'),
+		'materials'=>array('required'=>'no', 'blank'=>'yes', 'type'=>'list', 'delimiter'=>'::', 'name'=>'Materials'),
         )); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
@@ -139,7 +140,6 @@ function ciniki_artcatalog_update(&$ciniki) {
 	if( isset($args['name']) ) {
 		ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'makePermalink');
 		$args['permalink'] = ciniki_core_makePermalink($ciniki, $args['name']);
-//		$args['permalink'] = preg_replace('/ /', '-', preg_replace('/[^a-z0-9 ]/', '', strtolower($args['name'])));
 		//
 		// Make sure the permalink is unique
 		//
@@ -197,6 +197,21 @@ function ciniki_artcatalog_update(&$ciniki) {
 		if( $rc['stat'] != 'ok' ) {
 			ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
 			return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'601', 'msg'=>'Unable to update lists', 'err'=>$rc['err']));
+		}
+		$updated = 1;
+	}
+
+	//
+	// Check if there are any change to the materials the item is a part of
+	//
+	if( isset($args['materials']) ) {
+		ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'tagsUpdate');
+		$rc = ciniki_core_tagsUpdate($ciniki, 'ciniki.artcatalog', 'tag', $args['business_id'], 
+			'ciniki_artcatalog_tags', 'ciniki_artcatalog_history', 
+			'artcatalog_id', $args['artcatalog_id'], 100, $args['materials']);
+		if( $rc['stat'] != 'ok' ) {
+			ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
+			return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3177', 'msg'=>'Unable to update materials', 'err'=>$rc['err']));
 		}
 		$updated = 1;
 	}

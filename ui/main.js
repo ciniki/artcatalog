@@ -193,6 +193,12 @@ function ciniki_artcatalog_main() {
 				'addTxt':'Add',
 				'addFn':'M.ciniki_artcatalog_main.showEdit(\'M.ciniki_artcatalog_main.showMenu();\',0);',
 				},
+			'materials':{'label':'Materials', 'hidelabel':'yes', 'visible':'no', 'type':'simplegrid',
+				'num_cols':1,
+				'noData':'No materials found',
+				'addTxt':'Add',
+				'addFn':'M.ciniki_artcatalog_main.showEdit(\'M.ciniki_artcatalog_main.showMenu();\',0);',
+				},
 			'lists':{'label':'Lists', 'hidelabel':'yes', 'visible':'no', 'type':'simplegrid',
 				'num_cols':1,
 				'noData':'No lists found',
@@ -252,6 +258,7 @@ function ciniki_artcatalog_main() {
 				case 'media': return 'M.ciniki_artcatalog_main.showList(\'M.ciniki_artcatalog_main.showMenu();\',\'media\',\'' + escape(d.section.name) + '\', M.ciniki_artcatalog_main.statsmenu.data.'+s+');';
 				case 'locations': return 'M.ciniki_artcatalog_main.showList(\'M.ciniki_artcatalog_main.showMenu();\',\'location\',\'' + escape(d.section.name) + '\', M.ciniki_artcatalog_main.statsmenu.data.'+s+');';
 				case 'years': return 'M.ciniki_artcatalog_main.showList(\'M.ciniki_artcatalog_main.showMenu();\',\'year\',\'' + escape(d.section.name) + '\', M.ciniki_artcatalog_main.statsmenu.data.'+s+');';
+				case 'materials': return 'M.ciniki_artcatalog_main.showList(\'M.ciniki_artcatalog_main.showMenu();\',\'material\',\'' + escape(d.section.name) + '\', M.ciniki_artcatalog_main.statsmenu.data.'+s+');';
 				case 'lists': return 'M.ciniki_artcatalog_main.showList(\'M.ciniki_artcatalog_main.showMenu();\',\'list\',\'' + escape(d.section.name) + '\', M.ciniki_artcatalog_main.statsmenu.data.'+s+');';
 				case 'tracking': return 'M.ciniki_artcatalog_main.showList(\'M.ciniki_artcatalog_main.showMenu();\',\'tracking\',\'' + escape(d.section.name) + '\', M.ciniki_artcatalog_main.statsmenu.data.'+s+');';
 			}
@@ -362,6 +369,7 @@ function ciniki_artcatalog_main() {
 				'completed':{'label':'Completed'},
 				'media':{'label':'Media'},
 				'location':{'label':'Location'},
+				'materials':{'label':'Materials'},
 				'lists':{'label':'Lists'},
 			}},
 			'tracking':{'label':'Exhibited', 'visible':'yes', 'type':'simplegrid', 'num_cols':1,
@@ -428,6 +436,12 @@ function ciniki_artcatalog_main() {
 			}
 			if( i == 'forsale' && this.data['sold'] == 'yes' ) {	
 				return this.data[i] + ', SOLD';
+			}
+			if( i == 'materials' ) {
+				if( this.data[i] != null && this.data[i] != '' ) {
+					return this.data[i].replace(/\,/g, ', ');
+				}
+				return '';
 			}
 			if( i == 'lists' ) {
 				if( this.data[i] != null && this.data[i] != '' ) {
@@ -753,18 +767,6 @@ function ciniki_artcatalog_main() {
 //					'delete':{'label':'Delete', 'fn':'M.ciniki_artcatalog_main.deletePiece();'},
 				}},
 		};
-		this.edit.forms.printmaking = {
-            '_image':this.edit.forms.painting._image,
-            'info':this.edit.forms.painting.info,
-            'ainfo':this.edit.forms.painting.ainfo,
-            '_lists':this.edit.forms.painting._lists,
-            '_description':this.edit.forms.painting._description,
-            '_inspiration':this.edit.forms.painting._inspiration,
-            '_awards':this.edit.forms.painting._awards,
-            '_notes':this.edit.forms.painting._notes,
-            '_website':this.edit.forms.painting._website,
-            '_buttons':this.edit.forms.painting._buttons,
-		};
 		this.edit.forms.photograph = {
 			'_image':{'label':'Image', 'aside':'yes', 'type':'imageform',
 				'gstep':2,
@@ -830,6 +832,7 @@ function ciniki_artcatalog_main() {
 //							+ " examples: Home Studio, Andrews Collection, Cottage, etc."
 //						},
 				}},
+//			'_materials':this.edit.forms.painting._materials,
 			'_lists':this.edit.forms.painting._lists,
 			'_description':{'label':'Description', 'aside':'yes', 'type':'simpleform', 
 				'gstep':6,
@@ -922,6 +925,14 @@ function ciniki_artcatalog_main() {
 							+ ' Know what is in your studio, at a friends house, or somewhere else.'
 							+ " examples: Home Studio, Andrews Collection, Cottage, etc."
 						},
+				}},
+			'_materials':{'label':'Materials', 'active':'yes', 'type':'simpleform', 
+				'gstep':5,
+				'gtitle':'What materials did you use?',
+				'gtext':'These materials can be anything you want and are another way to organize your catalog.'
+					+ ' You use the <em>+</em> button to add a new material, or select any existing materials.',
+				'fields':{
+					'materials':{'label':'', 'active':'yes', 'hidelabel':'yes', 'type':'tags', 'tags':[], 'hint':'New Material'},
 				}},
 			'_lists':this.edit.forms.painting._lists,
 			'_description':{'label':'Description', 'aside':'yes', 'type':'simpleform', 
@@ -1023,6 +1034,7 @@ function ciniki_artcatalog_main() {
 							+ " examples: Home Studio, Andrews Collection, Cottage, etc."
 						},
 				}},
+			'_materials':this.edit.forms.jewelry._materials,
 			'_lists':this.edit.forms.painting._lists,
 			'_description':{'label':'Description', 'aside':'yes', 'type':'simpleform', 
 				'gstep':6,
@@ -1118,6 +1130,7 @@ function ciniki_artcatalog_main() {
 							+ " examples: Home Studio, Andrews Collection, Cottage, etc."
 						},
 				}},
+			'_materials':this.edit.forms.jewelry._materials,
 			'_lists':this.edit.forms.painting._lists,
 			'_description':{'label':'Description', 'aside':'yes', 'type':'simpleform', 
 				'gstep':6,
@@ -1149,6 +1162,19 @@ function ciniki_artcatalog_main() {
 					'save':{'label':'Save', 'fn':'M.ciniki_artcatalog_main.saveItem();'},
 //					'delete':{'label':'Delete', 'fn':'M.ciniki_artcatalog_main.deletePiece();'},
 				}},
+		};
+		this.edit.forms.printmaking = {
+            '_image':this.edit.forms.painting._image,
+            'info':this.edit.forms.painting.info,
+            'ainfo':this.edit.forms.painting.ainfo,
+            '_materials':this.edit.forms.jewelry._materials,
+            '_lists':this.edit.forms.painting._lists,
+            '_description':this.edit.forms.painting._description,
+            '_inspiration':this.edit.forms.painting._inspiration,
+            '_awards':this.edit.forms.painting._awards,
+            '_notes':this.edit.forms.painting._notes,
+            '_website':this.edit.forms.painting._website,
+            '_buttons':this.edit.forms.painting._buttons,
 		};
 		this.edit.forms.pottery = {
 			'_image':{'label':'Image', 'aside':'yes', 'type':'imageform',
@@ -1549,20 +1575,13 @@ function ciniki_artcatalog_main() {
 				this.edit.forms[i]._lists.fields.lists.active = 'no';
 				this.item.sections.ainfo.list.lists.visible = 'no';
 			}
-
-//			if( M.curBusiness.artcatalog != null && M.curBusiness.artcatalog.settings['enable-lists'] == 'yes' ) {
-//			} else {
-//				this.edit.forms[i]._lists.visible = 'no';
-//				this.edit.forms[i]._lists.fields.lists.active = 'no';
-//			}
-//			if( M.curBusiness.artcatalog != null && M.curBusiness.artcatalog.settings['enable-inspiration'] == 'yes' ) {
-//				this.edit.forms[i]._inspiration.visible = 'yes';
-//				this.edit.forms[i]._inspiration.fields.inspiration.active = 'yes';
-//			} else {
-//				this.edit.forms[i]._inspiration.visible = 'no';
-//				this.edit.forms[i]._inspiration.fields.inspiration.active = 'no';
-//			}
 		}
+/*        this.edit.forms.jewelry._materials.active = 'yes';
+        this.edit.forms.jewelry._materials.fields.materials.active = 'yes';
+        this.edit.forms.printmaking._materials.active = 'yes';
+        this.edit.forms.printmaking._materials.fields.materials.active = 'yes';
+        this.edit.forms.sculpture._materials.active = 'yes';
+        this.edit.forms.sculpture._materials.fields.materials.active = 'yes'; */
 
 		this.item.sections.products.visible = (M.curBusiness.modules['ciniki.artcatalog'].flags&0x02)>0?'yes':'no';
 
@@ -1588,10 +1607,11 @@ function ciniki_artcatalog_main() {
 			else if( sec == 'media' ) { this.statsmenu.listby = 'media'; }
 			else if( sec == 'locations' ) { this.statsmenu.listby = 'location'; }
 			else if( sec == 'years' ) { this.statsmenu.listby = 'year'; }
+			else if( sec == 'materials' ) { this.statsmenu.listby = 'material'; }
 			else if( sec == 'lists' ) { this.statsmenu.listby = 'list'; }
 			else if( sec == 'tracking' ) { this.statsmenu.listby = 'tracking'; }
 		}
-		if( listby != null && (listby == 'category' || listby == 'media' || listby == 'location' || listby == 'year' || listby == 'list' || listby == 'tracking' ) ) {
+		if( listby != null && (listby == 'category' || listby == 'media' || listby == 'location' || listby == 'year' || listby == 'material' || listby == 'list' || listby == 'tracking' ) ) {
 			this.menu.listby = listby;
 			this.statsmenu.listby = listby;
 		}
@@ -1648,6 +1668,11 @@ function ciniki_artcatalog_main() {
 			}
 		} else {
 			this.cur_type = '';
+		}
+		if( rsp.stats.materials != null ) {
+			p.sections.materials.visible = 'yes';
+		} else {
+			p.sections.materials.visible = 'no';
 		}
 		if( rsp.stats.lists != null ) {
 			p.sections.lists.visible = 'yes';
@@ -1725,11 +1750,12 @@ function ciniki_artcatalog_main() {
 			this.cur_type = this.cur_type;
 			p.sections.types.selected = this.cur_type;
 		}
-//		if( M.curBusiness.artcatalog != null && M.curBusiness.artcatalog.settings['enable-lists'] == 'yes' ) {	
+		if( rsp.stats.materials != null ) {
+			p.sections.tabs.tabs['material'] = {'label':'Materials', 'fn':'M.ciniki_artcatalog_main.showMenu(null,\'material\');'};
+		}
 		if( rsp.stats.lists != null ) {
 			p.sections.tabs.tabs['list'] = {'label':'Lists', 'fn':'M.ciniki_artcatalog_main.showMenu(null,\'list\');'};
 		}
-//		if( M.curBusiness.artcatalog != null && M.curBusiness.artcatalog.settings['enable-tracking'] == 'yes' ) {	
 		if( rsp.stats.tracking != null ) {
 			p.sections.tabs.tabs['tracking'] = {'label':'Exhibited', 'fn':'M.ciniki_artcatalog_main.showMenu(null,\'tracking\');'};
 		}
@@ -2039,6 +2065,9 @@ function ciniki_artcatalog_main() {
 				p.sections.inspiration.visible=(rsp.item.inspiration!=null&&rsp.item.inspiration!='')?'yes':'no';
 				p.sections.awards.visible=(rsp.item.awards!=null&&rsp.item.awards!='')?'yes':'no';
 				p.sections.notes.visible=(rsp.item.notes!=null&&rsp.item.notes!='')?'yes':'no';
+				if( p.data.materials != null && p.data.materials != '' ) {
+					p.data.materials = p.data.materials.replace(/::/g, ', ');
+				}
 				if( p.data.lists != null && p.data.lists != '' ) {
 					p.data.lists = p.data.lists.replace(/::/g, ', ');
 				}
@@ -2090,7 +2119,7 @@ function ciniki_artcatalog_main() {
 			this.edit.gstep = 0;
 //			this.edit.size = 'mediumaside';
 			var rsp = M.api.getJSONCb('ciniki.artcatalog.get', 
-				{'business_id':M.curBusinessID, 'artcatalog_id':this.edit.artcatalog_id}, function(rsp) {
+				{'business_id':M.curBusinessID, 'artcatalog_id':this.edit.artcatalog_id, 'tags':'yes'}, function(rsp) {
 					if( rsp.stat != 'ok' ) {
 						M.api.err(rsp);
 						return false;
@@ -2098,20 +2127,24 @@ function ciniki_artcatalog_main() {
 					var p = M.ciniki_artcatalog_main.edit;
 					p.formtab = null;
 					p.formtab_field_id = null;
+                    if( p.sections._materials != null ) { p.sections._materials.fields.materials.tags = []; }
 					p.sections._lists.fields.lists.tags = [];
-					var tags = [];
-					for(i in rsp.tags) {
-						tags.push(rsp.tags[i].tag.name);
+					var list_tags = [];
+					var material_tags = [];
+					for(i in rsp.tags.materials) {
+						material_tags.push(rsp.tags.materials[i].tag.name);
+					}
+					for(i in rsp.tags.lists) {
+						list_tags.push(rsp.tags.lists[i].tag.name);
 					}
 					for(i in p.forms) {
-						if( p.forms[i]._lists != null ) {
-							p.forms[i]._lists.fields.lists.tags = tags;
+						if( p.forms[i]._materials != null ) {
+							p.forms[i]._materials.fields.materials.tags = material_tags;
 						}
-//						p.forms[i]._buttons.buttons.delete.visible = 'yes';
+						if( p.forms[i]._lists != null ) {
+							p.forms[i]._lists.fields.lists.tags = list_tags;
+						}
 					}
-//					p.forms.painting._lists.fields.lists.tags = tags;
-//					p.forms.photograph._lists.fields.lists.tags = tags;
-//					p.forms.jewelry._lists.fields.lists.tags = tags;
 					p.data = rsp.item;
 					p.data.followup = '';
 
@@ -2121,7 +2154,7 @@ function ciniki_artcatalog_main() {
 		} else {
 			this.edit.reset();
 			this.edit.gstep = 1;
-			M.api.getJSONCb('ciniki.artcatalog.get', {'business_id':M.curBusinessID, 'artcatalog_id':this.edit.artcatalog_id}, function(rsp) {
+			M.api.getJSONCb('ciniki.artcatalog.get', {'business_id':M.curBusinessID, 'artcatalog_id':this.edit.artcatalog_id, 'tags':'yes'}, function(rsp) {
 				if( rsp.stat != 'ok' ) {
 					M.api.err(rsp);
 					return false;
@@ -2129,16 +2162,24 @@ function ciniki_artcatalog_main() {
 				var p = M.ciniki_artcatalog_main.edit;
 				p.formtab = null;
 				p.formtab_field_id = null;
+                if( p.sections._materials != null ) { p.sections._materials.fields.materials.tags = []; }
 				p.sections._lists.fields.lists.tags = [];
-				var tags = [];
-				for(i in rsp.tags) {
-					tags.push(rsp.tags[i].tag.name);
-				}
-				for(i in p.forms) {
-					if( p.forms[i]._lists != null ) {
-						p.forms[i]._lists.fields.lists.tags = tags;
-					}
-				}
+                var material_tags = [];
+                var list_tags = [];
+                for(i in rsp.tags.materials) {
+                    material_tags.push(rsp.tags.materials[i].tag.name);
+                }
+                for(i in rsp.tags.lists) {
+                    list_tags.push(rsp.tags.lists[i].tag.name);
+                }
+                for(i in p.forms) {
+                    if( p.forms[i]._materials != null ) {
+                        p.forms[i]._materials.fields.materials.tags = material_tags;
+                    }
+                    if( p.forms[i]._lists != null ) {
+                        p.forms[i]._lists.fields.lists.tags = list_tags;
+                    }
+                }
 				p.data = rsp.item;
 				if( section != null && section == 'category' && name != null && name != '' ) {
 					p.data.category = decodeURIComponent(name);
@@ -2148,6 +2189,8 @@ function ciniki_artcatalog_main() {
 					p.data.location = decodeURIComponent(name);
 				} else if( section != null && section == 'year' && name != null && name != '' ) {
 					p.data.year = decodeURIComponent(name);
+				} else if( section != null && section == 'material' && name != null && name != '' ) {
+					p.data['materials'] = name;
 				} else if( section != null && section == 'list' && name != null && name != '' ) {
 					p.data['lists'] = name;
 				}
@@ -2165,36 +2208,6 @@ function ciniki_artcatalog_main() {
 				p.refresh();
 				p.show(cb);
 			});
-/*
-//			if( M.curBusiness.artcatalog != null && M.curBusiness.artcatalog.settings['enable-lists'] == 'yes' ) {
-				M.api.getJSONCb('ciniki.artcatalog.getLists', 
-					{'business_id':M.curBusinessID, 'type':1}, function(rsp) {
-						if( rsp.stat != 'ok' ) {
-							M.api.err(rsp);
-							return false;
-						}
-						tags = [];
-						for(i in rsp.tags) {
-							tags.push(rsp.tags[i].tag.name);
-						}
-						var p = M.ciniki_artcatalog_main.edit;
-						for(i in p.forms) {
-							if( p.forms[i]._lists != null ) {
-								p.forms[i]._lists.fields.lists.tags = tags;
-							}
-//							p.forms[i]._buttons.buttons.delete.visible = 'no';
-						}
-//						p.forms.painting._lists.fields.lists.tags = tags;
-//						p.forms.photograph._lists.fields.lists.tags = tags;
-//						p.forms.jewelry._lists.fields.lists.tags = tags;
-						p.refresh();
-						p.show(cb);
-					});
-//			} else {
-//				this.edit.refresh();
-//				this.edit.show(cb);
-//			}
-*/
 		}
 	};
 

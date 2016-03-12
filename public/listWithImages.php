@@ -15,6 +15,7 @@
 //					- media
 //					- location
 //					- year
+//					- material
 //					- list
 //
 // name:			(optional) The name of the section to get restrict the list.  This
@@ -181,13 +182,21 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 		$strsql .= "IF(ciniki_artcatalog.location='', 'Unknown', ciniki_artcatalog.location) AS sname ";
 	} elseif( $args['section'] == 'year' ) {
 		$strsql .= "IF(ciniki_artcatalog.year='', 'Unknown', ciniki_artcatalog.year) AS sname ";
+	} elseif( $args['section'] == 'material' ) {
+		$strsql .= "IF(ciniki_artcatalog_tags.tag_name='', 'Unknown', ciniki_artcatalog_tags.tag_name) AS sname ";
 	} elseif( $args['section'] == 'list' ) {
 		$strsql .= "IF(ciniki_artcatalog_tags.tag_name='', 'Unknown', ciniki_artcatalog_tags.tag_name) AS sname ";
 	} elseif( $args['section'] == 'tracking' ) {
 		$strsql .= "IF(ciniki_artcatalog_tracking.name='', 'Unknown', ciniki_artcatalog_tracking.name) AS sname ";
 	}
 
-	if( isset($args['section']) && $args['section'] == 'list' ) {
+	if( isset($args['section']) && $args['section'] == 'material' ) {
+		$strsql .= "FROM ciniki_artcatalog, ciniki_artcatalog_tags "
+			. "WHERE ciniki_artcatalog.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+			. "AND ciniki_artcatalog.id = ciniki_artcatalog_tags.artcatalog_id "
+			. "AND ciniki_artcatalog_tags.tag_type = 100 "
+			. "";
+	} elseif( isset($args['section']) && $args['section'] == 'list' ) {
 		$strsql .= "FROM ciniki_artcatalog, ciniki_artcatalog_tags "
 			. "WHERE ciniki_artcatalog.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
 			. "AND ciniki_artcatalog.id = ciniki_artcatalog_tags.artcatalog_id "
@@ -220,6 +229,8 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 			$strsql .= "AND location = '" . ciniki_core_dbQuote($ciniki, $args['name']) . "' ";
 		} elseif( $args['section'] == 'year' ) {
 			$strsql .= "AND year = '" . ciniki_core_dbQuote($ciniki, $args['name']) . "' ";
+		} elseif( $args['section'] == 'material' ) {
+			$strsql .= "AND ciniki_artcatalog_tags.tag_name = '" . ciniki_core_dbQuote($ciniki, $args['name']) . "' ";
 		} elseif( $args['section'] == 'list' ) {
 			$strsql .= "AND ciniki_artcatalog_tags.tag_name = '" . ciniki_core_dbQuote($ciniki, $args['name']) . "' ";
 		} elseif( $args['section'] == 'tracking' ) {

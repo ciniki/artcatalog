@@ -19,6 +19,8 @@
 #					1 - List
 #					20 - Category **future**
 #
+#                   90 - Materials
+#
 # tag_name:			The name of the tag, list or category.
 #
 # date_added:       The UTC date and time the thread was added.

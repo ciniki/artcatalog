@@ -244,13 +244,41 @@ function ciniki_artcatalog_stats($ciniki) {
 	}
 
 	//
+	// Get the materials stats
+	//
+	$strsql = "SELECT IF(ciniki_artcatalog_tags.tag_name='', '', ciniki_artcatalog_tags.tag_name) AS name, COUNT(*) AS count "
+		. "FROM ciniki_artcatalog, ciniki_artcatalog_tags "
+		. "WHERE ciniki_artcatalog.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+		. "AND ciniki_artcatalog.id = ciniki_artcatalog_tags.artcatalog_id "
+		. "AND ciniki_artcatalog_tags.tag_type = 100 "
+		. "";
+	if( isset($args['type_id']) && $args['type_id'] > 0 ) {
+		$strsql .= "AND ciniki_artcatalog.type = '" . ciniki_core_dbQuote($ciniki, $args['type_id']) . "' "
+			. "";
+	}
+	$strsql .= "GROUP BY tag_name "
+		. "ORDER BY name "
+		. "";
+	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
+		array('container'=>'sections', 'fname'=>'name', 'name'=>'section',
+			'fields'=>array('name', 'count')),
+		));
+	if( $rc['stat'] != 'ok' ) {
+		return $rc;
+	}
+	if( isset($rc['sections']) ) {
+		$rsp['stats']['materials'] = $rc['sections'];
+		$num_sections += count($rc['sections']);
+	}
+
+	//
 	// Get the lists stats
 	//
 	$strsql = "SELECT IF(ciniki_artcatalog_tags.tag_name='', '', ciniki_artcatalog_tags.tag_name) AS name, COUNT(*) AS count "
 		. "FROM ciniki_artcatalog, ciniki_artcatalog_tags "
 		. "WHERE ciniki_artcatalog.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
 		. "AND ciniki_artcatalog.id = ciniki_artcatalog_tags.artcatalog_id "
-//		. "AND ciniki_artcatalog_tags.tag_type = 1 "
+		. "AND ciniki_artcatalog_tags.tag_type = 1 "
 		. "";
 	if( isset($args['type_id']) && $args['type_id'] > 0 ) {
 		$strsql .= "AND ciniki_artcatalog.type = '" . ciniki_core_dbQuote($ciniki, $args['type_id']) . "' "

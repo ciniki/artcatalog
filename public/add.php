@@ -118,6 +118,7 @@ function ciniki_artcatalog_add(&$ciniki) {
         'awards'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Awards'), 
         'notes'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Notes'), 
 		'lists'=>array('required'=>'no', 'blank'=>'yes', 'type'=>'list', 'delimiter'=>'::', 'name'=>'Lists'),
+		'materials'=>array('required'=>'no', 'blank'=>'yes', 'type'=>'list', 'delimiter'=>'::', 'name'=>'Materials'),
         )); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
@@ -199,6 +200,21 @@ function ciniki_artcatalog_add(&$ciniki) {
 			array_pop($ciniki['syncqueue']);
 			ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
 			return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'602', 'msg'=>'Unable to update lists', 'err'=>$rc['err']));
+		}
+	}
+
+	//
+	// Check if there are any change to the materials the item is a part of
+	//
+	if( isset($args['materials']) ) {
+		ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'tagsUpdate');
+		$rc = ciniki_core_tagsUpdate($ciniki, 'ciniki.artcatalog', 'tag', $args['business_id'], 
+			'ciniki_artcatalog_tags', 'ciniki_artcatalog_history', 
+			'artcatalog_id', $artcatalog_id, 100, $args['materials']);
+		if( $rc['stat'] != 'ok' ) {
+			array_pop($ciniki['syncqueue']);
+			ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
+			return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3175', 'msg'=>'Unable to update materials', 'err'=>$rc['err']));
 		}
 	}
 
