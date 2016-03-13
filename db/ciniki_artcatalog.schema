@@ -64,7 +64,7 @@
 #					0x0400 - Include awards
 #					0x0800 - Include price/sold
 #					0x1000 - Include media
-#					0x2000 - 
+#					0x2000 - Include materials
 #					0x4000 - 
 #					0x8000 - 
 #

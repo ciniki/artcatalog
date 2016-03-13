@@ -111,6 +111,26 @@ function ciniki_artcatalog_web_imageDetails($ciniki, $settings, $business_id, $p
 	if( $image['media'] != '' && ($image['webflags']&0x1000) > 0 ) {
 		$image['details'] .= $image['media'];
 	}
+	if( ($image['webflags']&0x2000) > 0 ) {
+        //
+        // Get the list of materials
+        //
+        $strsql = "SELECT DISTINCT tag_name "
+            . "FROM ciniki_artcatalog_tags "
+            . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+            . "AND artcatalog_id = '" . ciniki_core_dbQuote($ciniki, $image['id']) . "' "
+            . "AND tag_type = 100 "
+            . "ORDER BY tag_name "
+            . "";
+        ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQueryList');
+        $rc = ciniki_core_dbQueryList($ciniki, $strsql, 'ciniki.artcatalog', 'materials', 'tag_name');
+        if( $rc['stat'] != 'ok' ) {
+            return $rc;
+        }
+        if( isset($rc['materials']) && count($rc['materials']) > 0 ) {
+            $image['details'] .= implode(', ', $rc['materials']);
+        }
+	}
 	if( $image['size'] != '' ) {
 		$image['details'] .= ($image['details']!=''?', ':'') . $image['size'];
 	}
