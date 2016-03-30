@@ -23,6 +23,16 @@ function ciniki_artcatalog_web_imageDetails($ciniki, $settings, $business_id, $p
 	$intl_currency_fmt = numfmt_create($rc['settings']['intl-default-locale'], NumberFormatter::CURRENCY);
 	$intl_currency = $rc['settings']['intl-default-currency'];
 
+    //
+    // Load Art Catalog settings
+    //
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbDetailsQueryDash');
+    $rc = ciniki_core_dbDetailsQueryDash($ciniki, 'ciniki_artcatalog_settings', 'business_id', $business_id, 'ciniki.artcatalog', 'settings', '');
+    if( $rc['stat'] != 'ok' ) {
+        return $rc;
+    }
+    $artcatalog_settings = $rc['settings'];
+
 	//
 	// Load the status maps for the text description of each status
 	//
@@ -170,6 +180,9 @@ function ciniki_artcatalog_web_imageDetails($ciniki, $settings, $business_id, $p
 //			$image['details'] .= " <b> SOLD</b>";
 //		}
 	}
+    if( isset($artcatalog_settings['forsale-message']) && $artcatalog_settings['forsale-message'] != '' && $image['status'] == 20 ) {
+        $image['description'] .= ($image['description'] != '' ? "\n\n" : '') . $artcatalog_settings['forsale-message'] . "";
+    }
 
 	$image['category_permalink'] = urlencode($image['category']);
 
@@ -207,7 +220,6 @@ function ciniki_artcatalog_web_imageDetails($ciniki, $settings, $business_id, $p
 			// FIXME: Add code to create product information ready to display add to cart
 			//
 		}
-
 	}
 
 	return array('stat'=>'ok', 'image'=>$image);

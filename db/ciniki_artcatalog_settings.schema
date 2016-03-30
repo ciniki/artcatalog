@@ -11,6 +11,8 @@
 # Category Descriptions
 # category-description-{name}	The description for the category {name}
 #
+# forsale-message               - The message to display when an item is for sale.
+#
 # Taxes:
 # taxes-default-taxtype		- The default tax type ID for art catalog items.
 #

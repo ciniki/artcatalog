@@ -20,16 +20,24 @@ function ciniki_artcatalog_settings() {
 		//
 		this.main = new M.panel('Settings',
 			'ciniki_artcatalog_settings', 'main',
-			'mc', 'narrow', 'sectioned', 'ciniki.artcatalog.settings.main');
+			'mc', 'medium', 'sectioned', 'ciniki.artcatalog.settings.main');
 		this.main.sections = {
 //			'advanced':{'label':'Advanced Features', 'fields':{
 //				'enable-lists':{'label':'Lists', 'type':'multitoggle', 'default':'no', 'toggles':this.toggleOptions},
 //				'enable-tracking':{'label':'Exhibited', 'type':'multitoggle', 'default':'no', 'toggles':this.toggleOptions},
 //				'enable-inspiration':{'label':'Inspiration', 'type':'multitoggle', 'default':'no', 'toggles':this.toggleOptions},
-//			}},
-			'taxes':{'label':'Taxes', 'fields':{
-				'taxes-default-taxtype':{'label':'Default Tax Type', 'type':'select', 'options':{}},
-			}},
+//			    }},
+			'taxes':{'label':'Taxes', 
+                'active':function() { return M.curBusiness.modules['ciniki.taxes']!=null?'yes':'no'; },
+                'fields':{
+                    'taxes-default-taxtype':{'label':'Default Tax Type', 'type':'select', 'options':{}},
+                }},
+            '_sales':{'label':'Sales Description', 'fields':{
+                'forsale-message':{'label':'', 'hidelabel':'yes', 'type':'textarea', 'size':'medium'},
+                }},
+            '_buttons':{'label':'', 'buttons':{
+                'save':{'label':'Save', 'fn':'M.ciniki_artcatalog_settings.saveSettings();'},
+                }},
 		};
 		this.main.fieldValue = function(s, i, d) { 
 			if( this.data[i] == null ) { return ''; }
@@ -48,9 +56,7 @@ function ciniki_artcatalog_settings() {
 	//
 	this.start = function(cb, appPrefix, aG) {
 		args = {};
-		if( aG != null ) {
-			args = eval(aG);
-		}
+		if( aG != null ) { args = eval(aG); }
 
 		//
 		// Create the app container if it doesn't exist, and clear it out
