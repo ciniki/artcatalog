@@ -27,6 +27,15 @@ function ciniki_artcatalog_settings() {
 //				'enable-tracking':{'label':'Exhibited', 'type':'multitoggle', 'default':'no', 'toggles':this.toggleOptions},
 //				'enable-inspiration':{'label':'Inspiration', 'type':'multitoggle', 'default':'no', 'toggles':this.toggleOptions},
 //			    }},
+            '_webflags':{'label':'Default Settings', 'fields':{
+                'webflags_1':{'label':'Visible', 'type':'flagtoggle', 'field':'defaults-webflags', 'bit':0x01, 'default':'on'},
+                'webflags_12':{'label':'Price', 'type':'flagtoggle', 'field':'defaults-webflags', 'bit':0x0800, 'default':'on'},
+                'webflags_13':{'label':'Media', 'type':'flagtoggle', 'field':'defaults-webflags', 'bit':0x1000, 'default':'on'},
+                'webflags_9':{'label':'Description', 'type':'flagtoggle', 'field':'defaults-webflags', 'bit':0x0100, 'default':'on'},
+                'webflags_14':{'label':'Materials', 'type':'flagtoggle', 'field':'defaults-webflags', 'bit':0x2000, 'default':'on'},
+                'webflags_10':{'label':'Inspiration', 'type':'flagtoggle', 'field':'defaults-webflags', 'bit':0x0200, 'default':'on'},
+                'webflags_11':{'label':'Awards', 'type':'flagtoggle', 'field':'defaults-webflags', 'bit':0x0400, 'default':'on'},
+                }},
 			'taxes':{'label':'Taxes', 
                 'active':function() { return M.curBusiness.modules['ciniki.taxes']!=null?'yes':'no'; },
                 'fields':{

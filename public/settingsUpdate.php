@@ -73,6 +73,7 @@ function ciniki_artcatalog_settingsUpdate(&$ciniki) {
 		'enable-inspiration',
 		'taxes-default-taxtype',
 		'forsale-message',
+        'defaults-webflags',
 		);
 
 	//

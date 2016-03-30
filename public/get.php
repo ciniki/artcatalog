@@ -85,6 +85,17 @@ function ciniki_artcatalog_get($ciniki) {
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'users', 'private', 'dateFormat');
 	$date_format = ciniki_users_dateFormat($ciniki);
 
+    //
+    // Load artcatalog settings
+    //
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbDetailsQueryDash');
+    $rc = ciniki_core_dbDetailsQueryDash($ciniki, 'ciniki_artcatalog_settings', 'business_id', $args['business_id'], 'ciniki.artcatalog', 'settings', '');
+    if( $rc['stat'] != 'ok' ) {
+        return $rc;
+    }
+    $artcatalog_settings = $rc['settings'];
+
+
 	//
 	// Load the status maps for the text description of each status
 	//
@@ -107,7 +118,7 @@ function ciniki_artcatalog_get($ciniki) {
 			'status_text'=>'NFS',
 			'flags'=>'0',
 			'website'=>'',
-			'webflags'=>0x0901,
+			'webflags'=>(isset($artcatalog_settings['defaults-webflags']) ? $artcatalog_settings['defaults-webflags'] : 0x0901),
 			'catalog_number'=>'',
 			);
 		if( ($ciniki['business']['modules']['ciniki.artcatalog']['flags']&0x10) > 0 ) {
