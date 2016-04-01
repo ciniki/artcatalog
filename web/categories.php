@@ -21,6 +21,24 @@
 //
 function ciniki_artcatalog_web_categories($ciniki, $settings, $business_id, $args) {
 
+    //
+    // Load the settings for each category
+    //
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbDetailsQueryDash');	
+	$rc = ciniki_core_dbDetailsQueryDash($ciniki, 'ciniki_artcatalog_settings', 'business_id', $business_id,
+		'ciniki.artcatalog', 'settings', 'category');
+	if( $rc['stat'] != 'ok' ) {
+		error_log('ERR: Unable to get category details');
+	}
+	if( isset($rc['settings']) ) {
+		$csettings = $rc['settings'];
+	} else {
+		$csettings = array();
+	}
+
+    //
+    // Get the list of categories
+    //
 	$strsql = "SELECT DISTINCT category AS name "
 		. "FROM ciniki_artcatalog "
 		. "WHERE ciniki_artcatalog.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
@@ -33,11 +51,10 @@ function ciniki_artcatalog_web_categories($ciniki, $settings, $business_id, $arg
 	$strsql .= "AND category <> '' "
 		. "ORDER BY category "
 		. "";
-	
-    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');
-	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
+	$rc = ciniki_core_dbHashQueryArrayTree($ciniki, $strsql, 'ciniki.artcatalog', array(
 		array('container'=>'categories', 'fname'=>'name', 'name'=>'category',
-			'fields'=>array('name',)),
+			'fields'=>array('name')),
 		));
 	if( $rc['stat'] != 'ok' ) {
 		return $rc;
@@ -57,7 +74,7 @@ function ciniki_artcatalog_web_categories($ciniki, $settings, $business_id, $arg
 		$strsql = "SELECT ciniki_artcatalog.image_id, ciniki_images.image "
 			. "FROM ciniki_artcatalog, ciniki_images "
 			. "WHERE ciniki_artcatalog.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
-			. "AND category = '" . ciniki_core_dbQuote($ciniki, $cat['category']['name']) . "' "
+			. "AND category = '" . ciniki_core_dbQuote($ciniki, $cat['name']) . "' "
 			. "";
 		if( isset($args['artcatalog_type']) && $args['artcatalog_type'] > 0 ) {
 			$strsql .= "AND ciniki_artcatalog.type = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_type']) . "' ";
@@ -75,8 +92,26 @@ function ciniki_artcatalog_web_categories($ciniki, $settings, $business_id, $arg
 			return $rc;
 		}
 		if( isset($rc['image']) ) {
-			$categories[$cnum]['category']['image_id'] = $rc['image']['image_id'];
+			$categories[$cnum]['image_id'] = $rc['image']['image_id'];
 		}
+
+        //
+        // Setup
+        //
+        $categories[$cnum]['permalink'] = urlencode($cat['name']);
+        $categories[$cnum]['is_details'] = 'yes';
+    
+        //
+        // Setup the synopsis
+        //
+        if( isset($args['artcatalog_type']) && $args['artcatalog_type'] > 0 
+            && isset($csettings['category-synopsis-' . $args['artcatalog_type'] . '-' . $cat['name']]) ) {
+            $categories[$cnum]['description'] = $csettings['category-synopsis-' . $args['artcatalog_type'] . '-' . $cat['name']];
+        } elseif( isset($csettings['category-synopsis-' . $cat['name']]) ) {
+            $categories[$cnum]['description'] = $csettings['category-synopsis-' . $cat['name']];
+        } else {
+            $categories[$cnum]['description'] = '';
+        }
 	}
 
 	return array('stat'=>'ok', 'categories'=>$categories);	
