@@ -257,6 +257,12 @@ function ciniki_artcatalog_update(&$ciniki) {
 			'url'=>'/gallery/category/' . urlencode(isset($args['category'])?$args['category']:$item['category']) . '/' . (isset($args['permalink'])?$args['permalink']:$item['permalink']));
 	}
 
+    //
+    // Update the web index if enabled
+    //
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'hookExec');
+    ciniki_core_hookExec($ciniki, $args['business_id'], 'ciniki', 'web', 'indexObject', array('object'=>'ciniki.artcatalog.item', 'object_id'=>$args['artcatalog_id']));
+
 	return array('stat'=>'ok');
 }
 ?>

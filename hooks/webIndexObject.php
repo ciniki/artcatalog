@@ -41,10 +41,10 @@ function ciniki_artcatalog_hooks_webIndexObject($ciniki, $business_id, $args) {
             . "";
         $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', 'item');
         if( $rc['stat'] != 'ok' ) {
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2375', 'msg'=>'Object not found'));
+            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3286', 'msg'=>'Object not found'));
         }
         if( !isset($rc['item']) ) {
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2376', 'msg'=>'Object not found'));
+            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3287', 'msg'=>'Object not found'));
         }
 
         //
