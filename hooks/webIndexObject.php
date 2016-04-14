@@ -54,6 +54,7 @@ function ciniki_artcatalog_hooks_webIndexObject($ciniki, $business_id, $args) {
             return array('stat'=>'ok');
         }
         $object = array(
+            'label'=>$rc['item']['category'],
             'title'=>$rc['item']['name'],
             'subtitle'=>'',
             'meta'=>'',
