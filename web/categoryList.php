@@ -70,7 +70,7 @@ function ciniki_artcatalog_web_categoryList($ciniki, $settings, $business_id, $a
 			//
 			// Look for the highlight image, or the most recently added image
 			//
-			$strsql = "SELECT ciniki_artcatalog.image_id, ciniki_images.image "
+			$strsql = "SELECT ciniki_artcatalog.image_id "
 				. "FROM ciniki_artcatalog, ciniki_images "
 				. "WHERE ciniki_artcatalog.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
 				. "AND category = '" . ciniki_core_dbQuote($ciniki, $category['title']) . "' "
