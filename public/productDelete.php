@@ -9,8 +9,8 @@
 // ---------
 // api_key:
 // auth_token:
-// business_id: 		The ID of the business to remove the item from.
-// product_id:			The ID of the product to be removed.
+// business_id:         The ID of the business to remove the item from.
+// product_id:          The ID of the product to be removed.
 // 
 // Returns
 // -------
@@ -40,47 +40,47 @@ function ciniki_artcatalog_productDelete(&$ciniki) {
         return $rc;
     }   
 
-	//
-	// Get the uuid of the product item to be deleted
-	//
-	$strsql = "SELECT uuid FROM ciniki_artcatalog_product "
-		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
-		. "AND id = '" . ciniki_core_dbQuote($ciniki, $args['product_id']) . "' "
-		. "";
-	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', 'product');
-	if( $rc['stat'] != 'ok' ) {
-		return $rc;
-	}
-	if( !isset($rc['product']) ) {
-		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2411', 'msg'=>'Unable to find existing product'));
-	}
-	$uuid = $rc['product']['uuid'];
+    //
+    // Get the uuid of the product item to be deleted
+    //
+    $strsql = "SELECT uuid FROM ciniki_artcatalog_product "
+        . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+        . "AND id = '" . ciniki_core_dbQuote($ciniki, $args['product_id']) . "' "
+        . "";
+    $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', 'product');
+    if( $rc['stat'] != 'ok' ) {
+        return $rc;
+    }
+    if( !isset($rc['product']) ) {
+        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2411', 'msg'=>'Unable to find existing product'));
+    }
+    $uuid = $rc['product']['uuid'];
 
-	//
-	// Check if any modules are currently using this subscription
-	//
-	foreach($ciniki['business']['modules'] as $module => $m) {
-		list($pkg, $mod) = explode('.', $module);
-		$rc = ciniki_core_loadMethod($ciniki, $pkg, $mod, 'hooks', 'checkObjectUsed');
-		if( $rc['stat'] == 'ok' ) {
-			$fn = $rc['function_call'];
-			$rc = $fn($ciniki, $args['business_id'], array(
-				'object'=>'ciniki.artcatalog.product', 
-				'object_id'=>$args['product_id'],
-				));
-			if( $rc['stat'] != 'ok' ) {
-				return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2412', 'msg'=>'Unable to check if product is still being used', 'err'=>$rc['err']));
-			}
-			if( $rc['used'] != 'no' ) {
-				return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2413', 'msg'=>"Product is still in use. " . $rc['msg']));
-			}
-		}
-	}
+    //
+    // Check if any modules are currently using this subscription
+    //
+    foreach($ciniki['business']['modules'] as $module => $m) {
+        list($pkg, $mod) = explode('.', $module);
+        $rc = ciniki_core_loadMethod($ciniki, $pkg, $mod, 'hooks', 'checkObjectUsed');
+        if( $rc['stat'] == 'ok' ) {
+            $fn = $rc['function_call'];
+            $rc = $fn($ciniki, $args['business_id'], array(
+                'object'=>'ciniki.artcatalog.product', 
+                'object_id'=>$args['product_id'],
+                ));
+            if( $rc['stat'] != 'ok' ) {
+                return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2412', 'msg'=>'Unable to check if product is still being used', 'err'=>$rc['err']));
+            }
+            if( $rc['used'] != 'no' ) {
+                return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2413', 'msg'=>"Product is still in use. " . $rc['msg']));
+            }
+        }
+    }
 
-	//
-	// Delete product
-	//
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'objectDelete');
-	return ciniki_core_objectDelete($ciniki, $args['business_id'], 'ciniki.artcatalog.product', $args['product_id'], $uuid, 0x07);
+    //
+    // Delete product
+    //
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'objectDelete');
+    return ciniki_core_objectDelete($ciniki, $args['business_id'], 'ciniki.artcatalog.product', $args['product_id'], $uuid, 0x07);
 }
 ?>

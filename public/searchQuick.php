@@ -10,21 +10,21 @@
 // ---------
 // api_key:
 // auth_token:
-// business_id:		The ID of the business to search.
+// business_id:     The ID of the business to search.
 //
-// start_needle:	The search string to search the field for.
+// start_needle:    The search string to search the field for.
 //
-// limit:			(optional) Limit the number of results to be returned. 
-//					If the limit is not specified, the default is 25.
+// limit:           (optional) Limit the number of results to be returned. 
+//                  If the limit is not specified, the default is 25.
 // 
 // Returns
 // -------
 // <items>
-//		<item id="2434" name="Black River" image_id="3872" media="Pastel" catalog_number="20120316"
-//			size="8x10" framed_size="12x14" price="350" location="Home" />
-//		<item id="1854" name="Flowing Stream" image_id="3871" media="Oil" catalog_number="20120219"
-//			size="8x10" framed_size="12x14" price="350" location="Home" />
-//		...
+//      <item id="2434" name="Black River" image_id="3872" media="Pastel" catalog_number="20120316"
+//          size="8x10" framed_size="12x14" price="350" location="Home" />
+//      <item id="1854" name="Flowing Stream" image_id="3871" media="Oil" catalog_number="20120219"
+//          size="8x10" framed_size="12x14" price="350" location="Home" />
+//      ...
 // </items>
 //
 function ciniki_artcatalog_searchQuick($ciniki) {
@@ -52,44 +52,44 @@ function ciniki_artcatalog_searchQuick($ciniki) {
         return $rc;
     }   
 
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuote');
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'users', 'private', 'dateFormat');
-	$date_format = ciniki_users_dateFormat($ciniki);
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuote');
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'users', 'private', 'dateFormat');
+    $date_format = ciniki_users_dateFormat($ciniki);
 
-	$strsql = "SELECT ciniki_artcatalog.id, image_id, name, media, catalog_number, size, framed_size, "
-		. "ROUND(price, 2) AS price, location, type, "
-		. "IF((flags&0x02)=0x02,'yes','no') AS sold "
-//		. "IF(ciniki_artcatalog.category='', 'Uncategorized', ciniki_artcatalog.category) AS cname "
-//		. "IF(ciniki_artcatalog.status=1, 'open', 'closed') AS status "
-		. "FROM ciniki_artcatalog "
-		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
-		. "AND (name LIKE '" . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
-			. "OR name like '% " . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
-			. "OR catalog_number like '" . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
-			. "OR media like '" . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
-			. "OR media like '% " . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
-			. "OR location like '" . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
-			. "OR location like '% " . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
-			. "OR notes like '" . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
-			. "OR notes like '% " . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
-			. ") "
-		. "";
-	$strsql .= "ORDER BY name, location "
-		. "";
-	if( isset($args['limit']) && $args['limit'] != '' && $args['limit'] > 0 ) {
-		$strsql .= "LIMIT " . ciniki_core_dbQuote($ciniki, $args['limit']) . " ";
-	}
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');
-	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
-		array('container'=>'items', 'fname'=>'id', 'name'=>'item',
-			'fields'=>array('id', 'type', 'name', 'image_id', 'media', 'catalog_number', 'size', 'framed_size', 'price', 'location', 'sold')),
-		));
-	if( $rc['stat'] != 'ok' ) {
-		return $rc;
-	}
-	if( !isset($rc['items']) ) {
-		return array('stat'=>'ok', 'items'=>array());
-	}
-	return array('stat'=>'ok', 'items'=>$rc['items']);
+    $strsql = "SELECT ciniki_artcatalog.id, image_id, name, media, catalog_number, size, framed_size, "
+        . "ROUND(price, 2) AS price, location, type, "
+        . "IF((flags&0x02)=0x02,'yes','no') AS sold "
+//      . "IF(ciniki_artcatalog.category='', 'Uncategorized', ciniki_artcatalog.category) AS cname "
+//      . "IF(ciniki_artcatalog.status=1, 'open', 'closed') AS status "
+        . "FROM ciniki_artcatalog "
+        . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+        . "AND (name LIKE '" . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
+            . "OR name like '% " . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
+            . "OR catalog_number like '" . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
+            . "OR media like '" . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
+            . "OR media like '% " . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
+            . "OR location like '" . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
+            . "OR location like '% " . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
+            . "OR notes like '" . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
+            . "OR notes like '% " . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
+            . ") "
+        . "";
+    $strsql .= "ORDER BY name, location "
+        . "";
+    if( isset($args['limit']) && $args['limit'] != '' && $args['limit'] > 0 ) {
+        $strsql .= "LIMIT " . ciniki_core_dbQuote($ciniki, $args['limit']) . " ";
+    }
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');
+    $rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
+        array('container'=>'items', 'fname'=>'id', 'name'=>'item',
+            'fields'=>array('id', 'type', 'name', 'image_id', 'media', 'catalog_number', 'size', 'framed_size', 'price', 'location', 'sold')),
+        ));
+    if( $rc['stat'] != 'ok' ) {
+        return $rc;
+    }
+    if( !isset($rc['items']) ) {
+        return array('stat'=>'ok', 'items'=>array());
+    }
+    return array('stat'=>'ok', 'items'=>$rc['items']);
 }
 ?>

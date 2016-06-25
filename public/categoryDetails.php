@@ -8,7 +8,7 @@
 // ---------
 // api_key:
 // auth_token:
-// business_id:		The ID of the business to get the list from.
+// business_id:     The ID of the business to get the list from.
 // 
 // Returns
 // -------
@@ -38,35 +38,35 @@ function ciniki_artcatalog_categoryDetails($ciniki) {
         return $rc;
     }   
 
-	//
-	// Get the settings for the artcatalog
-	//
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuote');
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbDetailsQueryDash');	
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');
-	$rc = ciniki_core_dbDetailsQueryDash($ciniki, 'ciniki_artcatalog_settings', 
-		'business_id', $args['business_id'], 'ciniki.artcatalog', 'settings', 'category');
-	if( $rc['stat'] != 'ok' ) {
-		return $rc;
-	}
-	if( isset($rc['settings']) ) {
-		$settings = $rc['settings'];
-	} else {
-		$settings = array();
-	}
-	
-	$fields = array('synopsis', 'description');
-	$details = array();
-	foreach($fields as $f) {
-		$details[$f] = '';
-		if( isset($args['type']) && $args['type'] > 0
-			&& isset($settings['category-' . $f . '-' . $args['type'] . '-' . $args['category']]) ) {
-			$details[$f] = $settings['category-' . $f . '-' . $args['type'] . '-' . $args['category']];
-		} elseif( isset($settings['category-' . $f . '-' . $args['category']]) ) {
-			$details[$f] = $settings['category-' . $f . '-' . $args['category']];
-		}
-	}
+    //
+    // Get the settings for the artcatalog
+    //
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuote');
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbDetailsQueryDash'); 
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');
+    $rc = ciniki_core_dbDetailsQueryDash($ciniki, 'ciniki_artcatalog_settings', 
+        'business_id', $args['business_id'], 'ciniki.artcatalog', 'settings', 'category');
+    if( $rc['stat'] != 'ok' ) {
+        return $rc;
+    }
+    if( isset($rc['settings']) ) {
+        $settings = $rc['settings'];
+    } else {
+        $settings = array();
+    }
+    
+    $fields = array('synopsis', 'description');
+    $details = array();
+    foreach($fields as $f) {
+        $details[$f] = '';
+        if( isset($args['type']) && $args['type'] > 0
+            && isset($settings['category-' . $f . '-' . $args['type'] . '-' . $args['category']]) ) {
+            $details[$f] = $settings['category-' . $f . '-' . $args['type'] . '-' . $args['category']];
+        } elseif( isset($settings['category-' . $f . '-' . $args['category']]) ) {
+            $details[$f] = $settings['category-' . $f . '-' . $args['category']];
+        }
+    }
 
-	return array('stat'=>'ok', 'details'=>$details);
+    return array('stat'=>'ok', 'details'=>$details);
 }
 ?>

@@ -7,7 +7,7 @@
 // Arguments
 // ---------
 // ciniki:
-// business_id:		The ID of the business to get events for.
+// business_id:     The ID of the business to get events for.
 //
 // Returns
 // -------
@@ -22,15 +22,15 @@ function ciniki_artcatalog_hooks_webIndexObject($ciniki, $business_id, $args) {
         return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3274', 'msg'=>'No object ID specified'));
     }
 
-	//
-	// Load the status maps for the text description of each status
-	//
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'artcatalog', 'private', 'maps');
-	$rc = ciniki_artcatalog_maps($ciniki);
-	if( $rc['stat'] != 'ok' ) {
-		return $rc;
-	}
-	$maps = $rc['maps'];
+    //
+    // Load the status maps for the text description of each status
+    //
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'artcatalog', 'private', 'maps');
+    $rc = ciniki_artcatalog_maps($ciniki);
+    if( $rc['stat'] != 'ok' ) {
+        return $rc;
+    }
+    $maps = $rc['maps'];
 
     if( $args['object'] == 'ciniki.artcatalog.item' ) {
         $strsql = "SELECT id, name, permalink, type, status, flags, webflags, category, "
@@ -147,6 +147,6 @@ function ciniki_artcatalog_hooks_webIndexObject($ciniki, $business_id, $args) {
         return array('stat'=>'ok', 'object'=>$object);
     }
 
-	return array('stat'=>'ok');
+    return array('stat'=>'ok');
 }
 ?>

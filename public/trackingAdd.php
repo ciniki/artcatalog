@@ -9,15 +9,15 @@
 // ---------
 // api_key:
 // auth_token:
-// business_id:		The ID of the business to add the tracking to.
+// business_id:     The ID of the business to add the tracking to.
 //
-// artcatalog_id:	The ID of the artcatalog item to add the tracking for.
+// artcatalog_id:   The ID of the artcatalog item to add the tracking for.
 //
-// name:			The name of the place for tracking.
-// external_number:	The number assigned to the item by the place.
-// start_date:		The date the item was added to the place.
-// end_date:		The date the item was removed from the place.
-// notes:			Any notes about this showing.
+// name:            The name of the place for tracking.
+// external_number: The number assigned to the item by the place.
+// start_date:      The date the item was added to the place.
+// end_date:        The date the item was removed from the place.
+// notes:           Any notes about this showing.
 // 
 // Returns
 // -------
@@ -42,9 +42,9 @@ function ciniki_artcatalog_trackingAdd(&$ciniki) {
     }   
     $args = $rc['args'];
 
-	if( $args['artcatalog_id'] == '0' ) {
-		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1012', 'msg'=>'No artcatalog item specified'));
-	}
+    if( $args['artcatalog_id'] == '0' ) {
+        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1012', 'msg'=>'No artcatalog item specified'));
+    }
 
     //  
     // Make sure this module is activated, and
@@ -56,15 +56,15 @@ function ciniki_artcatalog_trackingAdd(&$ciniki) {
         return $rc;
     }   
 
-	if( isset($args['name']) ) {
-		ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'makePermalink');
-		$args['permalink'] = ciniki_core_makePermalink($ciniki, $args['name'] . '-' . ($args['start_date']==''?'0000-00-00':$args['start_date']));
-	}
+    if( isset($args['name']) ) {
+        ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'makePermalink');
+        $args['permalink'] = ciniki_core_makePermalink($ciniki, $args['name'] . '-' . ($args['start_date']==''?'0000-00-00':$args['start_date']));
+    }
 
-	//
-	// Update tracking
-	//
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'objectAdd');
-	return ciniki_core_objectAdd($ciniki, $args['business_id'], 'ciniki.artcatalog.place', $args);
+    //
+    // Update tracking
+    //
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'objectAdd');
+    return ciniki_core_objectAdd($ciniki, $args['business_id'], 'ciniki.artcatalog.place', $args);
 }
 ?>

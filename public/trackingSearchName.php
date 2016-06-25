@@ -8,21 +8,21 @@
 // ---------
 // api_key:
 // auth_token:
-// business_id:		The ID of the business to search.
+// business_id:     The ID of the business to search.
 //
-// start_needle:	The search string to search the field for.
+// start_needle:    The search string to search the field for.
 //
-// limit:			(optional) Limit the number of results to be returned. 
-//					If the limit is not specified, the default is 25.
+// limit:           (optional) Limit the number of results to be returned. 
+//                  If the limit is not specified, the default is 25.
 // 
 // Returns
 // -------
 // <items>
-//		<item id="2434" name="Black River" image_id="3872" media="Pastel" catalog_number="20120316"
-//			size="8x10" framed_size="12x14" price="350" location="Home" />
-//		<item id="1854" name="Flowing Stream" image_id="3871" media="Oil" catalog_number="20120219"
-//			size="8x10" framed_size="12x14" price="350" location="Home" />
-//		...
+//      <item id="2434" name="Black River" image_id="3872" media="Pastel" catalog_number="20120316"
+//          size="8x10" framed_size="12x14" price="350" location="Home" />
+//      <item id="1854" name="Flowing Stream" image_id="3871" media="Oil" catalog_number="20120219"
+//          size="8x10" framed_size="12x14" price="350" location="Home" />
+//      ...
 // </items>
 //
 function ciniki_artcatalog_trackingSearchName($ciniki) {
@@ -50,34 +50,34 @@ function ciniki_artcatalog_trackingSearchName($ciniki) {
         return $rc;
     }   
 
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuote');
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'users', 'private', 'dateFormat');
-	$date_format = ciniki_users_dateFormat($ciniki);
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuote');
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'users', 'private', 'dateFormat');
+    $date_format = ciniki_users_dateFormat($ciniki);
 
-	$strsql = "SELECT id, name "
-		. "FROM ciniki_artcatalog_tracking "
-		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
-		. "AND (name LIKE '" . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
-			. "OR name like '% " . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
-			. ") "
-		. "AND name <> '' "
-		. "";
-	$strsql .= "ORDER BY name, start_date DESC "
-		. "";
-	if( isset($args['limit']) && $args['limit'] != '' && $args['limit'] > 0 ) {
-		$strsql .= "LIMIT " . ciniki_core_dbQuote($ciniki, $args['limit']) . " ";
-	}
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');
-	$rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
-		array('container'=>'results', 'fname'=>'name', 'name'=>'result', 
-			'fields'=>array('name')),
-		));
-	if( $rc['stat'] != 'ok' ) {
-		return $rc;
-	}
-	if( !isset($rc['results']) || !is_array($rc['results']) ) {
-		return array('stat'=>'ok', 'results'=>array());
-	}
-	return array('stat'=>'ok', 'results'=>$rc['results']);
+    $strsql = "SELECT id, name "
+        . "FROM ciniki_artcatalog_tracking "
+        . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+        . "AND (name LIKE '" . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
+            . "OR name like '% " . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
+            . ") "
+        . "AND name <> '' "
+        . "";
+    $strsql .= "ORDER BY name, start_date DESC "
+        . "";
+    if( isset($args['limit']) && $args['limit'] != '' && $args['limit'] > 0 ) {
+        $strsql .= "LIMIT " . ciniki_core_dbQuote($ciniki, $args['limit']) . " ";
+    }
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');
+    $rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
+        array('container'=>'results', 'fname'=>'name', 'name'=>'result', 
+            'fields'=>array('name')),
+        ));
+    if( $rc['stat'] != 'ok' ) {
+        return $rc;
+    }
+    if( !isset($rc['results']) || !is_array($rc['results']) ) {
+        return array('stat'=>'ok', 'results'=>array());
+    }
+    return array('stat'=>'ok', 'results'=>$rc['results']);
 }
 ?>

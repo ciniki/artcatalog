@@ -6,135 +6,135 @@
 #
 # Fields
 # -------
-# id:				The id of the art catalog item.
-# uuid:				The Universal Unique ID.
+# id:               The id of the art catalog item.
+# uuid:             The Universal Unique ID.
 #
-# business_id:		The business the item is attached to.
+# business_id:      The business the item is attached to.
 #
-# name:				The name or title of the creation.
+# name:             The name or title of the creation.
 #
-# permalink:		The url safe version of the image name.  This is automatically 
-#					created when an item is added or the name updated.
+# permalink:        The url safe version of the image name.  This is automatically 
+#                   created when an item is added or the name updated.
 #
-# type:				The type field is used to determine how the system should handle the field.
-#					Paintings will have framed sizes, but sculptures won't, etc.
-#	
-#					0 - unknown
-#					1 - Painting
-#					2 - Photograph
-#					3 - Jewelry 
-#					4 - Sculpture
-#					5 - Fibre Art
+# type:             The type field is used to determine how the system should handle the field.
+#                   Paintings will have framed sizes, but sculptures won't, etc.
+#   
+#                   0 - unknown
+#                   1 - Painting
+#                   2 - Photograph
+#                   3 - Jewelry 
+#                   4 - Sculpture
+#                   5 - Fibre Art
 #                   6 - Printmaking
-#					7 - Clothing *future*
-#					8 - Pottery
-#					9 - Knitting *future*
-#					10 - Craft *future*
+#                   7 - Clothing *future*
+#                   8 - Pottery
+#                   9 - Knitting *future*
+#                   10 - Craft *future*
 #
-# status:			The current status of the item.
+# status:           The current status of the item.
 #
-#					0 - Unknown
-#					10 - NFS (Not For Sale)
-#					20 - For Sale
-#					50 - Sold
-#					60 - Private Collection
-#					70 - Collection of the Artist
+#                   0 - Unknown
+#                   10 - NFS (Not For Sale)
+#                   20 - For Sale
+#                   50 - Sold
+#                   60 - Private Collection
+#                   70 - Collection of the Artist
 # 
-# flags:			0x01 - For Sale
-#					0x02 - Sold
-#					0x04 - 
-#					0x08 - 
-#					0x10 - Framed
-#					0x20 - 
-#					0x40 -
-#					0x80 - 
+# flags:            0x01 - For Sale
+#                   0x02 - Sold
+#                   0x04 - 
+#                   0x08 - 
+#                   0x10 - Framed
+#                   0x20 - 
+#                   0x40 -
+#                   0x80 - 
 #
-# webflags:			The flags for displaying the image on the website
+# webflags:         The flags for displaying the image on the website
 #
-#					0x01 - Visible, publish on website
-#					0x02 - 
-#					0x04 - 
-#					0x08 - 
-#					0x10 - Category grouping highlight image
-#					0x20 - Media group highlight image *future*
-#					0x40 - Location group highlight image *future*
-#					0x80 - Year group highlight image *future*
-#					0x0100 - Include description
-#					0x0200 - Include inspiration
-#					0x0400 - Include awards
-#					0x0800 - Include price/sold
-#					0x1000 - Include media
-#					0x2000 - Include materials
-#					0x4000 - 
-#					0x8000 - 
+#                   0x01 - Visible, publish on website
+#                   0x02 - 
+#                   0x04 - 
+#                   0x08 - 
+#                   0x10 - Category grouping highlight image
+#                   0x20 - Media group highlight image *future*
+#                   0x40 - Location group highlight image *future*
+#                   0x80 - Year group highlight image *future*
+#                   0x0100 - Include description
+#                   0x0200 - Include inspiration
+#                   0x0400 - Include awards
+#                   0x0800 - Include price/sold
+#                   0x1000 - Include media
+#                   0x2000 - Include materials
+#                   0x4000 - 
+#                   0x8000 - 
 #
-# image_id:			The image in the images module to use as the default picture.
+# image_id:         The image in the images module to use as the default picture.
 #
-# catalog_number:	The user assigned number for the item.
+# catalog_number:   The user assigned number for the item.
 #
-# category:			The category for the artwork.
+# category:         The category for the artwork.
 #
-# year:				The year the item was completed.
-# month:			The month the item was completed.
-# day:				The day the item was completed.
+# year:             The year the item was completed.
+# month:            The month the item was completed.
+# day:              The day the item was completed.
 #
-# media:			The media of the creation.
+# media:            The media of the creation.
 #
-# size:				The dimensions of the item.
+# size:             The dimensions of the item.
 #
-# framed_size:		The framed size of the item.
+# framed_size:      The framed size of the item.
 #
-# price:			The price of the item.
+# price:            The price of the item.
 #
-# location:			Where is the item currently.  This is used to track if artwork is in a gallery, or 
-#					storage, other homes, etc...
+# location:         Where is the item currently.  This is used to track if artwork is in a gallery, or 
+#                   storage, other homes, etc...
 #
-# awards:			Any awards the item has won.
+# awards:           Any awards the item has won.
 #
-# notes:			Any notes for the item.
+# notes:            Any notes for the item.
 #
-# description:		The description of the item, which is public on the website.
+# description:      The description of the item, which is public on the website.
 #
-# inspiration:		What was the inspiration for the item.
+# inspiration:      What was the inspiration for the item.
 #
-# user_id:			The user who added the item.
+# user_id:          The user who added the item.
 #
 # date_added:       The UTC date and time the thread was added.
 # last_updated:     The UTC date and time the thread was last updated.
 #
 #
 create table ciniki_artcatalog (
-	id int not null auto_increment,
-	uuid char(36) not null,
-	business_id int not null,
-	name varchar(200) not null,
-	permalink varchar(200) not null,
-	type tinyint unsigned not null,
-	status tinyint unsigned not null,
-	flags int unsigned not null,
-	webflags int unsigned not null,
-	image_id int not null,
-	catalog_number varchar(100) not null,
-	category varchar(200) not null,
-	year varchar(50) not null,
-	month tinyint unsigned not null,
-	day tinyint unsigned not null,
-	media varchar(200) not null,
-	size varchar(200) not null,
-	framed_size varchar(200) not null,
-	price decimal(19,4) not null,
-	location varchar(200) not null,
-	awards varchar(6000) not null,
-	notes varchar(6000) not null,
-	description varchar(6000) not null,
-	inspiration varchar(6000) not null,
-	user_id int not null,
-	date_added datetime not null,
-	last_updated datetime not null,
-	primary key (id),
-	unique index (permalink, business_id),
-	index (business_id, category, date_added),
-	index (media),
-	index (location),
-	index (year, month, day)
+    id int not null auto_increment,
+    uuid char(36) not null,
+    business_id int not null,
+    name varchar(200) not null,
+    permalink varchar(200) not null,
+    type tinyint unsigned not null,
+    status tinyint unsigned not null,
+    flags int unsigned not null,
+    webflags int unsigned not null,
+    image_id int not null,
+    catalog_number varchar(100) not null,
+    category varchar(200) not null,
+    year varchar(50) not null,
+    month tinyint unsigned not null,
+    day tinyint unsigned not null,
+    media varchar(200) not null,
+    size varchar(200) not null,
+    framed_size varchar(200) not null,
+    price decimal(19,4) not null,
+    location varchar(200) not null,
+    awards varchar(6000) not null,
+    notes varchar(6000) not null,
+    description varchar(6000) not null,
+    inspiration varchar(6000) not null,
+    user_id int not null,
+    date_added datetime not null,
+    last_updated datetime not null,
+    primary key (id),
+    unique index (permalink, business_id),
+    index (business_id, category, date_added),
+    index (media),
+    index (location),
+    index (year, month, day)
 ) ENGINE='InnoDB', COMMENT='v1.10';

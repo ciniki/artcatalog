@@ -5,53 +5,53 @@
 #
 # Fields
 # -------
-# id:				The id of the product.
-# uuid:				The Universal Unique ID.
-# business_id:		The business the product is attached to.
+# id:               The id of the product.
+# uuid:             The Universal Unique ID.
+# business_id:      The business the product is attached to.
 #
-# artcatalog_id:	The ID of the artcatalog item the product is for.
+# artcatalog_id:    The ID of the artcatalog item the product is for.
 #
-# name:				The name for the product.
-# permalink:		The permalink for the product.
-# flags:			The options for the product.
+# name:             The name for the product.
+# permalink:        The permalink for the product.
+# flags:            The options for the product.
 #
-#					0x01 - Visible, publish on website.
-#					0x02 - For sale
-#					0x04 - 
-#					0x08 - 
+#                   0x01 - Visible, publish on website.
+#                   0x02 - For sale
+#                   0x04 - 
+#                   0x08 - 
 #
-# sequence:			The order the product should appear.
+# sequence:         The order the product should appear.
 #
-# image_id:			The ID of the image for the product.
+# image_id:         The ID of the image for the product.
 #
-# synopsis:			The short description of the product for listings.
-# description:		The full description of the product.
+# synopsis:         The short description of the product for listings.
+# description:      The full description of the product.
 #
-# price:			The price for the product.
-# taxtype_id:		The tax type id, or 0 if none assigned.
-# inventory:		The quantity available in inventory.
+# price:            The price for the product.
+# taxtype_id:       The tax type id, or 0 if none assigned.
+# inventory:        The quantity available in inventory.
 #
 # date_added:       The UTC date and time the thread was added.
 # last_updated:     The UTC date and time the thread was last updated.
 #
 create table ciniki_artcatalog_products (
-	id int not null auto_increment,
-	uuid char(36) not null,
-	business_id int not null,
-	artcatalog_id int not null,
-	name varchar(200) not null,
-	permalink varchar(200) not null,
-	flags tinyint unsigned not null,
-	sequence tinyint not null,
-	image_id int not null,
-	synopsis varchar(6000) not null,
-	description varchar(20000) not null,
-	price decimal(19,4) not null,
-	taxtype_id int not null,
-	inventory int not null,
-	date_added datetime not null,
-	last_updated datetime not null,
-	primary key (id),
-	unique index (artcatalog_id, permalink),
-	index sync (business_id, uuid, last_updated)
+    id int not null auto_increment,
+    uuid char(36) not null,
+    business_id int not null,
+    artcatalog_id int not null,
+    name varchar(200) not null,
+    permalink varchar(200) not null,
+    flags tinyint unsigned not null,
+    sequence tinyint not null,
+    image_id int not null,
+    synopsis varchar(6000) not null,
+    description varchar(20000) not null,
+    price decimal(19,4) not null,
+    taxtype_id int not null,
+    inventory int not null,
+    date_added datetime not null,
+    last_updated datetime not null,
+    primary key (id),
+    unique index (artcatalog_id, permalink),
+    index sync (business_id, uuid, last_updated)
 ) ENGINE='InnoDB', COMMENT='v1.01';

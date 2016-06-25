@@ -9,9 +9,9 @@
 // ---------
 // api_key:
 // auth_token:
-// business_id:		The ID of the business to add the products to.
+// business_id:     The ID of the business to add the products to.
 //
-// artcatalog_id:	The ID of the artcatalog item to add the products for.
+// artcatalog_id:   The ID of the artcatalog item to add the products for.
 //
 // Returns
 // -------
@@ -41,9 +41,9 @@ function ciniki_artcatalog_productAdd(&$ciniki) {
     }   
     $args = $rc['args'];
 
-	if( $args['artcatalog_id'] == '0' ) {
-		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2409', 'msg'=>'No artcatalog item specified'));
-	}
+    if( $args['artcatalog_id'] == '0' ) {
+        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2409', 'msg'=>'No artcatalog item specified'));
+    }
 
     //  
     // Make sure this module is activated, and
@@ -54,35 +54,35 @@ function ciniki_artcatalog_productAdd(&$ciniki) {
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
-	
-	//
-	// Create the permalink for the product
-	//
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'makePermalink');
-	$args['permalink'] = ciniki_core_makePermalink($ciniki, $args['name']);
+    
+    //
+    // Create the permalink for the product
+    //
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'makePermalink');
+    $args['permalink'] = ciniki_core_makePermalink($ciniki, $args['name']);
 
-	//
-	// Check to make sure the permalink is unique within the artcatalog item
-	//
-	$strsql = "SELECT id, name, permalink "
-		. "FROM ciniki_artcatalog_products "
-		. "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
-		. "AND artcatalog_id = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_id']) . "' "
-		. "AND permalink = '" . ciniki_core_dbQuote($ciniki, $args['permalink']) . "' "
-		. "";
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
-	$rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', 'item');
-	if( $rc['stat'] != 'ok' ) {
-		return $rc;
-	}
-	if( $rc['num_rows'] > 0 ) {
-		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2435', 'msg'=>'You already have a product with this name, please choose another name'));
-	}
+    //
+    // Check to make sure the permalink is unique within the artcatalog item
+    //
+    $strsql = "SELECT id, name, permalink "
+        . "FROM ciniki_artcatalog_products "
+        . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+        . "AND artcatalog_id = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_id']) . "' "
+        . "AND permalink = '" . ciniki_core_dbQuote($ciniki, $args['permalink']) . "' "
+        . "";
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
+    $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', 'item');
+    if( $rc['stat'] != 'ok' ) {
+        return $rc;
+    }
+    if( $rc['num_rows'] > 0 ) {
+        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2435', 'msg'=>'You already have a product with this name, please choose another name'));
+    }
 
-	//
-	// Update product
-	//
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'objectAdd');
-	return ciniki_core_objectAdd($ciniki, $args['business_id'], 'ciniki.artcatalog.product', $args);
+    //
+    // Update product
+    //
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'objectAdd');
+    return ciniki_core_objectAdd($ciniki, $args['business_id'], 'ciniki.artcatalog.product', $args);
 }
 ?>
