@@ -120,6 +120,7 @@ function ciniki_artcatalog_get($ciniki) {
             'website'=>'',
             'webflags'=>(isset($artcatalog_settings['defaults-webflags']) ? $artcatalog_settings['defaults-webflags'] : 0x0901),
             'catalog_number'=>'',
+            'products'=>array(),
             );
         if( ($ciniki['business']['modules']['ciniki.artcatalog']['flags']&0x10) > 0 ) {
             $strsql = "SELECT (MAX(catalog_number) + 1) AS next_number "
@@ -279,10 +280,25 @@ function ciniki_artcatalog_get($ciniki) {
                 return $rc;
             }
             if( isset($rc['products']) ) {
-                $item['products'] = $rc['products'];
-                foreach($item['products'] as $pid => $product) {
-                    $item['products'][$pid]['product']['price'] = numfmt_format_currency($intl_currency_fmt, $product['product']['price'], $intl_currency);
+                $item['oldproducts'] = $rc['products'];
+                foreach($item['oldproducts'] as $pid => $product) {
+                    $item['oldproducts'][$pid]['product']['price'] = numfmt_format_currency($intl_currency_fmt, $product['product']['price'], $intl_currency);
                 }
+            }
+        }
+
+        //
+        // Get the product list if requested
+        //
+        if( isset($args['products']) && $args['products'] == 'yes' && isset($ciniki['business']['modules']['ciniki.merchandise']) ) {
+            ciniki_core_loadMethod($ciniki, 'ciniki', 'merchandise', 'hooks', 'productList');
+            $rc = ciniki_merchandise_hooks_productList($ciniki, $args['business_id'], array('object'=>'ciniki.artcatalog.item', 'object_id'=>$args['artcatalog_id']));
+            if( $rc['stat'] != 'ok' ) {
+                return $rc;
+            }
+            $item['products'] = array();
+            if( isset($rc['products']) ) {
+                $item['products'] = $rc['products'];
             }
         }
 

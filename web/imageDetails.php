@@ -189,7 +189,7 @@ function ciniki_artcatalog_web_imageDetails($ciniki, $settings, $business_id, $p
     //
     // Get the list of products for the item
     //
-    if( ($ciniki['business']['modules']['ciniki.artcatalog']['flags']&0x02) > 0 ) {
+/*    if( ($ciniki['business']['modules']['ciniki.artcatalog']['flags']&0x02) > 0 ) {
         $strsql = "SELECT ciniki_artcatalog_products.id, "
             . "ciniki_artcatalog_products.name AS title, "
             . "ciniki_artcatalog_products.permalink, "
@@ -219,6 +219,17 @@ function ciniki_artcatalog_web_imageDetails($ciniki, $settings, $business_id, $p
             //
             // FIXME: Add code to create product information ready to display add to cart
             //
+        }
+    } */
+
+    //
+    // Get the list of products for the item
+    //
+    if( isset($ciniki['business']['modules']['ciniki.merchandise']) ) {
+        ciniki_core_loadMethod($ciniki, 'ciniki', 'merchandise', 'web', 'productList');
+        $rc = ciniki_merchandise_web_productList($ciniki, $settings, $business_id, array('object'=>'ciniki.artcatalog.item', 'object_id'=>$image['id']));
+        if( $rc['stat'] == 'ok' && isset($rc['products']) ) {
+            $image['products'] = $rc['products'];
         }
     }
 
