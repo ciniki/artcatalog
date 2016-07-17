@@ -611,8 +611,8 @@ function ciniki_artcatalog_main() {
         });
     };
     this.item.remove = function() {
-        if( confirm('Are you sure you want to delete \'' + this.item.data.name + '\'?  All information, photos and exhibited information will be removed. There is no way to get the information back once deleted.') ) {
-            M.api.getJSONCb('ciniki.artcatalog.delete', {'business_id':M.curBusinessID, 'artcatalog_id':this.item.artcatalog_id}, function(rsp) {
+        if( confirm('Are you sure you want to delete \'' + this.data.name + '\'?  All information, photos and exhibited information will be removed. There is no way to get the information back once deleted.') ) {
+            M.api.getJSONCb('ciniki.artcatalog.delete', {'business_id':M.curBusinessID, 'artcatalog_id':this.artcatalog_id}, function(rsp) {
                 if( rsp.stat != 'ok' ) {
                     M.api.err(rsp);
                     return false;
