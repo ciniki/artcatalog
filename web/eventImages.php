@@ -32,6 +32,7 @@ function ciniki_artcatalog_web_eventImages($ciniki, $settings, $business_id, $ar
                 . ") "
             . "WHERE ciniki_artcatalog_tracking.permalink = '" . ciniki_core_dbQuote($ciniki, $args['object_id']) . "' "
             . "AND ciniki_artcatalog.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+            . "AND ciniki_artcatalog.image_id > 0 "
             . "";
         ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryIDTree');
         $rc = ciniki_core_dbHashQueryIDTree($ciniki, $strsql, 'ciniki.artcatalog', array(
