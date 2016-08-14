@@ -118,6 +118,7 @@ function ciniki_artcatalog_update(&$ciniki) {
         'description'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Description'), 
         'inspiration'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Inspiration'), 
         'awards'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Awards'), 
+        'publications'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Publications'), 
         'notes'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Notes'),
         'lists'=>array('required'=>'no', 'blank'=>'yes', 'type'=>'list', 'delimiter'=>'::', 'name'=>'Lists'),
         'materials'=>array('required'=>'no', 'blank'=>'yes', 'type'=>'list', 'delimiter'=>'::', 'name'=>'Materials'),

@@ -38,6 +38,7 @@ function ciniki_artcatalog_objects($ciniki) {
             'price'=>array(),
             'location'=>array(),
             'awards'=>array(),
+            'publications'=>array(),
             'notes'=>array(),
             'description'=>array(),
             'inspiration'=>array(),

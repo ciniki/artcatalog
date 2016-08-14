@@ -65,7 +65,7 @@
 #                   0x0800 - Include price/sold
 #                   0x1000 - Include media
 #                   0x2000 - Include materials
-#                   0x4000 - 
+#                   0x4000 - Include publications
 #                   0x8000 - 
 #
 # image_id:         The image in the images module to use as the default picture.
@@ -90,6 +90,8 @@
 #                   storage, other homes, etc...
 #
 # awards:           Any awards the item has won.
+#
+# publications:     Any publication the item has been in.
 #
 # notes:            Any notes for the item.
 #
@@ -125,6 +127,7 @@ create table ciniki_artcatalog (
     price decimal(19,4) not null,
     location varchar(200) not null,
     awards varchar(6000) not null,
+    publications varchar(6000) not null,
     notes varchar(6000) not null,
     description varchar(6000) not null,
     inspiration varchar(6000) not null,
@@ -137,4 +140,4 @@ create table ciniki_artcatalog (
     index (media),
     index (location),
     index (year, month, day)
-) ENGINE='InnoDB', COMMENT='v1.10';
+) ENGINE='InnoDB', COMMENT='v1.11';

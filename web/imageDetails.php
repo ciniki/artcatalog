@@ -69,6 +69,7 @@ function ciniki_artcatalog_web_imageDetails($ciniki, $settings, $business_id, $p
         . "ciniki_artcatalog.description, "
         . "ciniki_artcatalog.inspiration, "
         . "ciniki_artcatalog.awards, "
+        . "ciniki_artcatalog.publications, "
         . "ciniki_artcatalog.notes, "
         . "ciniki_artcatalog.date_added, ciniki_artcatalog.last_updated, "
         . "ciniki_artcatalog_images.id AS additional_id, "
@@ -92,7 +93,7 @@ function ciniki_artcatalog_web_imageDetails($ciniki, $settings, $business_id, $p
             'fields'=>array('id', 'title'=>'name', 'permalink', 'image_id', 'type', 'status', 'status_text', 'catalog_number', 
                 'category', 'year', 'flags', 'webflags', 'hidden', 
                 'media', 'size', 'framed_size', 'price',
-                'location', 'description', 'inspiration', 'awards', 'notes', 'date_added', 'last_updated'),
+                'location', 'description', 'inspiration', 'awards', 'publications', 'notes', 'date_added', 'last_updated'),
             'maps'=>array('status_text'=>$maps['item']['status'])),
         array('container'=>'additionalimages', 'fname'=>'additional_id', 
             'fields'=>array('id'=>'additional_id', 'image_id'=>'additional_image_id',

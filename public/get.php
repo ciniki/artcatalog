@@ -147,7 +147,7 @@ function ciniki_artcatalog_get($ciniki) {
             . "CONCAT_WS('', IF((ciniki_artcatalog.webflags&0x01)=0x01, 'visible', 'hidden'), IF((ciniki_artcatalog.webflags&0x10)=0x10, ', category highlight', '')) AS website , "
             . "webflags, catalog_number, category, year, month, day, "
             . "media, size, framed_size, ciniki_artcatalog.price, ciniki_artcatalog.location, "
-            . "ciniki_artcatalog.description, inspiration, awards, ciniki_artcatalog.notes, "
+            . "ciniki_artcatalog.description, inspiration, awards, publications, ciniki_artcatalog.notes, "
             . "ciniki_artcatalog.date_added, ciniki_artcatalog.last_updated "
     //      . "ciniki_artcatalog_tags.tag_name AS lists "
     //      . "ciniki_artcatalog_customers.customer_id AS customer_id, "
@@ -176,7 +176,7 @@ function ciniki_artcatalog_get($ciniki) {
                 'fields'=>array('id', 'name', 'permalink', 'image_id', 'type', 'type_text', 'status', 'status_text', 
                     'flags', 'webflags', 'catalog_number', 'category', 'year', 'month', 'day', 
                     'media', 'size', 'framed_size', 'forsale', 'sold', 'website', 'price', 'location', 
-                    'description', 'inspiration', 'awards', 'notes'),
+                    'description', 'inspiration', 'awards', 'publications', 'notes'),
 //              'dlists'=>array('lists'=>'::'),
                 'maps'=>array('type_text'=>$maps['item']['type'], 'status_text'=>$maps['item']['status'])),
     //      array('container'=>'sales', 'fname'=>'customer_id', 'name'=>'customer',

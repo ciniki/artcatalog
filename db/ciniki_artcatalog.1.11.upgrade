@@ -1,0 +1,5 @@
+#
+# This file will upgrade the database table ciniki_artcatalog to version 1.09
+#
+ALTER TABLE ciniki_artcatalog ADD COLUMN publications varchar(6000) not null AFTER awards;
+ALTER TABLE ciniki_artcatalog COMMENT='v1.11';

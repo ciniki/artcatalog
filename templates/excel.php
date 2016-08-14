@@ -59,6 +59,7 @@ function ciniki_artcatalog_templates_excel($ciniki, $business_id, $sections, $ar
         'location'=>'Location',
         'description'=>'Description',
         'awards'=>'Awards',
+        'publications'=>'Publications',
         'notes'=>'Notes',
         'inspiration'=>'Inspiration',
         );

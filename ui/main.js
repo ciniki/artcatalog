@@ -364,6 +364,7 @@ function ciniki_artcatalog_main() {
         }},
         'description':{'label':'Description', 'type':'htmlcontent'},
         'awards':{'label':'Awards', 'type':'htmlcontent'},
+        'publications':{'label':'Publications', 'type':'htmlcontent'},
         'ainfo':{'label':'Private Information', 'list':{
             'catalog_number':{'label':'Number'},
             'completed':{'label':'Completed'},
@@ -407,12 +408,12 @@ function ciniki_artcatalog_main() {
             },
         '_buttons':{'label':'', 'buttons':{
             'edit':{'label':'Edit', 'fn':'M.ciniki_artcatalog_main.edit.open(\'M.ciniki_artcatalog_main.item.open();\',M.ciniki_artcatalog_main.item.artcatalog_id);'},
-            'pdf':{'label':'Download', 'fn':'M.ciniki_artcatalog_main.item.openDownload(\'M.ciniki_artcatalog_main.item.open();\',\'ciniki.artcatalog.get\',\'\',M.ciniki_artcatalog_main.item.artcatalog_id);'},
+            'pdf':{'label':'Download', 'fn':'M.ciniki_artcatalog_main.openDownload(\'M.ciniki_artcatalog_main.item.open();\',\'ciniki.artcatalog.get\',\'\',M.ciniki_artcatalog_main.item.artcatalog_id);'},
             'delete':{'label':'Delete', 'fn':'M.ciniki_artcatalog_main.item.remove();'},
         }},
         };
     this.item.sectionData = function(s) {
-        if( s == 'description' || s == 'awards' || s == 'notes' ) {
+        if( s == 'description' || s == 'awards' || s == 'publications' || s == 'notes' ) {
             return this.data[s].replace(/\n/g, '<br/>');
         }
         if( s == 'info' || s == 'ainfo' ) { return this.sections[s].list; }
@@ -463,7 +464,7 @@ function ciniki_artcatalog_main() {
         return this.data[i];
     };
     this.item.fieldValue = function(s, i, d) {
-        if( i == 'description' || i == 'inspiration' || i == 'awards' || i == 'notes' ) { 
+        if( i == 'description' || i == 'inspiration' || i == 'awards' || s == 'publications' || i == 'notes' ) { 
             return this.data[i].replace(/\n/g, '<br/>');
         }
         return this.data[i];
@@ -579,6 +580,7 @@ function ciniki_artcatalog_main() {
             p.sections.description.visible=(rsp.item.description!=null&&rsp.item.description!='')?'yes':'no';
             p.sections.inspiration.visible=(rsp.item.inspiration!=null&&rsp.item.inspiration!='')?'yes':'no';
             p.sections.awards.visible=(rsp.item.awards!=null&&rsp.item.awards!='')?'yes':'no';
+            p.sections.publications.visible=(rsp.item.publications!=null&&rsp.item.publications!='')?'yes':'no';
             p.sections.notes.visible=(rsp.item.notes!=null&&rsp.item.notes!='')?'yes':'no';
             if( p.data.materials != null && p.data.materials != '' ) {
                 p.data.materials = p.data.materials.replace(/::/g, ', ');
@@ -761,6 +763,12 @@ function ciniki_artcatalog_main() {
             'fields':{
                 'awards':{'label':'', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
             }},
+        '_publications':{'label':'Publications', 'type':'simpleform', 
+            'gstep':7,
+            'gtitle':'Has this item been in any publications?',
+            'fields':{
+                'publications':{'label':'', 'type':'textarea', 'size':'small', 'hidelabel':'yes'},
+            }},
         '_notes':{'label':'Notes', 'type':'simpleform', 
             'gstep':8,
             'gtitle':'Do you have any notes about this item?',
@@ -773,7 +781,7 @@ function ciniki_artcatalog_main() {
             'fields':{
                 'webflags_1':{'label':'Visible', 'type':'flagtoggle', 'field':'webflags', 'bit':0x01, 'default':'on',
                     'gtitle':'Do you want this item to appear on your website?',
-                    'on_fields':['webflags_5', 'webflags_13', 'webflags_14', 'webflags_12', 'webflags_9', 'webflags_10', 'webflags_11'],
+                    'on_fields':['webflags_5', 'webflags_13', 'webflags_14', 'webflags_12', 'webflags_9', 'webflags_10', 'webflags_11', 'webflags_15'],
                     },
                 'webflags_5':{'label':'Category Highlight', 'type':'flagtoggle', 'field':'webflags', 'bit':0x10, 'default':'off',
                     'gtitle':'Do you want this item to be the category thumbnail?',
@@ -801,6 +809,9 @@ function ciniki_artcatalog_main() {
                     'visible':function() { return ((M.ciniki_artcatalog_main.edit.data.webflags&0x01)>0?'yes':'no'); }
                     },
                 'webflags_11':{'label':'Awards', 'type':'flagtoggle', 'field':'webflags', 'bit':0x0400, 'default':'on',
+                    'visible':function() { return ((M.ciniki_artcatalog_main.edit.data.webflags&0x01)>0?'yes':'no'); }
+                    },
+                'webflags_15':{'label':'Publications', 'type':'flagtoggle', 'field':'webflags', 'bit':0x4000, 'default':'on',
                     'visible':function() { return ((M.ciniki_artcatalog_main.edit.data.webflags&0x01)>0?'yes':'no'); }
                     },
                 }},
@@ -889,6 +900,7 @@ function ciniki_artcatalog_main() {
             }},
         '_inspiration':this.edit.forms.painting._inspiration,
         '_awards':this.edit.forms.painting._awards,
+        '_publications':this.edit.forms.painting._publications,
         '_notes':this.edit.forms.painting._notes,
         '_website':{'label':'Website Information', 'type':'simpleform', 
             'gstep':9,
@@ -902,6 +914,7 @@ function ciniki_artcatalog_main() {
                 'webflags_9':this.edit.forms.painting._website.fields.webflags_9,
                 'webflags_10':this.edit.forms.painting._website.fields.webflags_10,
                 'webflags_11':this.edit.forms.painting._website.fields.webflags_11,
+                'webflags_15':this.edit.forms.painting._website.fields.webflags_15,
             }},
         '_buttons':{'label':'', 'gstep':10, 
             'gtitle':'Save your work',
@@ -992,6 +1005,7 @@ function ciniki_artcatalog_main() {
         '_description':this.edit.forms.painting._description,
         '_inspiration':this.edit.forms.painting._inspiration,
         '_awards':this.edit.forms.painting._awards,
+        '_publications':this.edit.forms.painting._publications,
         '_notes':this.edit.forms.painting._notes,
         '_website':{'label':'Website Information', 'type':'simpleform', 
             'gstep':9,
@@ -1007,6 +1021,7 @@ function ciniki_artcatalog_main() {
                     },
                 'webflags_10':this.edit.forms.painting._website.fields.webflags_10,
                 'webflags_11':this.edit.forms.painting._website.fields.webflags_11,
+                'webflags_15':this.edit.forms.painting._website.fields.webflags_15,
             }},
         '_buttons':{'label':'', 'gstep':10, 
             'gtitle':'Save your work',
@@ -1094,6 +1109,7 @@ function ciniki_artcatalog_main() {
             }},
         '_inspiration':this.edit.forms.painting._inspiration,
         '_awards':this.edit.forms.painting._awards,
+        '_publications':this.edit.forms.painting._publications,
         '_notes':this.edit.forms.painting._notes,
         '_website':{'label':'Website Information', 'type':'simpleform', 
             'gstep':9,
@@ -1107,6 +1123,7 @@ function ciniki_artcatalog_main() {
                 'webflags_14':this.edit.forms.jewelry._website.fields.webflags_14,
                 'webflags_10':this.edit.forms.painting._website.fields.webflags_10,
                 'webflags_11':this.edit.forms.painting._website.fields.webflags_11,
+                'webflags_15':this.edit.forms.painting._website.fields.webflags_15,
             }},
         '_buttons':{'label':'', 'gstep':10, 
             'gtitle':'Save your work',
@@ -1190,6 +1207,7 @@ function ciniki_artcatalog_main() {
             }},
         '_inspiration':this.edit.forms.painting._inspiration,
         '_awards':this.edit.forms.painting._awards,
+        '_publications':this.edit.forms.painting._publications,
         '_notes':this.edit.forms.painting._notes,
         '_website':{'label':'Website Information', 'type':'simpleform', 
             'gstep':9,
@@ -1203,6 +1221,7 @@ function ciniki_artcatalog_main() {
                 'webflags_14':this.edit.forms.jewelry._website.fields.webflags_14,
                 'webflags_10':this.edit.forms.painting._website.fields.webflags_10,
                 'webflags_11':this.edit.forms.painting._website.fields.webflags_11,
+                'webflags_15':this.edit.forms.painting._website.fields.webflags_15,
             }},
         '_buttons':{'label':'', 'gstep':10, 
             'gtitle':'Save your work',
@@ -1222,6 +1241,7 @@ function ciniki_artcatalog_main() {
         '_description':this.edit.forms.painting._description,
         '_inspiration':this.edit.forms.painting._inspiration,
         '_awards':this.edit.forms.painting._awards,
+        '_publications':this.edit.forms.painting._publications,
         '_notes':this.edit.forms.painting._notes,
         '_website':{'label':'Website Information', 'type':'simpleform', 
             'gstep':9,
@@ -1235,6 +1255,7 @@ function ciniki_artcatalog_main() {
                 'webflags_14':this.edit.forms.jewelry._website.fields.webflags_14,
                 'webflags_10':this.edit.forms.painting._website.fields.webflags_10,
                 'webflags_11':this.edit.forms.painting._website.fields.webflags_11,
+                'webflags_15':this.edit.forms.painting._website.fields.webflags_15,
             }},
         '_buttons':this.edit.forms.painting._buttons,
     };
@@ -1310,6 +1331,7 @@ function ciniki_artcatalog_main() {
             }},
         '_inspiration':this.edit.forms.painting._inspiration,
         '_awards':this.edit.forms.painting._awards,
+        '_publications':this.edit.forms.painting._publications,
         '_notes':this.edit.forms.painting._notes,
         '_website':{'label':'Website Information', 'type':'simpleform', 
             'gstep':9,
@@ -1323,6 +1345,7 @@ function ciniki_artcatalog_main() {
                 'webflags_14':this.edit.forms.jewelry._website.fields.webflags_14,
                 'webflags_10':this.edit.forms.painting._website.fields.webflags_10,
                 'webflags_11':this.edit.forms.painting._website.fields.webflags_11,
+                'webflags_15':this.edit.forms.painting._website.fields.webflags_15,
             }},
         '_buttons':{'label':'', 'gstep':10, 
             'gtitle':'Save your work',
@@ -1667,6 +1690,7 @@ function ciniki_artcatalog_main() {
             'location':{'label':'Location', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
             'description':{'label':'Description', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
             'awards':{'label':'Awards', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
+            'publications':{'label':'Publications', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
             'notes':{'label':'Notes', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
             'inspiration':{'label':'Inspiration', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
             'pagenumbers':{'label':'Page Numbers', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
@@ -1692,6 +1716,7 @@ function ciniki_artcatalog_main() {
             'location':{'label':'Location', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
             'description':{'label':'Description', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
             'awards':{'label':'Awards', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
+            'publications':{'label':'Publications', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
             'notes':{'label':'Notes', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
             'inspiration':{'label':'Inspiration', 'type':'toggle', 'none':'yes', 'toggles':this.toggleOptions},
             }},
@@ -2116,6 +2141,7 @@ function ciniki_artcatalog_main() {
             'location':'yes',
             'description':'yes',
             'awards':'yes',
+            'publications':'yes',
 //          'notes':'yes',
 //          'inspiration':'yes',
             'pagenumbers':'yes',
@@ -2126,7 +2152,7 @@ function ciniki_artcatalog_main() {
         this.downloadpdf.show(cb);
     };
 
-    this.item.openDownload = function(cb, method, pagetitle, aid) {
+    this.openDownload = function(cb, method, pagetitle, aid) {
         this.downloadpdf.reset();
         this.downloadpdf.method = method;
         this.downloadpdf.list_section = null;
@@ -2145,6 +2171,7 @@ function ciniki_artcatalog_main() {
             'location':'yes',
             'description':'yes',
             'awards':'yes',
+            'publications':'yes',
 //          'notes':'yes',
 //          'inspiration':'yes',
             'pagenumbers':'no',
@@ -2180,7 +2207,7 @@ function ciniki_artcatalog_main() {
             args['align'] = this.downloadpdf.formFieldValue(this.downloadpdf.formField('align'), 'align');
         }
         var fields = '';
-        var flds = ['catalog_number','media','size','framed_size','price','location','description','awards','notes','inspiration'];
+        var flds = ['catalog_number','media','size','framed_size','price','location','description','awards','publications','notes','inspiration'];
         for(i in this.downloadpdf.sections.information.fields) {
             if( this.downloadpdf.formFieldValue(this.downloadpdf.formField(i), i) == 'yes' ) {
                 fields += ',' + i;
@@ -2212,7 +2239,7 @@ function ciniki_artcatalog_main() {
         var t = this.downloadpdf.formFieldValue(this.downloadpdf.formField('pagetitle'), 'pagetitle');
         args['pagetitle'] = t;
         var fields = '';
-        var flds = ['catalog_number','title', 'category', 'media','size','framed_size','price','location','description','awards','notes','inspiration'];
+        var flds = ['catalog_number','title', 'category', 'media','size','framed_size','price','location','description','awards','publications','notes','inspiration'];
         for(i in this.downloadpdf.sections.information.fields) {
             if( this.downloadpdf.formFieldValue(this.downloadpdf.formField(i), i) == 'yes' ) {
                 fields += ',' + i;

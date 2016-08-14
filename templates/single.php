@@ -172,6 +172,7 @@ function ciniki_artcatalog_templates_single($ciniki, $business_id, $sections, $a
             $divider = "\n";
             if( (in_array('description', $fields) && $item['description'] != '')
                 || (in_array('awards', $fields) && $item['awards'] != '')
+                || (in_array('publications', $fields) && $item['publications'] != '')
                 || (in_array('notes', $fields) && $item['notes'] != '')
                 || (in_array('inspiration', $fields) && $item['inspiration'] != '')
                 ) {
@@ -213,6 +214,10 @@ function ciniki_artcatalog_templates_single($ciniki, $business_id, $sections, $a
             }
             if( in_array('awards', $fields) && $item['awards'] != '' ) {
                 $nlines += $pdf->getNumLines($item['awards'], 176);
+                $blank_lines++;
+            }
+            if( in_array('publications', $fields) && $item['publications'] != '' ) {
+                $nlines += $pdf->getNumLines($item['publications'], 176);
                 $blank_lines++;
             }
             if( in_array('notes', $fields) && $item['notes'] != '' ) {
@@ -273,6 +278,14 @@ function ciniki_artcatalog_templates_single($ciniki, $business_id, $sections, $a
             if( in_array('awards', $fields) && $item['awards'] != '' ) {
                 $pdf->SetFont('', '', '12');
                 $pdf->MultiCell(176, 8, $item['awards'], 0, 'L', false, 1, '', '', true, 0, false, true, 0, 'T');
+            }
+
+            //
+            // Add the publications
+            //
+            if( in_array('publications', $fields) && $item['publications'] != '' ) {
+                $pdf->SetFont('', '', '12');
+                $pdf->MultiCell(176, 8, $item['publications'], 0, 'L', false, 1, '', '', true, 0, false, true, 0, 'T');
             }
 
             //
