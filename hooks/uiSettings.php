@@ -56,6 +56,8 @@ function ciniki_artcatalog_hooks_uiSettings($ciniki, $business_id, $args) {
                 'cellValues'=>array(
                     '0'=>'if( d.item.image != null && d.item.image != \'\' ) {'
                         . '\'<img width="75px" height="75px" src="\' + d.item.image + \'" />\';'
+                        . '} else {'
+                        . '\'<img width="75px" height="75px" src="/ciniki-mods/core/ui/themes/default/img/noimage_75.jpg"/>\''
                         . '}',
                     '1'=>'var sold = \'\';'
                         . 'var price = \'<b>Price</b>: \';'
