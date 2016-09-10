@@ -58,7 +58,9 @@ function ciniki_artcatalog_searchQuick($ciniki) {
 
     $strsql = "SELECT ciniki_artcatalog.id, image_id, name, media, catalog_number, size, framed_size, "
         . "ROUND(price, 2) AS price, location, type, "
-        . "IF((flags&0x02)=0x02,'yes','no') AS sold "
+        . "IF(status>=50, 'yes', 'no') AS sold, "
+        . "ciniki_artcatalog.last_updated "
+//        . "IF((flags&0x02)=0x02,'yes','no') AS sold "
 //      . "IF(ciniki_artcatalog.category='', 'Uncategorized', ciniki_artcatalog.category) AS cname "
 //      . "IF(ciniki_artcatalog.status=1, 'open', 'closed') AS status "
         . "FROM ciniki_artcatalog "
@@ -82,7 +84,7 @@ function ciniki_artcatalog_searchQuick($ciniki) {
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');
     $rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
         array('container'=>'items', 'fname'=>'id', 'name'=>'item',
-            'fields'=>array('id', 'type', 'name', 'image_id', 'media', 'catalog_number', 'size', 'framed_size', 'price', 'location', 'sold')),
+            'fields'=>array('id', 'type', 'name', 'image_id', 'media', 'catalog_number', 'size', 'framed_size', 'price', 'location', 'sold', 'last_updated')),
         ));
     if( $rc['stat'] != 'ok' ) {
         return $rc;
@@ -90,6 +92,28 @@ function ciniki_artcatalog_searchQuick($ciniki) {
     if( !isset($rc['items']) ) {
         return array('stat'=>'ok', 'items'=>array());
     }
-    return array('stat'=>'ok', 'items'=>$rc['items']);
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'hooks', 'loadThumbnail');
+    $rsp = array('stat'=>'ok', 'items'=>$rc['items']);
+    foreach($rsp['items'] as $iid => $item) {
+        //
+        // Load the images
+        //
+        if( isset($item['item']['image_id']) && $item['item']['image_id'] > 0 ) {
+            $rc = ciniki_images_hooks_loadThumbnail($ciniki, $args['business_id'], 
+                array('image_id'=>$item['item']['image_id'], 'maxlength'=>75, 'last_updated'=>$item['item']['last_updated'], 'reddot'=>$item['item']['sold']));
+            if( $rc['stat'] != 'ok' ) {
+                return $rc;
+            }
+            $rsp['items'][$iid]['item']['image'] = 'data:image/jpg;base64,' . base64_encode($rc['image']);
+        } else {
+
+        }
+
+        //
+        // Setup the description
+        //
+    }
+
+    return $rsp;
 }
 ?>
