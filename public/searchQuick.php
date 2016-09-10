@@ -106,10 +106,6 @@ function ciniki_artcatalog_searchQuick($ciniki) {
             }
             $rsp['items'][$iid]['item']['image'] = 'data:image/jpg;base64,' . base64_encode($rc['image']);
         }
-
-        //
-        // Setup the description
-        //
     }
 
     return $rsp;
