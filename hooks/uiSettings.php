@@ -22,8 +22,7 @@ function ciniki_artcatalog_hooks_uiSettings($ciniki, $business_id, $args) {
     //
     // Get the settings
     //
-    $rc = ciniki_core_dbDetailsQueryDash($ciniki, 'ciniki_artcatalog_settings', 'business_id', 
-        $business_id, 'ciniki.artcatalog', 'settings', '');
+    $rc = ciniki_core_dbDetailsQueryDash($ciniki, 'ciniki_artcatalog_settings', 'business_id', $business_id, 'ciniki.artcatalog', 'settings', '');
     if( $rc['stat'] == 'ok' && isset($rc['settings']) ) {
         $rsp['settings'] = $rc['settings'];
     }
@@ -85,8 +84,16 @@ function ciniki_artcatalog_hooks_uiSettings($ciniki, $business_id, $args) {
             );
         $rsp['menu_items'][] = $menu_item;
 
-        $rsp['settings_menu_items'][] = array('priority'=>6700, 'label'=>'Art Catalog', 'edit'=>array('app'=>'ciniki.artcatalog.settings'));
     } 
+
+    if( isset($ciniki['business']['modules']['ciniki.artcatalog'])
+        && (isset($args['permissions']['owners'])
+            || isset($args['permissions']['employees'])
+            || ($ciniki['session']['user']['perms']&0x01) == 0x01
+            )
+        ) {
+        $rsp['settings_menu_items'][] = array('priority'=>6700, 'label'=>'Art Catalog', 'edit'=>array('app'=>'ciniki.artcatalog.settings'));
+    }
 
     return $rsp;
 }
