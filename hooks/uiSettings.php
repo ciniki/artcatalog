@@ -17,7 +17,7 @@ function ciniki_artcatalog_hooks_uiSettings($ciniki, $business_id, $args) {
     //
     // Setup the default response
     //
-    $rsp = array('stat'=>'ok', 'settings'=>array(), 'menu_items'=>array());  
+    $rsp = array('stat'=>'ok', 'settings'=>array(), 'menu_items'=>array(), 'settings_menu_items'=>array());  
 
     //
     // Get the settings
@@ -84,6 +84,8 @@ function ciniki_artcatalog_hooks_uiSettings($ciniki, $business_id, $args) {
                 ),
             );
         $rsp['menu_items'][] = $menu_item;
+
+        $rsp['settings_menu_items'][] = array('priority'=>6700, 'label'=>'Art Catalog', 'edit'=>array('app'=>'ciniki.artcatalog.settings'));
     } 
 
     return $rsp;
