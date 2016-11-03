@@ -17,7 +17,7 @@ function ciniki_artcatalog_sapos_itemLookup($ciniki, $business_id, $args) {
     if( !isset($args['object']) || $args['object'] == ''
         || !isset($args['object_id']) || $args['object_id'] == '' 
         ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2404', 'msg'=>'No event specified.'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.47', 'msg'=>'No event specified.'));
     }
 
     if( isset($args['object']) && $args['object'] == 'ciniki.artcatalog.item'
@@ -63,7 +63,7 @@ function ciniki_artcatalog_sapos_itemLookup($ciniki, $business_id, $args) {
             return $rc;
         }
         if( !isset($rc['item']) ) {
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1938', 'msg'=>'Item not found'));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.48', 'msg'=>'Item not found'));
         }
         $item = $rc['item'];
 

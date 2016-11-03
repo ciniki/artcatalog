@@ -105,7 +105,7 @@ function ciniki_artcatalog_web_imageDetails($ciniki, $settings, $business_id, $p
         return $rc;
     }
     if( !isset($rc['items']) || count($rc['items']) < 1 ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'651', 'msg'=>'Unable to find artwork'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.51', 'msg'=>'Unable to find artwork'));
     }
     $image = array_pop($rc['items']);
 //  $image = $rc['items'][0]['item'];

@@ -70,7 +70,7 @@ function ciniki_artcatalog_productUpdate(&$ciniki) {
         return $rc;
     }
     if( !isset($rc['item']) ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2436', 'msg'=>'Product does not exist'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.36', 'msg'=>'Product does not exist'));
     }
     $product = $rc['item'];
 
@@ -95,7 +95,7 @@ function ciniki_artcatalog_productUpdate(&$ciniki) {
             return $rc;
         }
         if( $rc['num_rows'] > 0 ) {
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2437', 'msg'=>'You already have a product with this name, please choose another name'));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.37', 'msg'=>'You already have a product with this name, please choose another name'));
         }
     }
 

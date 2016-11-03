@@ -66,7 +66,7 @@ function ciniki_artcatalog_trackingDelete(&$ciniki) {
         return $rc;
     }
     if( !isset($rc['place']) ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1011', 'msg'=>'Unable to find existing tracking item'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.40', 'msg'=>'Unable to find existing tracking item'));
     }
     $uuid = $rc['place']['uuid'];
 

@@ -56,7 +56,7 @@ function ciniki_artcatalog_imageUpdate(&$ciniki) {
         return $rc;
     }
     if( !isset($rc['item']) ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1339', 'msg'=>'Image not found'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.28', 'msg'=>'Image not found'));
     }
     $item = $rc['item'];
 
@@ -81,7 +81,7 @@ function ciniki_artcatalog_imageUpdate(&$ciniki) {
             return $rc;
         }
         if( $rc['num_rows'] > 0 ) {
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1340', 'msg'=>'You already have an image with this name, please choose another name'));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.29', 'msg'=>'You already have an image with this name, please choose another name'));
         }
     } 
 

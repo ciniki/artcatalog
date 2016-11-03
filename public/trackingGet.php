@@ -55,7 +55,7 @@ function ciniki_artcatalog_trackingGet($ciniki) {
         return $rc;
     }
     if( !isset($rc['place']) ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1013', 'msg'=>'Unable to find tracking item'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.41', 'msg'=>'Unable to find tracking item'));
     }
     
     return array('stat'=>'ok', 'place'=>$rc['place']);

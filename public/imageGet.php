@@ -64,7 +64,7 @@ function ciniki_artcatalog_imageGet($ciniki) {
         return $rc;
     }
     if( !isset($rc['images']) ) {
-        return array('stat'=>'ok', 'err'=>array('pkg'=>'ciniki', 'code'=>'1338', 'msg'=>'Unable to find image'));
+        return array('stat'=>'ok', 'err'=>array('code'=>'ciniki.artcatalog.27', 'msg'=>'Unable to find image'));
     }
     $image = $rc['images'][0]['image'];
     

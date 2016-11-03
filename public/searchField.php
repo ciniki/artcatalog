@@ -69,7 +69,7 @@ function ciniki_artcatalog_searchField($ciniki) {
         && $args['field'] != 'year'
         && $args['field'] != 'location'
         ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'599', 'msg'=>'Unvalid search field'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.38', 'msg'=>'Unvalid search field'));
     }
     //
     // Get the number of faqs in each status for the business, 

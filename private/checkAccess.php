@@ -27,7 +27,7 @@ function ciniki_artcatalog_checkAccess(&$ciniki, $business_id, $method) {
     $modules = $rc['modules'];
 
     if( !isset($rc['ruleset']) ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'590', 'msg'=>'No permissions granted'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.11', 'msg'=>'No permissions granted'));
     }
 
     //
@@ -65,6 +65,6 @@ function ciniki_artcatalog_checkAccess(&$ciniki, $business_id, $method) {
     //
     // By default, fail
     //
-    return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'591', 'msg'=>'Access denied.'));
+    return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.12', 'msg'=>'Access denied.'));
 }
 ?>

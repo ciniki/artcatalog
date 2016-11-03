@@ -52,7 +52,7 @@ function ciniki_artcatalog_delete(&$ciniki) {
         return $rc;
     }
     if( !isset($rc['artcatalog']) ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'107', 'msg'=>'Unable to find existing item'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.17', 'msg'=>'Unable to find existing item'));
     }
     $uuid = $rc['artcatalog']['uuid'];
 
@@ -70,7 +70,7 @@ function ciniki_artcatalog_delete(&$ciniki) {
         return $rc;
     }
     if( isset($rc['rows']) && count($rc['rows']) > 0 ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2408', 'msg'=>'You must remove all products for this item first.'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.18', 'msg'=>'You must remove all products for this item first.'));
     }
 
     //
@@ -86,10 +86,10 @@ function ciniki_artcatalog_delete(&$ciniki) {
                 'object_id'=>$args['artcatalog_id'],
                 ));
             if( $rc['stat'] != 'ok' ) {
-                return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2418', 'msg'=>'Unable to check if item is still be used', 'err'=>$rc['err']));
+                return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.19', 'msg'=>'Unable to check if item is still be used', 'err'=>$rc['err']));
             }
             if( $rc['used'] != 'no' ) {
-                return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2419', 'msg'=>"Item is still in use. " . $rc['msg']));
+                return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.20', 'msg'=>"Item is still in use. " . $rc['msg']));
             }
         }
     }

@@ -18,7 +18,7 @@ function ciniki_artcatalog_backupModule(&$ciniki, $business) {
     $backup_dir = $business['backup_dir'] . '/ciniki.artcatalog';
     if( !file_exists($backup_dir) ) {
         if( mkdir($backup_dir, 0755, true) === false ) {
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1716', 'msg'=>'Unable to create backup directory'));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.6', 'msg'=>'Unable to create backup directory'));
         }
     }
 
@@ -229,7 +229,7 @@ function ciniki_artcatalog_backupModule(&$ciniki, $business) {
             $item_backup_dir = $backup_dir . '/' . $type['name'] . '/' . $item['filename'];
             if( !file_exists($item_backup_dir) ) {
                 if( mkdir($item_backup_dir, 0755, true) === false ) {
-                    return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1750', 'msg'=>'Unable to create backup directory for artcatalog item: ' . $type['name'] . '/' . $item['name']));
+                    return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.7', 'msg'=>'Unable to create backup directory for artcatalog item: ' . $type['name'] . '/' . $item['name']));
                 }
             }
 
@@ -297,7 +297,7 @@ function ciniki_artcatalog_backupModule(&$ciniki, $business) {
             $item_backup_dir = $backup_dir . '/' . $type['name'] . '/' . $item['filename'];
             if( !file_exists($item_backup_dir) ) {
                 if( mkdir($item_backup_dir, 0755, true) === false ) {
-                    return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1751', 'msg'=>'Unable to create backup directory for artcatalog item: ' . $type['name'] . '/' . $item['name']));
+                    return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.8', 'msg'=>'Unable to create backup directory for artcatalog item: ' . $type['name'] . '/' . $item['name']));
                 }
             }
 
@@ -491,7 +491,7 @@ function ciniki_artcatalog_backupModule(&$ciniki, $business) {
                     fwrite($h, $original->getImageBlob());
                     fclose($h);
                 } else {
-                    return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1752', 'msg'=>'Unable to save image'));
+                    return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.9', 'msg'=>'Unable to save image'));
                 }
             }
 
@@ -509,7 +509,7 @@ function ciniki_artcatalog_backupModule(&$ciniki, $business) {
                         fwrite($h, $original->getImageBlob());
                         fclose($h);
                     } else {
-                        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1753', 'msg'=>'Unable to save image'));
+                        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.10', 'msg'=>'Unable to save image'));
                     }
                 }
             }

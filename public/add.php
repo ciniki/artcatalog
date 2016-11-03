@@ -164,7 +164,7 @@ function ciniki_artcatalog_add(&$ciniki) {
         return $rc;
     }
     if( $rc['num_rows'] > 0 ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'649', 'msg'=>'You already have artwork with this name, please choose another name'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.13', 'msg'=>'You already have artwork with this name, please choose another name'));
     }
 
     //  
@@ -200,7 +200,7 @@ function ciniki_artcatalog_add(&$ciniki) {
         if( $rc['stat'] != 'ok' ) {
             array_pop($ciniki['syncqueue']);
             ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'602', 'msg'=>'Unable to update lists', 'err'=>$rc['err']));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.14', 'msg'=>'Unable to update lists', 'err'=>$rc['err']));
         }
     }
 
@@ -215,7 +215,7 @@ function ciniki_artcatalog_add(&$ciniki) {
         if( $rc['stat'] != 'ok' ) {
             array_pop($ciniki['syncqueue']);
             ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3175', 'msg'=>'Unable to update materials', 'err'=>$rc['err']));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.15', 'msg'=>'Unable to update materials', 'err'=>$rc['err']));
         }
     }
 
@@ -228,7 +228,7 @@ function ciniki_artcatalog_add(&$ciniki) {
     if( $rc['stat'] != 'ok' ) {
         array_pop($ciniki['syncqueue']);
         ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1600', 'msg'=>'Unable to update web settings', 'err'=>$rc['err']));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.16', 'msg'=>'Unable to update web settings', 'err'=>$rc['err']));
     }
 
     //

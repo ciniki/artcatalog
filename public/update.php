@@ -155,7 +155,7 @@ function ciniki_artcatalog_update(&$ciniki) {
             return $rc;
         }
         if( $rc['num_rows'] > 0 ) {
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'600', 'msg'=>'You already have artwork with this name, please choose another name'));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.43', 'msg'=>'You already have artwork with this name, please choose another name'));
         }
     }
 
@@ -197,7 +197,7 @@ function ciniki_artcatalog_update(&$ciniki) {
             'artcatalog_id', $args['artcatalog_id'], 1, $args['lists']);
         if( $rc['stat'] != 'ok' ) {
             ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'601', 'msg'=>'Unable to update lists', 'err'=>$rc['err']));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.44', 'msg'=>'Unable to update lists', 'err'=>$rc['err']));
         }
         $updated = 1;
     }
@@ -212,7 +212,7 @@ function ciniki_artcatalog_update(&$ciniki) {
             'artcatalog_id', $args['artcatalog_id'], 100, $args['materials']);
         if( $rc['stat'] != 'ok' ) {
             ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3177', 'msg'=>'Unable to update materials', 'err'=>$rc['err']));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.45', 'msg'=>'Unable to update materials', 'err'=>$rc['err']));
         }
         $updated = 1;
     }
@@ -234,7 +234,7 @@ function ciniki_artcatalog_update(&$ciniki) {
     if( $rc['stat'] != 'ok' ) {
         array_pop($ciniki['syncqueue']);
         ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1653', 'msg'=>'Unable to update web settings', 'err'=>$rc['err']));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.46', 'msg'=>'Unable to update web settings', 'err'=>$rc['err']));
     }
 
     //

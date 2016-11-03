@@ -43,7 +43,7 @@ function ciniki_artcatalog_trackingAdd(&$ciniki) {
     $args = $rc['args'];
 
     if( $args['artcatalog_id'] == '0' ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1012', 'msg'=>'No artcatalog item specified'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.39', 'msg'=>'No artcatalog item specified'));
     }
 
     //  

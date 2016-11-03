@@ -186,7 +186,7 @@ function ciniki_artcatalog_get($ciniki) {
             return $rc;
         }
         if( !isset($rc['items']) ) {
-            return array('stat'=>'ok', 'err'=>array('pkg'=>'ciniki', 'code'=>'593', 'msg'=>'Unable to find item'));
+            return array('stat'=>'ok', 'err'=>array('code'=>'ciniki.artcatalog.21', 'msg'=>'Unable to find item'));
         }
         $item = $rc['items'][0]['item'];
 
@@ -366,7 +366,7 @@ function ciniki_artcatalog_get($ciniki) {
         $rc = ciniki_core_tagsList($ciniki, 'ciniki.artcatalog', $args['business_id'], 
             'ciniki_artcatalog_tags', 100);
         if( $rc['stat'] != 'ok' ) {
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'3176', 'msg'=>'Unable to get lists', 'err'=>$rc['err']));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.22', 'msg'=>'Unable to get lists', 'err'=>$rc['err']));
         }
         if( isset($rc['tags']) ) {
             $rsp['tags']['materials'] = $rc['tags'];
@@ -375,7 +375,7 @@ function ciniki_artcatalog_get($ciniki) {
         $rc = ciniki_core_tagsList($ciniki, 'ciniki.artcatalog', $args['business_id'], 
             'ciniki_artcatalog_tags', 1);
         if( $rc['stat'] != 'ok' ) {
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'594', 'msg'=>'Unable to get lists', 'err'=>$rc['err']));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.23', 'msg'=>'Unable to get lists', 'err'=>$rc['err']));
         }
         if( isset($rc['tags']) ) {
             $rsp['tags']['lists'] = $rc['tags'];

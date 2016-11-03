@@ -80,7 +80,7 @@ function ciniki_artcatalog_web_categoryImages($ciniki, $settings, $business_id, 
         $strsql .= "AND year = '" . ciniki_core_dbQuote($ciniki, $args['type_name']) . "' "
             . "";
     } else {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'635', 'msg'=>"Unable to find images."));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.49', 'msg'=>"Unable to find images."));
     }
 
     //

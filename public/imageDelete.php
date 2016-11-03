@@ -47,7 +47,7 @@ function ciniki_artcatalog_imageDelete(&$ciniki) {
     }
     if( !isset($rc['item']) ) {
         ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1303', 'msg'=>'Gallery image does not exist'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.26', 'msg'=>'Gallery image does not exist'));
     }
     $item = $rc['item'];
 

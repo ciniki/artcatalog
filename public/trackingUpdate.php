@@ -63,7 +63,7 @@ function ciniki_artcatalog_trackingUpdate(&$ciniki) {
             return $rc;
         }
         if( !isset($rc['object']) ) {
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2327', 'msg'=>'Unable to find exhibition'));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.42', 'msg'=>'Unable to find exhibition'));
         }
         if( isset($args['name']) && isset($args['start_date']) ) {
             $args['permalink'] = ciniki_core_makePermalink($ciniki, $args['name'] . '-' . ($args['start_date']==''?'0000-00-00':$args['start_date']));

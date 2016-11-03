@@ -32,6 +32,6 @@ function ciniki_artcatalog_hooks_getObjectName($ciniki, $business_id, $args) {
         }
     }
     
-    return array('stat'=>'noexist', 'err'=>array('pkg'=>'ciniki', 'code'=>'3591', 'msg'=>'Could not find item'));
+    return array('stat'=>'noexist', 'err'=>array('code'=>'ciniki.artcatalog.1', 'msg'=>'Could not find item'));
 }
 ?>

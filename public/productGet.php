@@ -110,7 +110,7 @@ function ciniki_artcatalog_productGet($ciniki) {
             return $rc;
         }
         if( !isset($rc['product']) ) {
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2410', 'msg'=>'Unable to find product'));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.35', 'msg'=>'Unable to find product'));
         }
         $product = $rc['product'];
         $product['price'] = numfmt_format_currency($intl_currency_fmt, $rc['product']['price'], $intl_currency);

@@ -42,7 +42,7 @@ function ciniki_artcatalog_productAdd(&$ciniki) {
     $args = $rc['args'];
 
     if( $args['artcatalog_id'] == '0' ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2409', 'msg'=>'No artcatalog item specified'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.30', 'msg'=>'No artcatalog item specified'));
     }
 
     //  
@@ -76,7 +76,7 @@ function ciniki_artcatalog_productAdd(&$ciniki) {
         return $rc;
     }
     if( $rc['num_rows'] > 0 ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'2435', 'msg'=>'You already have a product with this name, please choose another name'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.31', 'msg'=>'You already have a product with this name, please choose another name'));
     }
 
     //

@@ -35,7 +35,7 @@ function ciniki_artcatalog_web_galleryNextPrev($ciniki, $settings, $business_id,
         return $rc;
     }
     if( !isset($rc['rows']) ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'652', 'msg'=>'Unable to load image list'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.50', 'msg'=>'Unable to load image list'));
     }
 
     $images = $rc['rows'];
