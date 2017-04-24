@@ -119,8 +119,11 @@ function ciniki_artcatalog_web_imageDetails($ciniki, $settings, $business_id, $p
 //      'date_added'=>$rc['piece']['date_added'],
 //      'last_updated'=>$rc['piece']['last_updated']);
     $image['details'] = '';
+    if( $image['year'] != '' && ($image['webflags']&0x8000) > 0 ) {
+        $image['details'] .= ($image['details']!=''?', ':'') . $image['year'];
+    }
     if( $image['media'] != '' && ($image['webflags']&0x1000) > 0 ) {
-        $image['details'] .= $image['media'];
+        $image['details'] .= ($image['details']!=''?', ':'') . $image['media'];
     }
     if( ($image['webflags']&0x2000) > 0 ) {
         //

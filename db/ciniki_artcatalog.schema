@@ -66,7 +66,7 @@
 #                   0x1000 - Include media
 #                   0x2000 - Include materials
 #                   0x4000 - Include publications
-#                   0x8000 - 
+#                   0x8000 - Include Year/Month/Day completed
 #
 # image_id:         The image in the images module to use as the default picture.
 #

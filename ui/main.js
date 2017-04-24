@@ -781,7 +781,7 @@ function ciniki_artcatalog_main() {
             'fields':{
                 'webflags_1':{'label':'Visible', 'type':'flagtoggle', 'field':'webflags', 'bit':0x01, 'default':'on',
                     'gtitle':'Do you want this item to appear on your website?',
-                    'on_fields':['webflags_5', 'webflags_13', 'webflags_14', 'webflags_12', 'webflags_9', 'webflags_10', 'webflags_11', 'webflags_15'],
+                    'on_fields':['webflags_5', 'webflags_16', 'webflags_13', 'webflags_14', 'webflags_12', 'webflags_9', 'webflags_10', 'webflags_11', 'webflags_15'],
                     },
                 'webflags_5':{'label':'Category Highlight', 'type':'flagtoggle', 'field':'webflags', 'bit':0x10, 'default':'off',
                     'gtitle':'Do you want this item to be the category thumbnail?',
@@ -797,6 +797,9 @@ function ciniki_artcatalog_main() {
                     'gtitle':'What other information do you want to include?',
                     'htext':'If your item is for sale, the price will be displayed on your website. '
                         + ' If the item is Sold, the word SOLD will be shown instead of the price.',
+                    'visible':function() { return ((M.ciniki_artcatalog_main.edit.data.webflags&0x01)>0?'yes':'no'); }
+                    },
+                'webflags_16':{'label':'Year', 'type':'flagtoggle', 'field':'webflags', 'bit':0x8000, 'default':'off',
                     'visible':function() { return ((M.ciniki_artcatalog_main.edit.data.webflags&0x01)>0?'yes':'no'); }
                     },
                 'webflags_13':{'label':'Media', 'type':'flagtoggle', 'field':'webflags', 'bit':0x1000, 'default':'on',
@@ -909,6 +912,7 @@ function ciniki_artcatalog_main() {
             'fields':{
                 'webflags_1':this.edit.forms.painting._website.fields.webflags_1,
                 'webflags_5':this.edit.forms.painting._website.fields.webflags_5,
+                'webflags_16':this.edit.forms.painting._website.fields.webflags_16,
                 'webflags_13':this.edit.forms.painting._website.fields.webflags_13,
                 'webflags_12':this.edit.forms.painting._website.fields.webflags_12,
                 'webflags_9':this.edit.forms.painting._website.fields.webflags_9,
@@ -1016,6 +1020,7 @@ function ciniki_artcatalog_main() {
                 'webflags_5':this.edit.forms.painting._website.fields.webflags_5,
                 'webflags_12':this.edit.forms.painting._website.fields.webflags_12,
                 'webflags_9':this.edit.forms.painting._website.fields.webflags_9,
+                'webflags_16':this.edit.forms.painting._website.fields.webflags_16,
                 'webflags_14':{'label':'Materials', 'type':'flagtoggle', 'field':'webflags', 'bit':0x2000, 'default':'on',
                     'visible':function() { return ((M.ciniki_artcatalog_main.edit.data.webflags&0x01)>0?'yes':'no'); }
                     },
@@ -1118,6 +1123,7 @@ function ciniki_artcatalog_main() {
             'fields':{
                 'webflags_1':this.edit.forms.painting._website.fields.webflags_1,
                 'webflags_5':this.edit.forms.painting._website.fields.webflags_5,
+                'webflags_16':this.edit.forms.painting._website.fields.webflags_16,
                 'webflags_12':this.edit.forms.painting._website.fields.webflags_12,
                 'webflags_9':this.edit.forms.painting._website.fields.webflags_9,
                 'webflags_14':this.edit.forms.jewelry._website.fields.webflags_14,
@@ -1216,6 +1222,7 @@ function ciniki_artcatalog_main() {
             'fields':{
                 'webflags_1':this.edit.forms.painting._website.fields.webflags_1,
                 'webflags_5':this.edit.forms.painting._website.fields.webflags_5,
+                'webflags_16':this.edit.forms.painting._website.fields.webflags_16,
                 'webflags_12':this.edit.forms.painting._website.fields.webflags_12,
                 'webflags_9':this.edit.forms.painting._website.fields.webflags_9,
                 'webflags_14':this.edit.forms.jewelry._website.fields.webflags_14,
@@ -1250,6 +1257,7 @@ function ciniki_artcatalog_main() {
             'fields':{
                 'webflags_1':this.edit.forms.painting._website.fields.webflags_1,
                 'webflags_5':this.edit.forms.painting._website.fields.webflags_5,
+                'webflags_16':this.edit.forms.painting._website.fields.webflags_16,
                 'webflags_12':this.edit.forms.painting._website.fields.webflags_12,
                 'webflags_9':this.edit.forms.painting._website.fields.webflags_9,
                 'webflags_14':this.edit.forms.jewelry._website.fields.webflags_14,
@@ -1340,6 +1348,7 @@ function ciniki_artcatalog_main() {
             'fields':{
                 'webflags_1':this.edit.forms.painting._website.fields.webflags_1,
                 'webflags_5':this.edit.forms.painting._website.fields.webflags_5,
+                'webflags_16':this.edit.forms.painting._website.fields.webflags_16,
                 'webflags_12':this.edit.forms.painting._website.fields.webflags_12,
                 'webflags_9':this.edit.forms.painting._website.fields.webflags_9,
                 'webflags_14':this.edit.forms.jewelry._website.fields.webflags_14,
