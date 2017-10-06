@@ -53,6 +53,7 @@ function ciniki_artcatalog_maps($ciniki) {
             '50'=>'SOLD',
             '60'=>'Private Collection',
             '70'=>'Artist Collection',
+            '80'=>'Commissioned',
             ),
         );
     

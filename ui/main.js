@@ -73,6 +73,7 @@ function ciniki_artcatalog_main() {
         '50':'Sold',
         '60':'Private Collection',
         '70':'Artist Collection',
+        '80':'Commissioned',
         };
     this.cur_type = null;
 
