@@ -1,0 +1,5 @@
+#
+# This file will update the row size for UTF-8
+#
+ALTER TABLE ciniki_artcatalog_products MODIFY description text not null;
+ALTER TABLE ciniki_artcatalog_products COMMENT='v1.02';

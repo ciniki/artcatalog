@@ -1,0 +1,8 @@
+#
+# Update the row size for UTF-8
+#
+ALTER TABLE ciniki_artcatalog MODIFY awards text not null;
+ALTER TABLE ciniki_artcatalog MODIFY publications text not null;
+ALTER TABLE ciniki_artcatalog MODIFY notes text not null;
+ALTER TABLE ciniki_artcatalog MODIFY inspiration text not null;
+ALTER TABLE ciniki_artcatalog COMMENT='v1.12';
