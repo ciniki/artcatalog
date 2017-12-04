@@ -34,7 +34,7 @@ function ciniki_artcatalog_products() {
         };
         this.edit.fieldHistoryArgs = function(s, i) {
             return {'method':'ciniki.artcatalog.productHistory', 
-                'args':{'business_id':M.curBusinessID, 'product_id':this.product_id, 'field':i}};
+                'args':{'tnid':M.curTenantID, 'product_id':this.product_id, 'field':i}};
             
         };
         this.edit.fieldValue = function(s, i, d) { 
@@ -80,7 +80,7 @@ function ciniki_artcatalog_products() {
         if( aid != null ) { this.edit.artcatalog_id = aid; }
         this.edit.sections._buttons.buttons.delete.visible = (this.edit.product_id>0?'yes':'no');
         M.api.getJSONCb('ciniki.artcatalog.productGet', 
-            {'business_id':M.curBusinessID, 'product_id':this.edit.product_id, 'artcatalog_id':this.edit.artcatalog_id}, function(rsp) {
+            {'tnid':M.curTenantID, 'product_id':this.edit.product_id, 'artcatalog_id':this.edit.artcatalog_id}, function(rsp) {
                 if( rsp.stat != 'ok' ) {
                     M.api.err(rsp);
                     return false;
@@ -97,7 +97,7 @@ function ciniki_artcatalog_products() {
             var c = this.edit.serializeForm('no');
             if( c != '' ) {
                 var rsp = M.api.postJSONCb('ciniki.artcatalog.productUpdate', 
-                    {'business_id':M.curBusinessID, 
+                    {'tnid':M.curTenantID, 
                     'product_id':this.edit.product_id}, c, function(rsp) {
                         if( rsp.stat != 'ok' ) {
                             M.api.err(rsp);
@@ -112,7 +112,7 @@ function ciniki_artcatalog_products() {
         } else {
             var c = this.edit.serializeForm('yes');
             var rsp = M.api.postJSONCb('ciniki.artcatalog.productAdd', 
-                {'business_id':M.curBusinessID, 'artcatalog_id':this.edit.artcatalog_id}, c,
+                {'tnid':M.curTenantID, 'artcatalog_id':this.edit.artcatalog_id}, c,
                     function(rsp) {
                         if( rsp.stat != 'ok' ) {
                             M.api.err(rsp);
@@ -126,7 +126,7 @@ function ciniki_artcatalog_products() {
 
     this.productDelete = function() {
         if( confirm('Are you sure you want to remove this products? All information about the product will be removed and unrecoverable.') ) {
-            var rsp = M.api.getJSONCb('ciniki.artcatalog.productDelete', {'business_id':M.curBusinessID, 
+            var rsp = M.api.getJSONCb('ciniki.artcatalog.productDelete', {'tnid':M.curTenantID, 
                 'product_id':this.edit.product_id}, function(rsp) {
                     if( rsp.stat != 'ok' ) {
                         M.api.err(rsp);

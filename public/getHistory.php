@@ -11,7 +11,7 @@
 // ---------
 // api_key:
 // auth_token:
-// business_id:         The ID of the business to get the details for.
+// tnid:         The ID of the tenant to get the details for.
 // artcatalog_id:       The ID of the item in the art catalog to get the history for.
 // field:               The field to get the history for. This can be any of the 
 //                      elements returned by the ciniki.artcatalog.get method.
@@ -29,7 +29,7 @@ function ciniki_artcatalog_getHistory($ciniki) {
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
         'artcatalog_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Item'), 
         'field'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Field'), 
         ));
@@ -39,10 +39,10 @@ function ciniki_artcatalog_getHistory($ciniki) {
     $args = $rc['args'];
     
     //
-    // Check access to business_id as owner, or sys admin
+    // Check access to tnid as owner, or sys admin
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'artcatalog', 'private', 'checkAccess');
-    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['business_id'], 'ciniki.artcatalog.getHistory');
+    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['tnid'], 'ciniki.artcatalog.getHistory');
     if( $rc['stat'] != 'ok' ) {
         return $rc;
     }
@@ -50,17 +50,17 @@ function ciniki_artcatalog_getHistory($ciniki) {
     if( $args['field'] == 'lists' ) {
         ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbGetModuleHistoryTags');
         return ciniki_core_dbGetModuleHistoryTags($ciniki, 'ciniki.artcatalog', 
-            'ciniki_artcatalog_history', $args['business_id'], 
+            'ciniki_artcatalog_history', $args['tnid'], 
             'ciniki_artcatalog_tags', $args['artcatalog_id'], 'tag_name', 'artcatalog_id', 1);
     }
 
     if( $args['field'] == 'price' ) {
         ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbGetModuleHistoryReformat');
         return ciniki_core_dbGetModuleHistoryReformat($ciniki, 'ciniki.artcatalog', 'ciniki_artcatalog_history', 
-            $args['business_id'], 'ciniki_artcatalog', $args['artcatalog_id'], $args['field'], 'currency');
+            $args['tnid'], 'ciniki_artcatalog', $args['artcatalog_id'], $args['field'], 'currency');
     }
 
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbGetModuleHistory');
-    return ciniki_core_dbGetModuleHistory($ciniki, 'ciniki.artcatalog', 'ciniki_artcatalog_history', $args['business_id'], 'ciniki_artcatalog', $args['artcatalog_id'], $args['field']);
+    return ciniki_core_dbGetModuleHistory($ciniki, 'ciniki.artcatalog', 'ciniki_artcatalog_history', $args['tnid'], 'ciniki_artcatalog', $args['artcatalog_id'], $args['field']);
 }
 ?>

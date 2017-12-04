@@ -9,7 +9,7 @@
 // ---------
 // api_key:
 // auth_token:
-// business_id:     The ID of the business to add the products to.
+// tnid:     The ID of the tenant to add the products to.
 //
 // artcatalog_id:   The ID of the artcatalog item to add the products for.
 //
@@ -23,7 +23,7 @@ function ciniki_artcatalog_productAdd(&$ciniki) {
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
         'artcatalog_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Artcatalog Item'), 
         'name'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Name'), 
         'permalink'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Permalink'), 
@@ -47,10 +47,10 @@ function ciniki_artcatalog_productAdd(&$ciniki) {
 
     //  
     // Make sure this module is activated, and
-    // check permission to run this function for this business
+    // check permission to run this function for this tenant
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'artcatalog', 'private', 'checkAccess');
-    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['business_id'], 'ciniki.artcatalog.productAdd'); 
+    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['tnid'], 'ciniki.artcatalog.productAdd'); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
@@ -66,7 +66,7 @@ function ciniki_artcatalog_productAdd(&$ciniki) {
     //
     $strsql = "SELECT id, name, permalink "
         . "FROM ciniki_artcatalog_products "
-        . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+        . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
         . "AND artcatalog_id = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_id']) . "' "
         . "AND permalink = '" . ciniki_core_dbQuote($ciniki, $args['permalink']) . "' "
         . "";
@@ -83,6 +83,6 @@ function ciniki_artcatalog_productAdd(&$ciniki) {
     // Update product
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'objectAdd');
-    return ciniki_core_objectAdd($ciniki, $args['business_id'], 'ciniki.artcatalog.product', $args);
+    return ciniki_core_objectAdd($ciniki, $args['tnid'], 'ciniki.artcatalog.product', $args);
 }
 ?>

@@ -9,7 +9,7 @@
 // ---------
 // api_key:
 // auth_token:
-// business_id:         The ID of the business to remove the item from.
+// tnid:         The ID of the tenant to remove the item from.
 // artcatalog_id:       The ID of the item in the catalog to be removed.
 // 
 // Returns
@@ -22,7 +22,7 @@ function ciniki_artcatalog_delete(&$ciniki) {
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
         'artcatalog_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Item'), 
         )); 
     if( $rc['stat'] != 'ok' ) { 
@@ -32,10 +32,10 @@ function ciniki_artcatalog_delete(&$ciniki) {
     
     //  
     // Make sure this module is activated, and
-    // check permission to run this function for this business
+    // check permission to run this function for this tenant
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'artcatalog', 'private', 'checkAccess');
-    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['business_id'], 'ciniki.artcatalog.delete'); 
+    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['tnid'], 'ciniki.artcatalog.delete'); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
@@ -44,7 +44,7 @@ function ciniki_artcatalog_delete(&$ciniki) {
     // Get the uuid of the artcatalog item to be deleted
     //
     $strsql = "SELECT uuid FROM ciniki_artcatalog "
-        . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+        . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
         . "AND id = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_id']) . "' "
         . "";
     $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', 'artcatalog');
@@ -62,7 +62,7 @@ function ciniki_artcatalog_delete(&$ciniki) {
     $strsql = "SELECT id, uuid "
         . "FROM ciniki_artcatalog_products "
         . "WHERE artcatalog_id = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_id']) . "' "
-        . "AND business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+        . "AND tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
         . "";
     $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', 'product');
     if( $rc['stat'] != 'ok' ) {
@@ -76,12 +76,12 @@ function ciniki_artcatalog_delete(&$ciniki) {
     //
     // Check if artcatalog item is used anywhere
     //
-    foreach($ciniki['business']['modules'] as $module => $m) {
+    foreach($ciniki['tenant']['modules'] as $module => $m) {
         list($pkg, $mod) = explode('.', $module);
         $rc = ciniki_core_loadMethod($ciniki, $pkg, $mod, 'hooks', 'checkObjectUsed');
         if( $rc['stat'] == 'ok' ) {
             $fn = $rc['function_call'];
-            $rc = $fn($ciniki, $args['business_id'], array(
+            $rc = $fn($ciniki, $args['tnid'], array(
                 'object'=>'ciniki.artcatalog.item', 
                 'object_id'=>$args['artcatalog_id'],
                 ));
@@ -114,7 +114,7 @@ function ciniki_artcatalog_delete(&$ciniki) {
     // Remove any tags for the artcatalog item
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'tagsDelete');
-    $rc = ciniki_core_tagsDelete($ciniki, 'ciniki.artcatalog', 'tag', $args['business_id'], 
+    $rc = ciniki_core_tagsDelete($ciniki, 'ciniki.artcatalog', 'tag', $args['tnid'], 
         'ciniki_artcatalog_tags', 'ciniki_artcatalog_history', 'artcatalog_id', $args['artcatalog_id']);
     if( $rc['stat'] != 'ok' ) {
         ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
@@ -126,7 +126,7 @@ function ciniki_artcatalog_delete(&$ciniki) {
     //
     $strsql = "SELECT id, uuid FROM ciniki_artcatalog_tracking "
         . "WHERE artcatalog_id = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_id']) . "' "
-        . "AND business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+        . "AND tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
         . "";
     $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', 'tracking');
     if( $rc['stat'] != 'ok' ) {
@@ -136,7 +136,7 @@ function ciniki_artcatalog_delete(&$ciniki) {
     if( isset($rc['rows']) ) {
         $items = $rc['rows'];
         foreach($items as $rid => $row) {
-            $rc = ciniki_core_objectDelete($ciniki, $args['business_id'], 'ciniki.artcatalog.place',
+            $rc = ciniki_core_objectDelete($ciniki, $args['tnid'], 'ciniki.artcatalog.place',
                 $row['id'], $row['uuid'], 0x04);
             if( $rc['stat'] != 'ok' ) {
                 ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
@@ -149,7 +149,7 @@ function ciniki_artcatalog_delete(&$ciniki) {
     // Remove any additional images
     //
     $strsql = "SELECT id, uuid, image_id FROM ciniki_artcatalog_images "
-        . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+        . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
         . "AND artcatalog_id = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_id']) . "' "
         . "";
     $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', 'image');
@@ -160,7 +160,7 @@ function ciniki_artcatalog_delete(&$ciniki) {
     if( isset($rc['rows']) ) {
         $images = $rc['rows'];
         foreach($images as $rid => $row) {
-            $rc = ciniki_core_objectDelete($ciniki, $args['business_id'], 'ciniki.artcatalog.image',
+            $rc = ciniki_core_objectDelete($ciniki, $args['tnid'], 'ciniki.artcatalog.image',
                 $row['id'], $row['uuid'], 0x04);
             if( $rc['stat'] != 'ok' ) {
                 ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
@@ -172,7 +172,7 @@ function ciniki_artcatalog_delete(&$ciniki) {
     //
     // Remove the artcatalog item
     //
-    $rc = ciniki_core_objectDelete($ciniki, $args['business_id'], 'ciniki.artcatalog.item',
+    $rc = ciniki_core_objectDelete($ciniki, $args['tnid'], 'ciniki.artcatalog.item',
         $args['artcatalog_id'], $uuid, 0x06);
     if( $rc['stat'] != 'ok' ) {
         ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');

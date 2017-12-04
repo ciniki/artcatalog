@@ -9,7 +9,7 @@
 // ---------
 // api_key:
 // auth_token:
-// business_id:         The ID of the business to remove the item from.
+// tnid:         The ID of the tenant to remove the item from.
 // tracking_id:         The ID of the tracking to be removed.
 // 
 // Returns
@@ -22,7 +22,7 @@ function ciniki_artcatalog_trackingDelete(&$ciniki) {
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
         'tracking_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tracking'), 
         )); 
     if( $rc['stat'] != 'ok' ) { 
@@ -32,10 +32,10 @@ function ciniki_artcatalog_trackingDelete(&$ciniki) {
     
     //  
     // Make sure this module is activated, and
-    // check permission to run this function for this business
+    // check permission to run this function for this tenant
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'artcatalog', 'private', 'checkAccess');
-    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['business_id'], 'ciniki.artcatalog.trackingDelete'); 
+    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['tnid'], 'ciniki.artcatalog.trackingDelete'); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
@@ -58,7 +58,7 @@ function ciniki_artcatalog_trackingDelete(&$ciniki) {
     // Get the uuid of the tracking item to be deleted
     //
     $strsql = "SELECT uuid FROM ciniki_artcatalog_tracking "
-        . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+        . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
         . "AND id = '" . ciniki_core_dbQuote($ciniki, $args['tracking_id']) . "' "
         . "";
     $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', 'place');
@@ -74,6 +74,6 @@ function ciniki_artcatalog_trackingDelete(&$ciniki) {
     // Delete tracking
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'objectDelete');
-    return ciniki_core_objectDelete($ciniki, $args['business_id'], 'ciniki.artcatalog.place', $args['tracking_id'], $uuid, 0x07);
+    return ciniki_core_objectDelete($ciniki, $args['tnid'], 'ciniki.artcatalog.place', $args['tracking_id'], $uuid, 0x07);
 }
 ?>

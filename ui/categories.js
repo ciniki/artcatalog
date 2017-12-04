@@ -73,10 +73,10 @@ function ciniki_artcatalog_categories() {
     }
 
     //
-    // Grab the stats for the business from the database and present the list of orders.
+    // Grab the stats for the tenant from the database and present the list of orders.
     //
     this.showMenu = function(cb) {
-        M.api.getJSONCb('ciniki.artcatalog.categoryList', {'business_id':M.curBusinessID}, function(rsp) {
+        M.api.getJSONCb('ciniki.artcatalog.categoryList', {'tnid':M.curTenantID}, function(rsp) {
             if( rsp.stat != 'ok' ) {
                 M.api.err(rsp);
                 return false;
@@ -105,7 +105,7 @@ function ciniki_artcatalog_categories() {
     this.editCategory = function(cb, type, name) {
         if( type != null ) { this.category.artcatalog_type = type; }
         if( name != null ) { this.category.category_name = unescape(name); }
-        M.api.getJSONCb('ciniki.artcatalog.categoryDetails', {'business_id':M.curBusinessID,
+        M.api.getJSONCb('ciniki.artcatalog.categoryDetails', {'tnid':M.curTenantID,
             'type':this.category.artcatalog_type, 'category':this.category.category_name}, function(rsp) {
             if( rsp.stat != 'ok' ) {
                 M.api.err(rsp);
@@ -122,7 +122,7 @@ function ciniki_artcatalog_categories() {
         var c = this.category.serializeFormData('no');
         if( c != '' ) {
             M.api.postJSONFormData('ciniki.artcatalog.categoryUpdate', 
-                {'business_id':M.curBusinessID, 'artcatalog_type':this.category.artcatalog_type,
+                {'tnid':M.curTenantID, 'artcatalog_type':this.category.artcatalog_type,
                 'category':this.category.category_name}, c, function(rsp) {
                     if( rsp.stat != 'ok' ) {
                         M.api.err(rsp);

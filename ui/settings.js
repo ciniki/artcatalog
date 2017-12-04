@@ -37,7 +37,7 @@ function ciniki_artcatalog_settings() {
                 'webflags_11':{'label':'Awards', 'type':'flagtoggle', 'field':'defaults-webflags', 'bit':0x0400, 'default':'on'},
                 }},
             'taxes':{'label':'Taxes', 
-                'active':function() { return M.curBusiness.modules['ciniki.taxes']!=null?'yes':'no'; },
+                'active':function() { return M.curTenant.modules['ciniki.taxes']!=null?'yes':'no'; },
                 'fields':{
                     'taxes-default-taxtype':{'label':'Default Tax Type', 'type':'select', 'options':{}},
                 }},
@@ -53,7 +53,7 @@ function ciniki_artcatalog_settings() {
             return this.data[i];
         };
         this.main.fieldHistoryArgs = function(s, i) {
-            return {'method':'ciniki.artcatalog.settingsHistory', 'args':{'business_id':M.curBusinessID, 'setting':i}};
+            return {'method':'ciniki.artcatalog.settingsHistory', 'args':{'tnid':M.curTenantID, 'setting':i}};
         };
         this.main.addButton('save', 'Save', 'M.ciniki_artcatalog_settings.saveSettings();');
         this.main.addClose('Cancel');
@@ -81,18 +81,18 @@ function ciniki_artcatalog_settings() {
     }
 
     //
-    // Grab the stats for the business from the database and present the list of orders.
+    // Grab the stats for the tenant from the database and present the list of orders.
     //
     this.showMain = function(cb) {
-        var rsp = M.api.getJSONCb('ciniki.artcatalog.settingsGet', {'business_id':M.curBusinessID}, function(rsp) {
+        var rsp = M.api.getJSONCb('ciniki.artcatalog.settingsGet', {'tnid':M.curTenantID}, function(rsp) {
             if( rsp.stat != 'ok' ) {
                 M.api.err(rsp);
                 return false;
             }
             var p = M.ciniki_artcatalog_settings.main;
             p.data = rsp.settings;
-            p.sections.taxes.active=(M.curBusiness.modules['ciniki.taxes']!=null)?'yes':'no';
-            if( M.curBusiness.modules['ciniki.taxes'] != null ) {
+            p.sections.taxes.active=(M.curTenant.modules['ciniki.taxes']!=null)?'yes':'no';
+            if( M.curTenant.modules['ciniki.taxes'] != null ) {
                 var types = {'0':'No Tax'};
                 for(i in rsp.taxtypes) {
                     types[rsp.taxtypes[i].type.id] = rsp.taxtypes[i].type.name + ((rsp.taxtypes[i].type.rates=='')?', No Taxes':', ' + rsp.taxtypes[i].type.rates);
@@ -108,7 +108,7 @@ function ciniki_artcatalog_settings() {
         var c = this.main.serializeForm('no');
         if( c != '' ) {
             var rsp = M.api.postJSONCb('ciniki.artcatalog.settingsUpdate', 
-                {'business_id':M.curBusinessID}, c, function(rsp) {
+                {'tnid':M.curTenantID}, c, function(rsp) {
                     if( rsp.stat != 'ok' ) {
                         M.api.err(rsp);
                         return false;

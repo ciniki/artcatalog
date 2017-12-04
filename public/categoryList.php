@@ -8,7 +8,7 @@
 // ---------
 // api_key:
 // auth_token:
-// business_id:     The ID of the business to get the list from.
+// tnid:     The ID of the tenant to get the list from.
 // 
 // Returns
 // -------
@@ -19,7 +19,7 @@ function ciniki_artcatalog_categoryList($ciniki) {
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
         )); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
@@ -28,10 +28,10 @@ function ciniki_artcatalog_categoryList($ciniki) {
     
     //  
     // Make sure this module is activated, and
-    // check permission to run this function for this business
+    // check permission to run this function for this tenant
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'artcatalog', 'private', 'checkAccess');
-    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['business_id'], 'ciniki.artcatalog.categoryList'); 
+    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['tnid'], 'ciniki.artcatalog.categoryList'); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
@@ -53,7 +53,7 @@ function ciniki_artcatalog_categoryList($ciniki) {
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbDetailsQueryDash'); 
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');
     $rc = ciniki_core_dbDetailsQueryDash($ciniki, 'ciniki_web_settings', 
-        'business_id', $args['business_id'], 'ciniki.web', 'settings', 'page-gallery-artcatalog');
+        'tnid', $args['tnid'], 'ciniki.web', 'settings', 'page-gallery-artcatalog');
     if( $rc['stat'] != 'ok' ) {
         return $rc;
     }
@@ -68,7 +68,7 @@ function ciniki_artcatalog_categoryList($ciniki) {
         ) {
         $strsql = "SELECT DISTINCT type, type AS name, category "
             . "FROM ciniki_artcatalog "
-            . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+            . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
             . "ORDER BY type, category COLLATE latin1_general_cs, category "
             . "";
         $rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
@@ -89,7 +89,7 @@ function ciniki_artcatalog_categoryList($ciniki) {
     } else {
         $strsql = "SELECT DISTINCT '0' AS type, category "
             . "FROM ciniki_artcatalog "
-            . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+            . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
             . "ORDER BY category COLLATE latin1_general_cs, category "
             . "";
         $rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(

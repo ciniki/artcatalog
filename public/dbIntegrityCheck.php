@@ -17,7 +17,7 @@ function ciniki_artcatalog_dbIntegrityCheck(&$ciniki) {
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
         'fix'=>array('required'=>'no', 'default'=>'no', 'name'=>'Fix Problems'),
         ));
     if( $rc['stat'] != 'ok' ) {
@@ -26,10 +26,10 @@ function ciniki_artcatalog_dbIntegrityCheck(&$ciniki) {
     $args = $rc['args'];
     
     //
-    // Check access to business_id as owner, or sys admin
+    // Check access to tnid as owner, or sys admin
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'artcatalog', 'private', 'checkAccess');
-    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['business_id'], 'ciniki.artcatalog.dbIntegrityCheck', 0);
+    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['tnid'], 'ciniki.artcatalog.dbIntegrityCheck', 0);
     if( $rc['stat'] != 'ok' ) {
         return $rc;
     }
@@ -55,7 +55,7 @@ function ciniki_artcatalog_dbIntegrityCheck(&$ciniki) {
         // Check any references for the objects
         //
         foreach($objects as $o => $obj) {
-            $rc = ciniki_core_objectRefFix($ciniki, $args['business_id'], 'ciniki.artcatalog.'.$o, 0x04);
+            $rc = ciniki_core_objectRefFix($ciniki, $args['tnid'], 'ciniki.artcatalog.'.$o, 0x04);
             if( $rc['stat'] != 'ok' ) {
                 return $rc;
             }
@@ -64,7 +64,7 @@ function ciniki_artcatalog_dbIntegrityCheck(&$ciniki) {
         //
         // Update the history for ciniki_artcatalog
         //
-        $rc = ciniki_core_dbFixTableHistory($ciniki, 'ciniki.artcatalog', $args['business_id'],
+        $rc = ciniki_core_dbFixTableHistory($ciniki, 'ciniki.artcatalog', $args['tnid'],
             'ciniki_artcatalog', 'ciniki_artcatalog_history', 
             array('uuid', 'name', 'permalink', 'type', 'flags', 'webflags', 'image_id', 
                 'catalog_number', 'category', 'year', 'media', 'size', 'framed_size', 'price', 
@@ -76,7 +76,7 @@ function ciniki_artcatalog_dbIntegrityCheck(&$ciniki) {
         //
         // Update the history for ciniki_artcatalog_tags
         //
-        $rc = ciniki_core_dbFixTableHistory($ciniki, 'ciniki.artcatalog', $args['business_id'],
+        $rc = ciniki_core_dbFixTableHistory($ciniki, 'ciniki.artcatalog', $args['tnid'],
             'ciniki_artcatalog_tags', 'ciniki_artcatalog_history', 
             array('uuid', 'artcatalog_id', 'tag_type', 'tag_name'));
         if( $rc['stat'] != 'ok' ) {
@@ -86,7 +86,7 @@ function ciniki_artcatalog_dbIntegrityCheck(&$ciniki) {
         //
         // Update the history for ciniki_artcatalog_tracking
         //
-        $rc = ciniki_core_dbFixTableHistory($ciniki, 'ciniki.artcatalog', $args['business_id'],
+        $rc = ciniki_core_dbFixTableHistory($ciniki, 'ciniki.artcatalog', $args['tnid'],
             'ciniki_artcatalog_tracking', 'ciniki_artcatalog_history', 
             array('uuid', 'artcatalog_id', 'name', 'external_number', 'start_date', 'end_date', 'notes'));
         if( $rc['stat'] != 'ok' ) {

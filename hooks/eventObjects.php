@@ -7,12 +7,12 @@
 // Arguments
 // ---------
 // ciniki:
-// business_id:     The ID of the business to get events for.
+// tnid:     The ID of the tenant to get events for.
 //
 // Returns
 // -------
 //
-function ciniki_artcatalog_hooks_eventObjects($ciniki, $business_id, $args) {
+function ciniki_artcatalog_hooks_eventObjects($ciniki, $tnid, $args) {
 
     $objects = array();
 
@@ -31,7 +31,7 @@ function ciniki_artcatalog_hooks_eventObjects($ciniki, $business_id, $args) {
         . "IFNULL(DATE_FORMAT(start_date, '" . ciniki_core_dbQuote($ciniki, $date_format) . "'), '') AS start_date, "
         . "IFNULL(DATE_FORMAT(end_date, '" . ciniki_core_dbQuote($ciniki, $date_format) . "'), '') AS end_date "
         . "FROM ciniki_artcatalog_tracking "
-        . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+        . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "ORDER BY start_date DESC, name "
         . "";
     $rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(

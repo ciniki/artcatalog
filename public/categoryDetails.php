@@ -8,7 +8,7 @@
 // ---------
 // api_key:
 // auth_token:
-// business_id:     The ID of the business to get the list from.
+// tnid:     The ID of the tenant to get the list from.
 // 
 // Returns
 // -------
@@ -19,7 +19,7 @@ function ciniki_artcatalog_categoryDetails($ciniki) {
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'),
+        'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'),
         'type'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Type'),
         'category'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Category'),
         )); 
@@ -30,10 +30,10 @@ function ciniki_artcatalog_categoryDetails($ciniki) {
     
     //  
     // Make sure this module is activated, and
-    // check permission to run this function for this business
+    // check permission to run this function for this tenant
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'artcatalog', 'private', 'checkAccess');
-    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['business_id'], 'ciniki.artcatalog.categoryDetails'); 
+    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['tnid'], 'ciniki.artcatalog.categoryDetails'); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
@@ -45,7 +45,7 @@ function ciniki_artcatalog_categoryDetails($ciniki) {
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbDetailsQueryDash'); 
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');
     $rc = ciniki_core_dbDetailsQueryDash($ciniki, 'ciniki_artcatalog_settings', 
-        'business_id', $args['business_id'], 'ciniki.artcatalog', 'settings', 'category');
+        'tnid', $args['tnid'], 'ciniki.artcatalog', 'settings', 'category');
     if( $rc['stat'] != 'ok' ) {
         return $rc;
     }

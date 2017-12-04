@@ -16,7 +16,7 @@ function ciniki_artcatalog_imageDelete(&$ciniki) {
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
         'artcatalog_image_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Image'),
         )); 
     if( $rc['stat'] != 'ok' ) { 
@@ -26,10 +26,10 @@ function ciniki_artcatalog_imageDelete(&$ciniki) {
 
     //  
     // Make sure this module is activated, and
-    // check permission to run this function for this business
+    // check permission to run this function for this tenant
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'artcatalog', 'private', 'checkAccess');
-    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['business_id'], 'ciniki.artcatalog.imageDelete', 0); 
+    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['tnid'], 'ciniki.artcatalog.imageDelete', 0); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
@@ -38,7 +38,7 @@ function ciniki_artcatalog_imageDelete(&$ciniki) {
     // Get the existing image information
     //
     $strsql = "SELECT id, uuid FROM ciniki_artcatalog_images "
-        . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+        . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
         . "AND id = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_image_id']) . "' "
         . "";
     $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', 'item');
@@ -55,7 +55,7 @@ function ciniki_artcatalog_imageDelete(&$ciniki) {
     // Delete the image
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'objectDelete');
-    return ciniki_core_objectDelete($ciniki, $args['business_id'], 'ciniki.artcatalog.image', 
+    return ciniki_core_objectDelete($ciniki, $args['tnid'], 'ciniki.artcatalog.image', 
         $args['artcatalog_image_id'], $item['uuid'], 0x07);
 }
 ?>

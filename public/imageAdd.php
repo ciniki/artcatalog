@@ -16,7 +16,7 @@ function ciniki_artcatalog_imageAdd(&$ciniki) {
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
         'artcatalog_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Artcatalog Item'),
         'name'=>array('required'=>'no', 'default'=>'', 'blank'=>'yes', 'name'=>'Title'), 
         'sequence'=>array('required'=>'no', 'default'=>'0', 'blank'=>'no', 'name'=>'Sequence'),
@@ -32,10 +32,10 @@ function ciniki_artcatalog_imageAdd(&$ciniki) {
 
     //  
     // Make sure this module is activated, and
-    // check permission to run this function for this business
+    // check permission to run this function for this tenant
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'artcatalog', 'private', 'checkAccess');
-    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['business_id'], 'ciniki.artcatalog.imageAdd', 0); 
+    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['tnid'], 'ciniki.artcatalog.imageAdd', 0); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
@@ -65,7 +65,7 @@ function ciniki_artcatalog_imageAdd(&$ciniki) {
     // Check the permalink doesn't already exist for this item in the artcatalog
     //
     $strsql = "SELECT id, name, permalink FROM ciniki_artcatalog_images "
-        . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+        . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
         . "AND artcatalog_id = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_id']) . "' "
         . "AND permalink = '" . ciniki_core_dbQuote($ciniki, $args['permalink']) . "' "
         . "";
@@ -85,6 +85,6 @@ function ciniki_artcatalog_imageAdd(&$ciniki) {
     // Add the image
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'objectAdd');
-    return ciniki_core_objectAdd($ciniki, $args['business_id'], 'ciniki.artcatalog.image', $args, 0x07);
+    return ciniki_core_objectAdd($ciniki, $args['tnid'], 'ciniki.artcatalog.image', $args, 0x07);
 }
 ?>

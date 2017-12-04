@@ -10,28 +10,28 @@
 // Returns
 // -------
 //
-function ciniki_artcatalog_templates_excel($ciniki, $business_id, $sections, $args) {
+function ciniki_artcatalog_templates_excel($ciniki, $tnid, $sections, $args) {
 
-    ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'businessDetails');
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'tenants', 'private', 'tenantDetails');
 
     //
-    // Load business details
+    // Load tenant details
     //
-    $rc = ciniki_businesses_businessDetails($ciniki, $business_id);
+    $rc = ciniki_tenants_tenantDetails($ciniki, $tnid);
     if( $rc['stat'] != 'ok' ) {
         return $rc;
     }
     if( isset($rc['details']) && is_array($rc['details']) ) {   
-        $business_details = $rc['details'];
+        $tenant_details = $rc['details'];
     } else {
-        $business_details = array();
+        $tenant_details = array();
     }
 
     //
     // Load INTL settings
     //
-    ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'intlSettings');
-    $rc = ciniki_businesses_intlSettings($ciniki, $business_id);
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'tenants', 'private', 'intlSettings');
+    $rc = ciniki_tenants_intlSettings($ciniki, $tnid);
     if( $rc['stat'] != 'ok' ) {
         return $rc;
     }

@@ -13,7 +13,7 @@
 // =======
 // <rsp stat="ok" />
 //
-function ciniki_artcatalog_sapos_itemLookup($ciniki, $business_id, $args) {
+function ciniki_artcatalog_sapos_itemLookup($ciniki, $tnid, $args) {
     if( !isset($args['object']) || $args['object'] == ''
         || !isset($args['object_id']) || $args['object_id'] == '' 
         ) {
@@ -26,7 +26,7 @@ function ciniki_artcatalog_sapos_itemLookup($ciniki, $business_id, $args) {
         // Query for the taxes for artcatalog
         //
         ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbDetailsQueryDash');
-        $rc = ciniki_core_dbDetailsQueryDash($ciniki, 'ciniki_artcatalog_settings', 'business_id', $business_id,
+        $rc = ciniki_core_dbDetailsQueryDash($ciniki, 'ciniki_artcatalog_settings', 'tnid', $tnid,
             'ciniki.artcatalog', 'taxes', 'taxes');
         if( $rc['stat'] != 'ok' ) {
             return $rc;
@@ -55,7 +55,7 @@ function ciniki_artcatalog_sapos_itemLookup($ciniki, $business_id, $args) {
             . "ciniki_artcatalog.media "
             . "FROM ciniki_artcatalog "
             . "WHERE ciniki_artcatalog.id = '" . ciniki_core_dbQuote($ciniki, $args['object_id']) . "' "
-            . "AND ciniki_artcatalog.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+            . "AND ciniki_artcatalog.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
             . "";
         ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
         $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', 'item');

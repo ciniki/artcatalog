@@ -3,5 +3,5 @@
 #
 ALTER TABLE ciniki_artcatalog ADD COLUMN permalink varchar(200) not null AFTER name;
 UPDATE ciniki_artcatalog SET permalink = REPLACE(REPLACE(LOWER(name), ' ', '-'), "'", '');
-CREATE UNIQUE INDEX permalink ON ciniki_artcatalog (permalink, business_id);
+CREATE UNIQUE INDEX permalink ON ciniki_artcatalog (permalink, tnid);
 ALTER TABLE ciniki_artcatalog COMMENT='v1.05';

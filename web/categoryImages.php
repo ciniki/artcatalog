@@ -8,7 +8,7 @@
 // ---------
 // ciniki:
 // settings:        The web settings structure.
-// business_id:     The ID of the business to get events for.
+// tnid:     The ID of the tenant to get events for.
 // type:            The list to return, either by category or year.
 //
 //                  - category
@@ -28,14 +28,14 @@
 //      ...
 // </images>
 //
-function ciniki_artcatalog_web_categoryImages($ciniki, $settings, $business_id, $args) {
+function ciniki_artcatalog_web_categoryImages($ciniki, $settings, $tnid, $args) {
 
     $album = array('name'=>'');
     if( isset($args['type']) && $args['type'] == 'category' && isset($args['type_name'])) {
         $album = array('name'=>$args['type_name'], 'description'=>'');
         $strsql = "SELECT detail_key, detail_value "
             . "FROM ciniki_artcatalog_settings "
-            . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' ";
+            . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' ";
             
         if( isset($args['artcatalog_type']) && $args['artcatalog_type'] != '' ) {
             $strsql .= "AND (detail_key LIKE 'category-description-" . ciniki_core_dbQuote($ciniki, $args['type_name']) . "' "
@@ -64,9 +64,9 @@ function ciniki_artcatalog_web_categoryImages($ciniki, $settings, $business_id, 
         . "FROM ciniki_artcatalog "
         . "LEFT JOIN ciniki_images ON ("
             . "ciniki_artcatalog.image_id = ciniki_images.id "
-            . "AND ciniki_images.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+            . "AND ciniki_images.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
             . ") "
-        . "WHERE ciniki_artcatalog.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+        . "WHERE ciniki_artcatalog.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "AND ciniki_artcatalog.image_id > 0 "
         . "AND (webflags&0x01) = 1 "
         . "";

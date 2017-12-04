@@ -8,7 +8,7 @@
 // ---------
 // api_key:
 // auth_token:
-// business_id:     The ID of the business to the item is a part of.
+// tnid:     The ID of the tenant to the item is a part of.
 //
 // artcatalog_id:   (optional) The new ID of the artcatalog item the product is attached to.
 //
@@ -28,7 +28,7 @@ function ciniki_artcatalog_productUpdate(&$ciniki) {
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
         'product_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Product'), 
         'name'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Name'), 
         'permalink'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Permalink'), 
@@ -48,10 +48,10 @@ function ciniki_artcatalog_productUpdate(&$ciniki) {
 
     //  
     // Make sure this module is activated, and
-    // check permission to run this function for this business
+    // check permission to run this function for this tenant
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'artcatalog', 'private', 'checkAccess');
-    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['business_id'], 'ciniki.artcatalog.productUpdate'); 
+    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['tnid'], 'ciniki.artcatalog.productUpdate'); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }
@@ -62,7 +62,7 @@ function ciniki_artcatalog_productUpdate(&$ciniki) {
     $strsql = "SELECT id, artcatalog_id "
         . "FROM ciniki_artcatalog_products "
         . "WHERE id = '" . ciniki_core_dbQuote($ciniki, $args['product_id']) . "' "
-        . "AND business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+        . "AND tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
         . "";
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
     $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', 'item');
@@ -85,7 +85,7 @@ function ciniki_artcatalog_productUpdate(&$ciniki) {
         //
         $strsql = "SELECT id, name, permalink "
             . "FROM ciniki_artcatalog_products "
-            . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+            . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
             . "AND artcatalog_id = '" . ciniki_core_dbQuote($ciniki, $product['artcatalog_id']) . "' "
             . "AND permalink = '" . ciniki_core_dbQuote($ciniki, $args['permalink']) . "' "
             . "";
@@ -103,6 +103,6 @@ function ciniki_artcatalog_productUpdate(&$ciniki) {
     // Update product
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'objectUpdate');
-    return ciniki_core_objectUpdate($ciniki, $args['business_id'], 'ciniki.artcatalog.product', $args['product_id'], $args, 0x07);
+    return ciniki_core_objectUpdate($ciniki, $args['tnid'], 'ciniki.artcatalog.product', $args['product_id'], $args, 0x07);
 }
 ?>

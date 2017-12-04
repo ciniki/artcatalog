@@ -9,7 +9,7 @@
 // ---------
 // api_key:
 // auth_token:
-// business_id:     The ID of the business to add the tracking to.
+// tnid:     The ID of the tenant to add the tracking to.
 //
 // artcatalog_id:   The ID of the artcatalog item to add the tracking for.
 //
@@ -29,7 +29,7 @@ function ciniki_artcatalog_trackingAdd(&$ciniki) {
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
         'artcatalog_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Artcatalog Item'), 
         'name'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Name'), 
         'external_number'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Number'), 
@@ -48,10 +48,10 @@ function ciniki_artcatalog_trackingAdd(&$ciniki) {
 
     //  
     // Make sure this module is activated, and
-    // check permission to run this function for this business
+    // check permission to run this function for this tenant
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'artcatalog', 'private', 'checkAccess');
-    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['business_id'], 'ciniki.artcatalog.trackingAdd'); 
+    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['tnid'], 'ciniki.artcatalog.trackingAdd'); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
@@ -65,6 +65,6 @@ function ciniki_artcatalog_trackingAdd(&$ciniki) {
     // Update tracking
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'objectAdd');
-    return ciniki_core_objectAdd($ciniki, $args['business_id'], 'ciniki.artcatalog.place', $args);
+    return ciniki_core_objectAdd($ciniki, $args['tnid'], 'ciniki.artcatalog.place', $args);
 }
 ?>

@@ -10,30 +10,30 @@
 // Returns
 // -------
 //
-function ciniki_artcatalog_templates_single($ciniki, $business_id, $sections, $args) {
+function ciniki_artcatalog_templates_single($ciniki, $tnid, $sections, $args) {
 
     require_once($ciniki['config']['ciniki.core']['lib_dir'] . '/tcpdf/tcpdf.php');
     ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'loadCacheOriginal');
-    ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'businessDetails');
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'tenants', 'private', 'tenantDetails');
 
     //
-    // Load business details
+    // Load tenant details
     //
-    $rc = ciniki_businesses_businessDetails($ciniki, $business_id);
+    $rc = ciniki_tenants_tenantDetails($ciniki, $tnid);
     if( $rc['stat'] != 'ok' ) {
         return $rc;
     }
     if( isset($rc['details']) && is_array($rc['details']) ) {   
-        $business_details = $rc['details'];
+        $tenant_details = $rc['details'];
     } else {
-        $business_details = array();
+        $tenant_details = array();
     }
 
     //
     // Load INTL settings
     //
-    ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'intlSettings');
-    $rc = ciniki_businesses_intlSettings($ciniki, $business_id);
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'tenants', 'private', 'intlSettings');
+    $rc = ciniki_tenants_intlSettings($ciniki, $tnid);
     if( $rc['stat'] != 'ok' ) {
         return $rc;
     }
@@ -59,7 +59,7 @@ function ciniki_artcatalog_templates_single($ciniki, $business_id, $sections, $a
         public $top_margin = 13;
         public $left_margin = 20;
         public $right_margin = 20;
-        public $business_name = '';
+        public $tenant_name = '';
         public $title = '';
         public $pagenumbers = 'no';
 
@@ -95,7 +95,7 @@ function ciniki_artcatalog_templates_single($ciniki, $business_id, $sections, $a
 
     // Set PDF basics
     $pdf->SetCreator('Ciniki');
-    $pdf->SetAuthor($business_details['name']);
+    $pdf->SetAuthor($tenant_details['name']);
     $pdf->SetTitle($args['pagetitle']);
     $pdf->SetSubject('');
     $pdf->SetKeywords('');
@@ -241,7 +241,7 @@ function ciniki_artcatalog_templates_single($ciniki, $business_id, $sections, $a
             // Load the image
             //
             if( $item['image_id'] > 0 ) {
-                $rc = ciniki_images_loadCacheOriginal($ciniki, $business_id, $item['image_id'], 2000, 2000);
+                $rc = ciniki_images_loadCacheOriginal($ciniki, $tnid, $item['image_id'], 2000, 2000);
                 if( $rc['stat'] == 'ok' ) {
                     $image = $rc['image'];
                     $img = $pdf->Image('@'.$image, '', '', $img_box_width, $img_box_height, 'JPEG', '', '', false, 300, '', false, false, 0, 'CM');

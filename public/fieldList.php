@@ -8,7 +8,7 @@
 // ---------
 // api_key:
 // auth_token:
-// business_id:     The ID of the business to get the list from.
+// tnid:     The ID of the tenant to get the list from.
 // 
 // Returns
 // -------
@@ -19,7 +19,7 @@ function ciniki_artcatalog_fieldList($ciniki) {
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
         'field'=>array('required'=>'yes', 'blank'=>'no', 'validlist'=>array('category', 'media', 'location', 'year'), 'name'=>'Field'),
         )); 
     if( $rc['stat'] != 'ok' ) { 
@@ -29,10 +29,10 @@ function ciniki_artcatalog_fieldList($ciniki) {
     
     //  
     // Make sure this module is activated, and
-    // check permission to run this function for this business
+    // check permission to run this function for this tenant
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'artcatalog', 'private', 'checkAccess');
-    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['business_id'], 'ciniki.artcatalog.fieldList'); 
+    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['tnid'], 'ciniki.artcatalog.fieldList'); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
@@ -40,7 +40,7 @@ function ciniki_artcatalog_fieldList($ciniki) {
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuote');
     $strsql = "SELECT DISTINCT " . $args['field'] . " "
         . "FROM ciniki_artcatalog "
-        . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+        . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
         . "ORDER BY " . $args['field'] . " COLLATE latin1_general_cs, " . $args['field'] . " "
         . "";
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');

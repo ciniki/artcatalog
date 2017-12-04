@@ -7,12 +7,12 @@
 // Arguments
 // ---------
 // ciniki:
-// business_id:     The ID of the business to get events for.
+// tnid:     The ID of the tenant to get events for.
 //
 // Returns
 // -------
 //
-function ciniki_artcatalog_hooks_webIndexObject($ciniki, $business_id, $args) {
+function ciniki_artcatalog_hooks_webIndexObject($ciniki, $tnid, $args) {
 
     if( !isset($args['object']) || $args['object'] == '' ) {
         return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.2', 'msg'=>'No object specified'));
@@ -36,7 +36,7 @@ function ciniki_artcatalog_hooks_webIndexObject($ciniki, $business_id, $args) {
         $strsql = "SELECT id, name, permalink, type, status, flags, webflags, category, "
             . "image_id, year, media, size, framed_size, price, description, inspiration, awards "
             . "FROM ciniki_artcatalog "
-            . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+            . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
             . "AND id = '" . ciniki_core_dbQuote($ciniki, $args['object_id']) . "' "
             . "";
         $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', 'item');
@@ -84,7 +84,7 @@ function ciniki_artcatalog_hooks_webIndexObject($ciniki, $business_id, $args) {
             //
             $strsql = "SELECT DISTINCT tag_name "
                 . "FROM ciniki_artcatalog_tags "
-                . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+                . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
                 . "AND artcatalog_id = '" . ciniki_core_dbQuote($ciniki, $item['id']) . "' "
                 . "AND tag_type = 100 "
                 . "ORDER BY tag_name "
@@ -123,8 +123,8 @@ function ciniki_artcatalog_hooks_webIndexObject($ciniki, $business_id, $args) {
             if( $item['status'] == 20 ) {
                 if( $item['price'] != '' && $item['price'] != '0' && $item['price'] != '0.00' ) {
                     if( is_numeric($item['price']) ) {
-                        $item['price'] = numfmt_format_currency($ciniki['business']['settings']['intl-default-currency-fmt'], $item['price'], $ciniki['business']['settings']['intl-default-currency']);
-                        $object['meta'] .= ($object['meta']!=''?', ':'') . $item['price'] . ' ' . $ciniki['business']['settings']['intl-default-currency'];
+                        $item['price'] = numfmt_format_currency($ciniki['tenant']['settings']['intl-default-currency-fmt'], $item['price'], $ciniki['tenant']['settings']['intl-default-currency']);
+                        $object['meta'] .= ($object['meta']!=''?', ':'') . $item['price'] . ' ' . $ciniki['tenant']['settings']['intl-default-currency'];
                         $object['primary_words'] .= ' ' . sprintf("%d", $item['price']);
                     } else {
                         $object['meta'] .= ($object['meta']!=''?', ':'') . $item['price'];

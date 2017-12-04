@@ -10,7 +10,7 @@
 // Returns
 // -------
 //
-function ciniki_artcatalog_web_eventImages($ciniki, $settings, $business_id, $args) {
+function ciniki_artcatalog_web_eventImages($ciniki, $settings, $tnid, $args) {
 
     if( isset($args['object']) && $args['object'] == 'ciniki.artcatalog.place'
         && isset($args['object_id']) && $args['object_id'] != '' ) {
@@ -24,14 +24,14 @@ function ciniki_artcatalog_web_eventImages($ciniki, $settings, $business_id, $ar
             . "LEFT JOIN ciniki_artcatalog ON ("
                 . "ciniki_artcatalog_tracking.artcatalog_id = ciniki_artcatalog.id "
                 . "AND (ciniki_artcatalog.webflags&0x01) = 1 "
-                . "AND ciniki_artcatalog.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+                . "AND ciniki_artcatalog.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
                 . ") "
             . "LEFT JOIN ciniki_images ON ("
                 . "ciniki_artcatalog.image_id = ciniki_images.id "
-                . "AND ciniki_images.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+                . "AND ciniki_images.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
                 . ") "
             . "WHERE ciniki_artcatalog_tracking.permalink = '" . ciniki_core_dbQuote($ciniki, $args['object_id']) . "' "
-            . "AND ciniki_artcatalog.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+            . "AND ciniki_artcatalog.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
             . "AND ciniki_artcatalog.image_id > 0 "
             . "";
         ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryIDTree');

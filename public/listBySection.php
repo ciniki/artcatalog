@@ -9,7 +9,7 @@
 // ---------
 // api_key:
 // auth_token:
-// business_id:     The ID of the business to get the list from.
+// tnid:     The ID of the tenant to get the list from.
 // section:         (optional) The section to get the images from.  If nothing is specified
 //                  the list will be sorted by category.
 //
@@ -41,7 +41,7 @@ function ciniki_artcatalog_listBySection($ciniki) {
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
         'section'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Section'), 
         'limit'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Limit'), 
         )); 
@@ -52,10 +52,10 @@ function ciniki_artcatalog_listBySection($ciniki) {
     
     //  
     // Make sure this module is activated, and
-    // check permission to run this function for this business
+    // check permission to run this function for this tenant
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'artcatalog', 'private', 'checkAccess');
-    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['business_id'], 'ciniki.artcatalog.listBySection'); 
+    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['tnid'], 'ciniki.artcatalog.listBySection'); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
@@ -70,14 +70,14 @@ function ciniki_artcatalog_listBySection($ciniki) {
 //      . "IF((ciniki_artcatalog.flags&0x01)=1, 'yes', 'no') AS forsale, "
 //      . "IF((ciniki_artcatalog.flags&0x02)=2, 'yes', 'no') AS sold, "
             . "FROM ciniki_artcatalog "
-            . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+            . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
             . "ORDER BY sname COLLATE latin1_general_cs, name "
             . "";
     } elseif( $args['section'] == 'media' ) {
         $strsql = "SELECT ciniki_artcatalog.id, image_id, name, media, catalog_number, size, framed_size, price, flags, location, notes, "
             . "IF(ciniki_artcatalog.media='', '', ciniki_artcatalog.media) AS sname "
             . "FROM ciniki_artcatalog "
-            . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+            . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
             . "ORDER BY sname COLLATE latin1_general_cs, name "
             . "";
     } elseif( $args['section'] == 'location' ) {
@@ -85,7 +85,7 @@ function ciniki_artcatalog_listBySection($ciniki) {
             . "ROUND(price, 2) AS price, flags, location, notes, "
             . "IF(ciniki_artcatalog.location='', '', ciniki_artcatalog.location) AS sname "
             . "FROM ciniki_artcatalog "
-            . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+            . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
             . "ORDER BY sname COLLATE latin1_general_cs, name "
             . "";
     }

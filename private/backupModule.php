@@ -2,20 +2,20 @@
 //
 // Description
 // -----------
-// This method will backup a businesses artcatalog to the ciniki-backups folder.
+// This method will backup a tenants artcatalog to the ciniki-backups folder.
 //
 // Arguments
 // ---------
 // ciniki:
-// business_id:     The ID of the business on the local side to check sync.
+// tnid:     The ID of the tenant on the local side to check sync.
 //
 //
-function ciniki_artcatalog_backupModule(&$ciniki, $business) {
+function ciniki_artcatalog_backupModule(&$ciniki, $tenant) {
 
     //
     // Check the backup directory exists
     //
-    $backup_dir = $business['backup_dir'] . '/ciniki.artcatalog';
+    $backup_dir = $tenant['backup_dir'] . '/ciniki.artcatalog';
     if( !file_exists($backup_dir) ) {
         if( mkdir($backup_dir, 0755, true) === false ) {
             return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.6', 'msg'=>'Unable to create backup directory'));
@@ -26,7 +26,7 @@ function ciniki_artcatalog_backupModule(&$ciniki, $business) {
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryIDTree');
 
     //
-    // Load the artcatalog for the business
+    // Load the artcatalog for the tenant
     //
     $strsql = "SELECT "
         . "ciniki_artcatalog.id, "
@@ -56,14 +56,14 @@ function ciniki_artcatalog_backupModule(&$ciniki, $business) {
         . "FROM ciniki_artcatalog "
         . "LEFT JOIN ciniki_images ON ("
             . "ciniki_artcatalog.image_id = ciniki_images.id "
-            . "AND ciniki_images.business_id = '" . ciniki_core_dbQuote($ciniki, $business['id']) . "' "
+            . "AND ciniki_images.tnid = '" . ciniki_core_dbQuote($ciniki, $tenant['id']) . "' "
             . ") "
         . "LEFT JOIN ciniki_artcatalog_tags ON ("
             . "ciniki_artcatalog.id = ciniki_artcatalog_tags.artcatalog_id "
             . "AND ciniki_artcatalog_tags.tag_type = 1 "
-            . "AND ciniki_artcatalog_tags.business_id = '" . ciniki_core_dbQuote($ciniki, $business['id']) . "' "
+            . "AND ciniki_artcatalog_tags.tnid = '" . ciniki_core_dbQuote($ciniki, $tenant['id']) . "' "
             . ") "
-        . "WHERE ciniki_artcatalog.business_id = '" . ciniki_core_dbQuote($ciniki, $business['id']) . "' "
+        . "WHERE ciniki_artcatalog.tnid = '" . ciniki_core_dbQuote($ciniki, $tenant['id']) . "' "
         . "ORDER BY ciniki_artcatalog.type, ciniki_artcatalog.name "
         . "";
     $rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
@@ -98,7 +98,7 @@ function ciniki_artcatalog_backupModule(&$ciniki, $business) {
         . "IFNULL(DATE_FORMAT(end_date, '%b %e, %Y'), '') AS end_date, "
         . "notes "
         . "FROM ciniki_artcatalog_tracking "
-        . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business['id']) . "' "
+        . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $tenant['id']) . "' "
         . "ORDER BY artcatalog_id, name "
         . "";
     $rc = ciniki_core_dbHashQueryIDTree($ciniki, $strsql, 'ciniki.artcatalog', array(
@@ -129,9 +129,9 @@ function ciniki_artcatalog_backupModule(&$ciniki, $business) {
         . "ciniki_images.original_filename "
         . "FROM ciniki_artcatalog_images "
         . "LEFT JOIN ciniki_images ON (ciniki_artcatalog_images.image_id = ciniki_images.id "
-            . "AND ciniki_images.business_id = '" . ciniki_core_dbQuote($ciniki, $business['id']) . "' "
+            . "AND ciniki_images.tnid = '" . ciniki_core_dbQuote($ciniki, $tenant['id']) . "' "
             . ") "
-        . "WHERE ciniki_artcatalog_images.business_id = '" . ciniki_core_dbQuote($ciniki, $business['id']) . "' "
+        . "WHERE ciniki_artcatalog_images.tnid = '" . ciniki_core_dbQuote($ciniki, $tenant['id']) . "' "
         . "ORDER BY ciniki_artcatalog_images.artcatalog_id, ciniki_artcatalog_images.sequence "
         . "";
     $rc = ciniki_core_dbHashQueryIDTree($ciniki, $strsql, 'ciniki.artcatalog', array(
@@ -480,9 +480,9 @@ function ciniki_artcatalog_backupModule(&$ciniki, $business) {
             // Save the primary image
             //
             if( $item['image_id'] != '' && $item['image_id'] > 0 ) {
-                $rc = ciniki_images_loadImage($ciniki, $business['id'], $item['image_id'], 'original');
+                $rc = ciniki_images_loadImage($ciniki, $tenant['id'], $item['image_id'], 'original');
                 if( $rc['stat'] != 'ok' ) {
-                    error_log('BACKUP-ERR[' . $business['name'] . ']: ' . $rc['err']['code'] . ' - ' . $rc['err']['msg']);
+                    error_log('BACKUP-ERR[' . $tenant['name'] . ']: ' . $rc['err']['code'] . ' - ' . $rc['err']['msg']);
                     continue;
                 }
                 $original = $rc['image'];
@@ -498,7 +498,7 @@ function ciniki_artcatalog_backupModule(&$ciniki, $business) {
             if( isset($image_items[$artcatalog_id]['images']) ) {
                 $details .= "\nAdditional Images:\n";
                 foreach($image_items[$artcatalog_id]['images'] as $image) {
-                    $rc = ciniki_images_loadImage($ciniki, $business['id'], $image['image_id'], 'original');
+                    $rc = ciniki_images_loadImage($ciniki, $tenant['id'], $image['image_id'], 'original');
                     if( $rc['stat'] != 'ok' ) {
                         return $rc;
                     }

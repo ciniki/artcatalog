@@ -8,7 +8,7 @@
 // ---------
 // api_key:
 // auth_token:
-// business_id:         The ID of the business to get the item from.
+// tnid:         The ID of the tenant to get the item from.
 // artcatalog_id:       The ID of the item in the catalog to be retrieved.
 // 
 // Returns
@@ -20,7 +20,7 @@ function ciniki_artcatalog_trackingGet($ciniki) {
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
         'tracking_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tracking'), 
         )); 
     if( $rc['stat'] != 'ok' ) { 
@@ -30,10 +30,10 @@ function ciniki_artcatalog_trackingGet($ciniki) {
     
     //  
     // Make sure this module is activated, and
-    // check permission to run this function for this business
+    // check permission to run this function for this tenant
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'artcatalog', 'private', 'checkAccess');
-    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['business_id'], 'ciniki.artcatalog.trackingGet'); 
+    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['tnid'], 'ciniki.artcatalog.trackingGet'); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
@@ -48,7 +48,7 @@ function ciniki_artcatalog_trackingGet($ciniki) {
         . "notes "
         . "FROM ciniki_artcatalog_tracking "
         . "WHERE id = '" . ciniki_core_dbQuote($ciniki, $args['tracking_id']) . "' "
-        . "AND business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+        . "AND tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
         . "";
     $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', 'place');
     if( $rc['stat'] != 'ok' ) { 

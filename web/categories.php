@@ -9,7 +9,7 @@
 // ---------
 // ciniki:
 // settings:        The web settings structure.
-// business_id:     The ID of the business to get events for.
+// tnid:     The ID of the tenant to get events for.
 //
 // Returns
 // -------
@@ -19,13 +19,13 @@
 //      ...
 // </categories>
 //
-function ciniki_artcatalog_web_categories($ciniki, $settings, $business_id, $args) {
+function ciniki_artcatalog_web_categories($ciniki, $settings, $tnid, $args) {
 
     //
     // Load the settings for each category
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbDetailsQueryDash'); 
-    $rc = ciniki_core_dbDetailsQueryDash($ciniki, 'ciniki_artcatalog_settings', 'business_id', $business_id,
+    $rc = ciniki_core_dbDetailsQueryDash($ciniki, 'ciniki_artcatalog_settings', 'tnid', $tnid,
         'ciniki.artcatalog', 'settings', 'category');
     if( $rc['stat'] != 'ok' ) {
         error_log('ERR: Unable to get category details');
@@ -41,7 +41,7 @@ function ciniki_artcatalog_web_categories($ciniki, $settings, $business_id, $arg
     //
     $strsql = "SELECT DISTINCT category AS name "
         . "FROM ciniki_artcatalog "
-        . "WHERE ciniki_artcatalog.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+        . "WHERE ciniki_artcatalog.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "AND (ciniki_artcatalog.webflags&0x01) = 1 "
         . "AND ciniki_artcatalog.image_id > 0 "
         . "";
@@ -73,7 +73,7 @@ function ciniki_artcatalog_web_categories($ciniki, $settings, $business_id, $arg
         //
         $strsql = "SELECT ciniki_artcatalog.image_id "
             . "FROM ciniki_artcatalog, ciniki_images "
-            . "WHERE ciniki_artcatalog.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+            . "WHERE ciniki_artcatalog.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
             . "AND category = '" . ciniki_core_dbQuote($ciniki, $cat['name']) . "' "
             . "";
         if( isset($args['artcatalog_type']) && $args['artcatalog_type'] > 0 ) {

@@ -9,8 +9,8 @@
 // ---------
 // api_key:
 // auth_token:
-// business_id:     The ID of the business to add the item to.  The user must
-//                  an owner of the business.
+// tnid:     The ID of the tenant to add the item to.  The user must
+//                  an owner of the tenant.
 //
 // type:            The type of the item.  Currently
 //                  only two types are supported, Painting and Photographs.
@@ -35,7 +35,7 @@
 //                  0x01 - The item is for sale.
 //                  0x02 - The item is sold.  When displayed on the website, a red dot will be added to indicate sold.
 //
-// webflags:        (optional) The flags for displaying the item on the business website.
+// webflags:        (optional) The flags for displaying the item on the tenant website.
 //
 //                  0x01 - Public item, to be displayed on the website
 //                  0x10 - Category highlight item
@@ -46,7 +46,7 @@
 // image_id:        (optional) The ID of the image in the images module to be displayed for the item.  This
 //                  can be uploaded before or after the item is added to the artcatalog.
 //
-// name:            The name of the item.  This name must be unique within the business, as it's
+// name:            The name of the item.  This name must be unique within the tenant, as it's
 //                  also used to generate the permalink.  The permalink must be usique because it
 //                  is used as in the URL to reference an item.
 //
@@ -96,7 +96,7 @@ function ciniki_artcatalog_add(&$ciniki) {
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
         'type'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Type'),
         'status'=>array('required'=>'no', 'blank'=>'no', 'default'=>'10', 'name'=>'Status'),
         'flags'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'0', 'name'=>'Flags'), 
@@ -133,10 +133,10 @@ function ciniki_artcatalog_add(&$ciniki) {
     
     //  
     // Make sure this module is activated, and
-    // check permission to run this function for this business
+    // check permission to run this function for this tenant
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'artcatalog', 'private', 'checkAccess');
-    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['business_id'], 'ciniki.artcatalog.add'); 
+    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['tnid'], 'ciniki.artcatalog.add'); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
@@ -155,7 +155,7 @@ function ciniki_artcatalog_add(&$ciniki) {
     // Check the permalink doesn't already exist
     //
     $strsql = "SELECT id, name, permalink FROM ciniki_artcatalog "
-        . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+        . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
         . "AND permalink = '" . ciniki_core_dbQuote($ciniki, $args['permalink']) . "' "
         . "";
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
@@ -182,7 +182,7 @@ function ciniki_artcatalog_add(&$ciniki) {
     }   
 
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'objectAdd');
-    $rc = ciniki_core_objectAdd($ciniki, $args['business_id'], 'ciniki.artcatalog.item', $args, 0x04);
+    $rc = ciniki_core_objectAdd($ciniki, $args['tnid'], 'ciniki.artcatalog.item', $args, 0x04);
     if( $rc['stat'] != 'ok' ) {
         ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
         return $rc;
@@ -194,7 +194,7 @@ function ciniki_artcatalog_add(&$ciniki) {
     //
     if( isset($args['lists']) ) {
         ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'tagsUpdate');
-        $rc = ciniki_core_tagsUpdate($ciniki, 'ciniki.artcatalog', 'tag', $args['business_id'], 
+        $rc = ciniki_core_tagsUpdate($ciniki, 'ciniki.artcatalog', 'tag', $args['tnid'], 
             'ciniki_artcatalog_tags', 'ciniki_artcatalog_history', 
             'artcatalog_id', $artcatalog_id, 1, $args['lists']);
         if( $rc['stat'] != 'ok' ) {
@@ -209,7 +209,7 @@ function ciniki_artcatalog_add(&$ciniki) {
     //
     if( isset($args['materials']) ) {
         ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'tagsUpdate');
-        $rc = ciniki_core_tagsUpdate($ciniki, 'ciniki.artcatalog', 'tag', $args['business_id'], 
+        $rc = ciniki_core_tagsUpdate($ciniki, 'ciniki.artcatalog', 'tag', $args['tnid'], 
             'ciniki_artcatalog_tags', 'ciniki_artcatalog_history', 
             'artcatalog_id', $artcatalog_id, 100, $args['materials']);
         if( $rc['stat'] != 'ok' ) {
@@ -224,7 +224,7 @@ function ciniki_artcatalog_add(&$ciniki) {
     // between Paintings, Photographs, Jewelry, etc
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'artcatalog', 'private', 'updateWebSettings');
-    $rc = ciniki_artcatalog_updateWebSettings($ciniki, $args['business_id']);
+    $rc = ciniki_artcatalog_updateWebSettings($ciniki, $args['tnid']);
     if( $rc['stat'] != 'ok' ) {
         array_pop($ciniki['syncqueue']);
         ciniki_core_dbTransactionRollback($ciniki, 'ciniki.artcatalog');
@@ -240,19 +240,19 @@ function ciniki_artcatalog_add(&$ciniki) {
     }
 
     //
-    // Update the last_change date in the business modules
+    // Update the last_change date in the tenant modules
     // Ignore the result, as we don't want to stop user updates if this fails.
     //
-    ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'updateModuleChangeDate');
-    ciniki_businesses_updateModuleChangeDate($ciniki, $args['business_id'], 'ciniki', 'artcatalog');
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'tenants', 'private', 'updateModuleChangeDate');
+    ciniki_tenants_updateModuleChangeDate($ciniki, $args['tnid'], 'ciniki', 'artcatalog');
 
-    $ciniki['fbrefreshqueue'][] = array('business_id'=>$args['business_id'], 'url'=>'/gallery/category/' . urlencode($args['category']) . '/' . $args['permalink']);
+    $ciniki['fbrefreshqueue'][] = array('tnid'=>$args['tnid'], 'url'=>'/gallery/category/' . urlencode($args['category']) . '/' . $args['permalink']);
 
     //
     // Update the web index if enabled
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'hookExec');
-    ciniki_core_hookExec($ciniki, $args['business_id'], 'ciniki', 'web', 'indexObject', array('object'=>'ciniki.artcatalog.item', 'object_id'=>$artcatalog_id));
+    ciniki_core_hookExec($ciniki, $args['tnid'], 'ciniki', 'web', 'indexObject', array('object'=>'ciniki.artcatalog.item', 'object_id'=>$artcatalog_id));
 
     return array('stat'=>'ok', 'id'=>$artcatalog_id);
 }

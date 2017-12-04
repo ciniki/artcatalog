@@ -10,29 +10,29 @@
 // Returns
 // -------
 //
-function ciniki_artcatalog_templates_pricelist($ciniki, $business_id, $sections, $args) {
+function ciniki_artcatalog_templates_pricelist($ciniki, $tnid, $sections, $args) {
 
     require_once($ciniki['config']['ciniki.core']['lib_dir'] . '/tcpdf/tcpdf.php');
-    ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'businessDetails');
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'tenants', 'private', 'tenantDetails');
 
     //
-    // Load business details
+    // Load tenant details
     //
-    $rc = ciniki_businesses_businessDetails($ciniki, $business_id);
+    $rc = ciniki_tenants_tenantDetails($ciniki, $tnid);
     if( $rc['stat'] != 'ok' ) {
         return $rc;
     }
     if( isset($rc['details']) && is_array($rc['details']) ) {   
-        $business_details = $rc['details'];
+        $tenant_details = $rc['details'];
     } else {
-        $business_details = array();
+        $tenant_details = array();
     }
 
     //
     // Load INTL settings
     //
-    ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'intlSettings');
-    $rc = ciniki_businesses_intlSettings($ciniki, $business_id);
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'tenants', 'private', 'intlSettings');
+    $rc = ciniki_tenants_intlSettings($ciniki, $tnid);
     if( $rc['stat'] != 'ok' ) {
         return $rc;
     }
@@ -58,7 +58,7 @@ function ciniki_artcatalog_templates_pricelist($ciniki, $business_id, $sections,
         public $top_margin = 13;
         public $left_margin = 18;
         public $right_margin = 18;
-        public $business_name = '';
+        public $tenant_name = '';
         public $title = '';
         public $pagenumbers = 'yes';
 
@@ -91,7 +91,7 @@ function ciniki_artcatalog_templates_pricelist($ciniki, $business_id, $sections,
 
     // Set PDF basics
     $pdf->SetCreator('Ciniki');
-    $pdf->SetAuthor($business_details['name']);
+    $pdf->SetAuthor($tenant_details['name']);
     $pdf->SetTitle($args['pagetitle']);
     $pdf->SetSubject('');
     $pdf->SetKeywords('');

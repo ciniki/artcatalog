@@ -9,7 +9,7 @@
 // ---------
 // api_key:
 // auth_token:
-// business_id:     The ID of the business to the item is a part of.
+// tnid:     The ID of the tenant to the item is a part of.
 // old_category:    The name of the old category.
 // new_category:    The new name for the category.
 //
@@ -23,7 +23,7 @@ function ciniki_artcatalog_categoryUpdate(&$ciniki) {
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
         'artcatalog_type'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Type'), 
         'category'=>array('required'=>'yes', 'blank'=>'yes', 'name'=>'Category'), 
         'synopsis'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Synopsis'), 
@@ -36,10 +36,10 @@ function ciniki_artcatalog_categoryUpdate(&$ciniki) {
 
     //  
     // Make sure this module is activated, and
-    // check permission to run this function for this business
+    // check permission to run this function for this tenant
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'artcatalog', 'private', 'checkAccess');
-    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['business_id'], 'ciniki.artcatalog.categoryUpdate'); 
+    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['tnid'], 'ciniki.artcatalog.categoryUpdate'); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
@@ -75,7 +75,7 @@ function ciniki_artcatalog_categoryUpdate(&$ciniki) {
             //
             $strsql = "SELECT detail_value "
                 . "FROM ciniki_artcatalog_settings "
-                . "WHERE ciniki_artcatalog_settings.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+                . "WHERE ciniki_artcatalog_settings.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
                 . "AND ciniki_artcatalog_settings.detail_key = '" . ciniki_core_dbQuote($ciniki, $detail_key) . "' "
                 . "";
             $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', 'setting');
@@ -83,9 +83,9 @@ function ciniki_artcatalog_categoryUpdate(&$ciniki) {
                 return $rc;
             }
             if( !isset($rc['setting']) ) {
-                $strsql = "INSERT INTO ciniki_artcatalog_settings (business_id, detail_key, detail_value, "
+                $strsql = "INSERT INTO ciniki_artcatalog_settings (tnid, detail_key, detail_value, "
                     . "date_added, last_updated) VALUES ("
-                    . "' " . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+                    . "' " . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
                     . ", '" . ciniki_core_dbQuote($ciniki, $detail_key) . "' "
                     . ", '" . ciniki_core_dbQuote($ciniki, $args[$f]) . "' "
                     . ", UTC_TIMESTAMP(), UTC_TIMESTAMP()) "
@@ -95,7 +95,7 @@ function ciniki_artcatalog_categoryUpdate(&$ciniki) {
                     return $rc;
                 }
                 ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.artcatalog', 
-                    'ciniki_artcatalog_history', $args['business_id'], 
+                    'ciniki_artcatalog_history', $args['tnid'], 
                     1, 'ciniki_artcatalog_settings', $detail_key, 'detail_value', $args[$f]);
                 $ciniki['syncqueue'][] = array('push'=>'ciniki.artcatalog.setting',
                     'args'=>array('id'=>$detail_key));
@@ -103,7 +103,7 @@ function ciniki_artcatalog_categoryUpdate(&$ciniki) {
                 $strsql = "UPDATE ciniki_artcatalog_settings "
                     . "SET detail_value = '" . ciniki_core_dbQuote($ciniki, $args[$f]) . "', "
                     . "last_updated = UTC_TIMESTAMP() "
-                    . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+                    . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
                     . "AND detail_key = '" . ciniki_core_dbQuote($ciniki, $detail_key) . "' "
                     . "";
                 $rc = ciniki_core_dbUpdate($ciniki, $strsql, 'ciniki.artcatalog');
@@ -111,7 +111,7 @@ function ciniki_artcatalog_categoryUpdate(&$ciniki) {
                     return $rc;
                 }
                 ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.artcatalog', 
-                    'ciniki_artcatalog_history', $args['business_id'], 
+                    'ciniki_artcatalog_history', $args['tnid'], 
                     2, 'ciniki_artcatalog_settings', $detail_key, 'detail_value', $args[$f]);
                 $ciniki['syncqueue'][] = array('push'=>'ciniki.artcatalog.setting',
                     'args'=>array('id'=>$detail_key));
@@ -129,12 +129,12 @@ function ciniki_artcatalog_categoryUpdate(&$ciniki) {
     }
 
     //
-    // Update the last_change date in the business modules
+    // Update the last_change date in the tenant modules
     // Ignore the result, as we don't want to stop user updates if this fails.
     //
     if( $updated > 0 ) {
-        ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'updateModuleChangeDate');
-        ciniki_businesses_updateModuleChangeDate($ciniki, $args['business_id'], 'ciniki', 'artcatalog');
+        ciniki_core_loadMethod($ciniki, 'ciniki', 'tenants', 'private', 'updateModuleChangeDate');
+        ciniki_tenants_updateModuleChangeDate($ciniki, $args['tnid'], 'ciniki', 'artcatalog');
     }
 
     return array('stat'=>'ok');

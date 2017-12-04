@@ -8,7 +8,7 @@
 // ---------
 // api_key:
 // auth_token:
-// business_id:         The ID of the business to get the item from.
+// tnid:         The ID of the tenant to get the item from.
 // artcatalog_id:       The ID of the item in the catalog to be retrieved.
 // 
 // Returns
@@ -34,7 +34,7 @@ function ciniki_artcatalog_get($ciniki) {
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
         'artcatalog_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Item'), 
         'tracking'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Tracking'),
         'images'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Images'),
@@ -55,10 +55,10 @@ function ciniki_artcatalog_get($ciniki) {
     
     //  
     // Make sure this module is activated, and
-    // check permission to run this function for this business
+    // check permission to run this function for this tenant
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'artcatalog', 'private', 'checkAccess');
-    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['business_id'], 'ciniki.artcatalog.get'); 
+    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['tnid'], 'ciniki.artcatalog.get'); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }
@@ -67,8 +67,8 @@ function ciniki_artcatalog_get($ciniki) {
     //
     // Load INTL settings
     //
-    ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'intlSettings');
-    $rc = ciniki_businesses_intlSettings($ciniki, $args['business_id']);
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'tenants', 'private', 'intlSettings');
+    $rc = ciniki_tenants_intlSettings($ciniki, $args['tnid']);
     if( $rc['stat'] != 'ok' ) {
         return $rc;
     }
@@ -89,7 +89,7 @@ function ciniki_artcatalog_get($ciniki) {
     // Load artcatalog settings
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbDetailsQueryDash');
-    $rc = ciniki_core_dbDetailsQueryDash($ciniki, 'ciniki_artcatalog_settings', 'business_id', $args['business_id'], 'ciniki.artcatalog', 'settings', '');
+    $rc = ciniki_core_dbDetailsQueryDash($ciniki, 'ciniki_artcatalog_settings', 'tnid', $args['tnid'], 'ciniki.artcatalog', 'settings', '');
     if( $rc['stat'] != 'ok' ) {
         return $rc;
     }
@@ -122,10 +122,10 @@ function ciniki_artcatalog_get($ciniki) {
             'catalog_number'=>'',
             'products'=>array(),
             );
-        if( ($ciniki['business']['modules']['ciniki.artcatalog']['flags']&0x10) > 0 ) {
+        if( ($ciniki['tenant']['modules']['ciniki.artcatalog']['flags']&0x10) > 0 ) {
             $strsql = "SELECT (MAX(catalog_number) + 1) AS next_number "
                 . "FROM ciniki_artcatalog "
-                . "WHERE ciniki_artcatalog.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+                . "WHERE ciniki_artcatalog.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
                 . "";
             $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', 'catalog');
             if( $rc['stat'] != 'ok' ) {
@@ -163,9 +163,9 @@ function ciniki_artcatalog_get($ciniki) {
 //          . "LEFT JOIN ciniki_artcatalog_tags ON (ciniki_artcatalog.id = ciniki_artcatalog_tags.artcatalog_id AND ciniki_artcatalog_tags.tag_type = 1) ";
     //      . "LEFT JOIN ciniki_artcatalog_customers ON (ciniki_artcatalog.id = ciniki_artcatalog_customers.artcatalog_id) "
     //      . "LEFT JOIN ciniki_customers ON (ciniki_artcatalog_customers.customer_id = ciniki_customers.id "
-    //          . "AND ciniki_customers.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "') "
+    //          . "AND ciniki_customers.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "') "
             . "";
-        $strsql .= "WHERE ciniki_artcatalog.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+        $strsql .= "WHERE ciniki_artcatalog.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
             . "AND ciniki_artcatalog.id = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_id']) . "' "
             . "ORDER BY ciniki_artcatalog.id "; //, ciniki_artcatalog_tags.tag_name ";
     //      . "ORDER BY ciniki_artcatalog.id, ciniki_customers.last, ciniki_customers.first "
@@ -196,7 +196,7 @@ function ciniki_artcatalog_get($ciniki) {
         $strsql = "SELECT tag_type, tag_name AS lists "
             . "FROM ciniki_artcatalog_tags "
             . "WHERE artcatalog_id = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_id']) . "' "
-            . "AND business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+            . "AND tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
             . "ORDER BY tag_type, tag_name "
             . "";
         $rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
@@ -221,7 +221,7 @@ function ciniki_artcatalog_get($ciniki) {
         //
         if( isset($args['output']) && $args['output'] == 'pdf' ) {
             ciniki_core_loadMethod($ciniki, 'ciniki', 'artcatalog', 'templates', 'single');
-            $rc = ciniki_artcatalog_templates_single($ciniki, $args['business_id'], 
+            $rc = ciniki_artcatalog_templates_single($ciniki, $args['tnid'], 
                 array('sections'=>array('section'=>array('items'=>array('0'=>array('item'=>$item))))), $args);
             if( $rc['stat'] != 'ok' ) {
                 return $rc;
@@ -245,7 +245,7 @@ function ciniki_artcatalog_get($ciniki) {
                 . "IFNULL(DATE_FORMAT(end_date, '" . ciniki_core_dbQuote($ciniki, $date_format) . "'), '') AS end_date "
                 . "FROM ciniki_artcatalog_tracking "
                 . "WHERE artcatalog_id = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_id']) . "' "
-                . "AND business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+                . "AND tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
                 . "ORDER BY ciniki_artcatalog_tracking.start_date DESC "
                 . "";
             $rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
@@ -264,12 +264,12 @@ function ciniki_artcatalog_get($ciniki) {
         // Get the product list if requested
         //
         if( isset($args['products']) && $args['products'] == 'yes' 
-            && ($ciniki['business']['modules']['ciniki.artcatalog']['flags']&0x02) > 0
+            && ($ciniki['tenant']['modules']['ciniki.artcatalog']['flags']&0x02) > 0
             ) {
             $strsql = "SELECT id, name, inventory, price "
                 . "FROM ciniki_artcatalog_products "
                 . "WHERE artcatalog_id = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_id']) . "' "
-                . "AND business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+                . "AND tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
                 . "ORDER BY ciniki_artcatalog_products.name "
                 . "";
             $rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
@@ -290,9 +290,9 @@ function ciniki_artcatalog_get($ciniki) {
         //
         // Get the product list if requested
         //
-        if( isset($args['products']) && $args['products'] == 'yes' && isset($ciniki['business']['modules']['ciniki.merchandise']) ) {
+        if( isset($args['products']) && $args['products'] == 'yes' && isset($ciniki['tenant']['modules']['ciniki.merchandise']) ) {
             ciniki_core_loadMethod($ciniki, 'ciniki', 'merchandise', 'hooks', 'productList');
-            $rc = ciniki_merchandise_hooks_productList($ciniki, $args['business_id'], array('object'=>'ciniki.artcatalog.item', 'object_id'=>$args['artcatalog_id']));
+            $rc = ciniki_merchandise_hooks_productList($ciniki, $args['tnid'], array('object'=>'ciniki.artcatalog.item', 'object_id'=>$args['artcatalog_id']));
             if( $rc['stat'] != 'ok' ) {
                 return $rc;
             }
@@ -315,7 +315,7 @@ function ciniki_artcatalog_get($ciniki) {
                 . "ciniki_artcatalog_images.description "
                 . "FROM ciniki_artcatalog_images "
                 . "WHERE ciniki_artcatalog_images.artcatalog_id = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_id']) . "' "
-                . "AND ciniki_artcatalog_images.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+                . "AND ciniki_artcatalog_images.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
                 . "ORDER BY ciniki_artcatalog_images.sequence, ciniki_artcatalog_images.date_added, ciniki_artcatalog_images.name "
                 . "";
             $rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
@@ -329,7 +329,7 @@ function ciniki_artcatalog_get($ciniki) {
                 $item['images'] = $rc['images'];
                 foreach($item['images'] as $inum => $img) {
                     if( isset($img['image']['image_id']) && $img['image']['image_id'] > 0 ) {
-                        $rc = ciniki_images_hooks_loadThumbnail($ciniki, $args['business_id'], array('image_id'=>$img['image']['image_id'], 'maxlength'=>75));
+                        $rc = ciniki_images_hooks_loadThumbnail($ciniki, $args['tnid'], array('image_id'=>$img['image']['image_id'], 'maxlength'=>75));
                         if( $rc['stat'] != 'ok' ) {
                             return $rc;
                         }
@@ -344,7 +344,7 @@ function ciniki_artcatalog_get($ciniki) {
         //
         if( isset($args['invoices']) && $args['invoices'] == 'yes' && isset($modules['ciniki.sapos']) ) {
             ciniki_core_loadMethod($ciniki, 'ciniki', 'sapos', 'private', 'objectInvoices');
-            $rc = ciniki_sapos_objectInvoices($ciniki, $args['business_id'], 'ciniki.artcatalog.item', $args['artcatalog_id']);
+            $rc = ciniki_sapos_objectInvoices($ciniki, $args['tnid'], 'ciniki.artcatalog.item', $args['artcatalog_id']);
             if( $rc['stat'] != 'ok' ) {
                 return $rc;
             }
@@ -363,7 +363,7 @@ function ciniki_artcatalog_get($ciniki) {
         $rsp['tags'] = array();
 
         ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'tagsList');
-        $rc = ciniki_core_tagsList($ciniki, 'ciniki.artcatalog', $args['business_id'], 
+        $rc = ciniki_core_tagsList($ciniki, 'ciniki.artcatalog', $args['tnid'], 
             'ciniki_artcatalog_tags', 100);
         if( $rc['stat'] != 'ok' ) {
             return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.22', 'msg'=>'Unable to get lists', 'err'=>$rc['err']));
@@ -372,7 +372,7 @@ function ciniki_artcatalog_get($ciniki) {
             $rsp['tags']['materials'] = $rc['tags'];
         }
 
-        $rc = ciniki_core_tagsList($ciniki, 'ciniki.artcatalog', $args['business_id'], 
+        $rc = ciniki_core_tagsList($ciniki, 'ciniki.artcatalog', $args['tnid'], 
             'ciniki_artcatalog_tags', 1);
         if( $rc['stat'] != 'ok' ) {
             return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.23', 'msg'=>'Unable to get lists', 'err'=>$rc['err']));

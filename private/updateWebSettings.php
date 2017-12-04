@@ -8,18 +8,18 @@
 // Arguments
 // ---------
 // ciniki:
-// business_id:         The ID of the business the request is for.
+// tnid:         The ID of the tenant the request is for.
 // 
 // Returns
 // -------
 // <rsp stat="ok" />
 //
-function ciniki_artcatalog_updateWebSettings($ciniki, $business_id) {
+function ciniki_artcatalog_updateWebSettings($ciniki, $tnid) {
     //
     // Get the current settings
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbDetailsQueryDash');
-    $rc = ciniki_core_dbDetailsQueryDash($ciniki, 'ciniki_web_settings', 'business_id', $business_id,
+    $rc = ciniki_core_dbDetailsQueryDash($ciniki, 'ciniki_web_settings', 'tnid', $tnid,
         'ciniki.web', 'settings', 'page-gallery-artcatalog');
     if( $rc['stat'] != 'ok' ) {
         return $rc;
@@ -31,7 +31,7 @@ function ciniki_artcatalog_updateWebSettings($ciniki, $business_id) {
     //
     $strsql = "SELECT DISTINCT type "
         . "FROM ciniki_artcatalog "
-        . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+        . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "AND (webflags&0x01) = 1 "
         . "";
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
@@ -71,9 +71,9 @@ function ciniki_artcatalog_updateWebSettings($ciniki, $business_id) {
         // Turn on the flag when type exists
         //
         if( isset($types[$type]) ) { //&& (!isset($settings[$field]) || $settings[$field] != 'yes') ) {
-            $strsql = "INSERT INTO ciniki_web_settings (business_id, detail_key, detail_value, "
+            $strsql = "INSERT INTO ciniki_web_settings (tnid, detail_key, detail_value, "
                 . "date_added, last_updated) "
-                . "VALUES ('" . ciniki_core_dbQuote($ciniki, $business_id) . "'"
+                . "VALUES ('" . ciniki_core_dbQuote($ciniki, $tnid) . "'"
                 . ", '" . ciniki_core_dbQuote($ciniki, $field) . "' "
                 . ", 'yes' "
                 . ", UTC_TIMESTAMP(), UTC_TIMESTAMP()) "
@@ -85,7 +85,7 @@ function ciniki_artcatalog_updateWebSettings($ciniki, $business_id) {
                 ciniki_core_dbTransactionRollback($ciniki, 'ciniki.web');
                 return $rc;
             }
-            ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.web', 'ciniki_web_history', $business_id, 
+            ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.web', 'ciniki_web_history', $tnid, 
                 2, 'ciniki_web_settings', $field, 'detail_value', 'yes');
             $ciniki['syncqueue'][] = array('push'=>'ciniki.web.setting',
                 'args'=>array('id'=>$field));
@@ -94,9 +94,9 @@ function ciniki_artcatalog_updateWebSettings($ciniki, $business_id) {
         // Turn off when type doesn't exist
         //
         else { //if( !isset($types[$type]) || (isset($settings[$field]) && $settings[$field] == 'no') ) {
-            $strsql = "INSERT INTO ciniki_web_settings (business_id, detail_key, detail_value, "
+            $strsql = "INSERT INTO ciniki_web_settings (tnid, detail_key, detail_value, "
                 . "date_added, last_updated) "
-                . "VALUES ('" . ciniki_core_dbQuote($ciniki, $business_id) . "'"
+                . "VALUES ('" . ciniki_core_dbQuote($ciniki, $tnid) . "'"
                 . ", '" . ciniki_core_dbQuote($ciniki, $field) . "' "
                 . ", 'no' "
                 . ", UTC_TIMESTAMP(), UTC_TIMESTAMP()) "
@@ -108,7 +108,7 @@ function ciniki_artcatalog_updateWebSettings($ciniki, $business_id) {
                 ciniki_core_dbTransactionRollback($ciniki, 'ciniki.web');
                 return $rc;
             }
-            ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.web', 'ciniki_web_history', $business_id, 
+            ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.web', 'ciniki_web_history', $tnid, 
                 2, 'ciniki_web_settings', $field, 'detail_value', 'no');
             $ciniki['syncqueue'][] = array('push'=>'ciniki.web.setting',
                 'args'=>array('id'=>$field));

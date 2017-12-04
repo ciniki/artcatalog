@@ -8,7 +8,7 @@
 // ---------
 // api_key:
 // auth_token:
-// business_id:     The ID of the business to the item is a part of.
+// tnid:     The ID of the tenant to the item is a part of.
 //
 // artcatalog_id:   (optional) The new ID of the artcatalog item the tracking is attached to.
 //
@@ -28,7 +28,7 @@ function ciniki_artcatalog_trackingUpdate(&$ciniki) {
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
         'tracking_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tracking'), 
         'artcatalog_id'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Item'), 
         'name'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Name'), 
@@ -44,10 +44,10 @@ function ciniki_artcatalog_trackingUpdate(&$ciniki) {
 
     //  
     // Make sure this module is activated, and
-    // check permission to run this function for this business
+    // check permission to run this function for this tenant
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'artcatalog', 'private', 'checkAccess');
-    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['business_id'], 'ciniki.artcatalog.trackingUpdate'); 
+    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['tnid'], 'ciniki.artcatalog.trackingUpdate'); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
@@ -58,7 +58,7 @@ function ciniki_artcatalog_trackingUpdate(&$ciniki) {
     if( isset($args['name']) || isset($args['start_date']) ) {
         ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'makePermalink');
         ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'objectGet');
-        $rc = ciniki_core_objectGet($ciniki, $args['business_id'], 'ciniki.artcatalog.place', $args['tracking_id']);
+        $rc = ciniki_core_objectGet($ciniki, $args['tnid'], 'ciniki.artcatalog.place', $args['tracking_id']);
         if( $rc['stat'] != 'ok' ) {
             return $rc;
         }
@@ -79,6 +79,6 @@ function ciniki_artcatalog_trackingUpdate(&$ciniki) {
     // Update tracking
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'objectUpdate');
-    return ciniki_core_objectUpdate($ciniki, $args['business_id'], 'ciniki.artcatalog.place', $args['tracking_id'], $args, 0x07);
+    return ciniki_core_objectUpdate($ciniki, $args['tnid'], 'ciniki.artcatalog.place', $args['tracking_id'], $args, 0x07);
 }
 ?>

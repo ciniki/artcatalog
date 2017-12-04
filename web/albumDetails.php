@@ -8,7 +8,7 @@
 // ---------
 // ciniki:
 // settings:        The web settings structure.
-// business_id:     The ID of the business to get events for.
+// tnid:     The ID of the tenant to get events for.
 // type:            The list to return, either by category or year.
 //
 //                  - category
@@ -28,7 +28,7 @@
 //      ...
 // </images>
 //
-function ciniki_artcatalog_web_albumDetails($ciniki, $settings, $business_id, $args) {
+function ciniki_artcatalog_web_albumDetails($ciniki, $settings, $tnid, $args) {
     //
     // Get the gallery information
     //

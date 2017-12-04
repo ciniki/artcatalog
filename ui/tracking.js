@@ -51,7 +51,7 @@ function ciniki_artcatalog_tracking() {
         };
         this.edit.fieldHistoryArgs = function(s, i) {
             return {'method':'ciniki.artcatalog.trackingHistory', 
-                'args':{'business_id':M.curBusinessID, 'tracking_id':this.tracking_id, 'field':i}};
+                'args':{'tnid':M.curTenantID, 'tracking_id':this.tracking_id, 'field':i}};
             
         };
         this.edit.fieldValue = function(s, i, d) { 
@@ -61,7 +61,7 @@ function ciniki_artcatalog_tracking() {
         this.edit.liveSearchCb = function(s, i, value) {
             if( i == 'name' ) {
                 var rsp = M.api.getJSONBgCb('ciniki.artcatalog.trackingSearch', 
-                    {'business_id':M.curBusinessID, 'field':i, 'start_needle':value, 'limit':15},
+                    {'tnid':M.curTenantID, 'field':i, 'start_needle':value, 'limit':15},
                     function(rsp) {
                         M.ciniki_artcatalog_tracking.edit.liveSearchShow(s, i, M.gE(M.ciniki_artcatalog_tracking.edit.panelUID + '_' + i), rsp.results);
                     });
@@ -141,7 +141,7 @@ function ciniki_artcatalog_tracking() {
         if( this.edit.tracking_id > 0 ) {
             this.edit.sections._buttons.buttons.delete.visible = 'yes';
             M.api.getJSONCb('ciniki.artcatalog.trackingGet', 
-                {'business_id':M.curBusinessID, 'tracking_id':this.edit.tracking_id}, function(rsp) {
+                {'tnid':M.curTenantID, 'tracking_id':this.edit.tracking_id}, function(rsp) {
                     if( rsp.stat != 'ok' ) {
                         M.api.err(rsp);
                         return false;
@@ -165,7 +165,7 @@ function ciniki_artcatalog_tracking() {
             var c = this.edit.serializeForm('no');
             if( c != '' ) {
                 var rsp = M.api.postJSONCb('ciniki.artcatalog.trackingUpdate', 
-                    {'business_id':M.curBusinessID, 
+                    {'tnid':M.curTenantID, 
                     'tracking_id':this.edit.tracking_id}, c, function(rsp) {
                         if( rsp.stat != 'ok' ) {
                             M.api.err(rsp);
@@ -180,7 +180,7 @@ function ciniki_artcatalog_tracking() {
         } else {
             var c = this.edit.serializeForm('yes');
             var rsp = M.api.postJSONCb('ciniki.artcatalog.trackingAdd', 
-                {'business_id':M.curBusinessID, 'artcatalog_id':this.edit.artcatalog_id}, c,
+                {'tnid':M.curTenantID, 'artcatalog_id':this.edit.artcatalog_id}, c,
                     function(rsp) {
                         if( rsp.stat != 'ok' ) {
                             M.api.err(rsp);
@@ -194,7 +194,7 @@ function ciniki_artcatalog_tracking() {
 
     this.deleteTracking = function() {
         if( confirm('Are you sure you want to remove \'' + M.ciniki_artcatalog_main.item.data.name + '\' from the exhibited list \'' + this.edit.data.name + '\'?') ) {
-            var rsp = M.api.getJSONCb('ciniki.artcatalog.trackingDelete', {'business_id':M.curBusinessID, 
+            var rsp = M.api.getJSONCb('ciniki.artcatalog.trackingDelete', {'tnid':M.curTenantID, 
                 'tracking_id':this.edit.tracking_id}, function(rsp) {
                     if( rsp.stat != 'ok' ) {
                         M.api.err(rsp);

@@ -10,30 +10,30 @@
 // Returns
 // -------
 //
-function ciniki_artcatalog_templates_list($ciniki, $business_id, $sections, $args) {
+function ciniki_artcatalog_templates_list($ciniki, $tnid, $sections, $args) {
 
     require_once($ciniki['config']['ciniki.core']['lib_dir'] . '/tcpdf/tcpdf.php');
     ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'hooks', 'loadThumbnail');
-    ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'businessDetails');
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'tenants', 'private', 'tenantDetails');
 
     //
-    // Load business details
+    // Load tenant details
     //
-    $rc = ciniki_businesses_businessDetails($ciniki, $business_id);
+    $rc = ciniki_tenants_tenantDetails($ciniki, $tnid);
     if( $rc['stat'] != 'ok' ) {
         return $rc;
     }
     if( isset($rc['details']) && is_array($rc['details']) ) {   
-        $business_details = $rc['details'];
+        $tenant_details = $rc['details'];
     } else {
-        $business_details = array();
+        $tenant_details = array();
     }
 
     //
     // Load INTL settings
     //
-    ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'intlSettings');
-    $rc = ciniki_businesses_intlSettings($ciniki, $business_id);
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'tenants', 'private', 'intlSettings');
+    $rc = ciniki_tenants_intlSettings($ciniki, $tnid);
     if( $rc['stat'] != 'ok' ) {
         return $rc;
     }
@@ -59,7 +59,7 @@ function ciniki_artcatalog_templates_list($ciniki, $business_id, $sections, $arg
         public $top_margin = 13;
         public $left_margin = 21;
         public $right_margin = 21;
-        public $business_name = '';
+        public $tenant_name = '';
         public $pagenumbers = 'no';
         public $title = '';
         public $align = 'L';
@@ -96,7 +96,7 @@ function ciniki_artcatalog_templates_list($ciniki, $business_id, $sections, $arg
 
     // Set PDF basics
     $pdf->SetCreator('Ciniki');
-    $pdf->SetAuthor($business_details['name']);
+    $pdf->SetAuthor($tenant_details['name']);
     $pdf->SetTitle($args['pagetitle']);
     $pdf->SetSubject('');
     $pdf->SetKeywords('');
@@ -238,7 +238,7 @@ function ciniki_artcatalog_templates_list($ciniki, $business_id, $sections, $arg
             // Load the image
             //
             if( $item['image_id'] > 0 && $pdf->align == 'L' ) {
-                $rc = ciniki_images_hooks_loadThumbnail($ciniki, $business_id, array('image_id'=>$item['image_id'], 'maxlength'=>300));
+                $rc = ciniki_images_hooks_loadThumbnail($ciniki, $tnid, array('image_id'=>$item['image_id'], 'maxlength'=>300));
                 if( $rc['stat'] == 'ok' ) {
                     $image = $rc['image'];
                     $img = $pdf->Image('@'.$image, $cur_x, '', 30, 30, 'JPEG', '', '', false, 150, '', false, false, 0);
@@ -246,7 +246,7 @@ function ciniki_artcatalog_templates_list($ciniki, $business_id, $sections, $arg
                 }
             }
             if( $item['image_id'] > 0 && $pdf->align == 'R' ) {
-                $rc = ciniki_images_hooks_loadThumbnail($ciniki, $business_id, array('image_id'=>$item['image_id'], 'maxlength'=>300));
+                $rc = ciniki_images_hooks_loadThumbnail($ciniki, $tnid, array('image_id'=>$item['image_id'], 'maxlength'=>300));
                 if( $rc['stat'] == 'ok' ) {
                     $image = $rc['image'];
                     $img = $pdf->Image('@'.$image, $pdf->left_margin + 144, '', 30, 30, 'JPEG', '', '', false, 150, '', false, false, 0);

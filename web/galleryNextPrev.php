@@ -9,7 +9,7 @@
 // Returns
 // -------
 //
-function ciniki_artcatalog_web_galleryNextPrev($ciniki, $settings, $business_id, $args) {
+function ciniki_artcatalog_web_galleryNextPrev($ciniki, $settings, $tnid, $args) {
 //$permalink, $img, $type) {
 
     //
@@ -17,7 +17,7 @@ function ciniki_artcatalog_web_galleryNextPrev($ciniki, $settings, $business_id,
     //
     $strsql = "SELECT id, name, image_id, permalink "
         . "FROM ciniki_artcatalog "
-        . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+        . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "AND image_id > 0 "
         . "AND (webflags&0x01) = 1 ";
     if( isset($args['artcatalog_type']) && $args['artcatalog_type'] > 0 ) {

@@ -10,7 +10,7 @@
 // ---------
 // api_key:
 // auth_token:
-// business_id:     The ID of the business to search.
+// tnid:     The ID of the tenant to search.
 //
 // start_needle:    The search string to search the field for.
 //
@@ -33,7 +33,7 @@ function ciniki_artcatalog_searchQuick($ciniki) {
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
         'start_needle'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Search'), 
         'limit'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Limit'), 
         )); 
@@ -44,10 +44,10 @@ function ciniki_artcatalog_searchQuick($ciniki) {
     
     //  
     // Make sure this module is activated, and
-    // check permission to run this function for this business
+    // check permission to run this function for this tenant
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'artcatalog', 'private', 'checkAccess');
-    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['business_id'], 'ciniki.artcatalog.searchQuick'); 
+    $rc = ciniki_artcatalog_checkAccess($ciniki, $args['tnid'], 'ciniki.artcatalog.searchQuick'); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
@@ -64,7 +64,7 @@ function ciniki_artcatalog_searchQuick($ciniki) {
 //      . "IF(ciniki_artcatalog.category='', 'Uncategorized', ciniki_artcatalog.category) AS cname "
 //      . "IF(ciniki_artcatalog.status=1, 'open', 'closed') AS status "
         . "FROM ciniki_artcatalog "
-        . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+        . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
         . "AND (name LIKE '" . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
             . "OR name like '% " . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
             . "OR catalog_number like '" . ciniki_core_dbQuote($ciniki, $args['start_needle']) . "%' "
@@ -99,7 +99,7 @@ function ciniki_artcatalog_searchQuick($ciniki) {
         // Load the images
         //
         if( isset($item['item']['image_id']) && $item['item']['image_id'] > 0 ) {
-            $rc = ciniki_images_hooks_loadThumbnail($ciniki, $args['business_id'], 
+            $rc = ciniki_images_hooks_loadThumbnail($ciniki, $args['tnid'], 
                 array('image_id'=>$item['item']['image_id'], 'maxlength'=>75, 'last_updated'=>$item['item']['last_updated'], 'reddot'=>$item['item']['sold']));
             if( $rc['stat'] != 'ok' ) {
                 return $rc;

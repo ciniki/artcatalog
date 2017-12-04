@@ -7,12 +7,12 @@
 // Arguments
 // ---------
 // ciniki:
-// business_id:     The ID of the business to get events for.
+// tnid:     The ID of the tenant to get events for.
 //
 // Returns
 // -------
 //
-function ciniki_artcatalog_hooks_uiSettings($ciniki, $business_id, $args) {
+function ciniki_artcatalog_hooks_uiSettings($ciniki, $tnid, $args) {
 
     //
     // Setup the default response
@@ -22,7 +22,7 @@ function ciniki_artcatalog_hooks_uiSettings($ciniki, $business_id, $args) {
     //
     // Get the settings
     //
-    $rc = ciniki_core_dbDetailsQueryDash($ciniki, 'ciniki_artcatalog_settings', 'business_id', $business_id, 'ciniki.artcatalog', 'settings', '');
+    $rc = ciniki_core_dbDetailsQueryDash($ciniki, 'ciniki_artcatalog_settings', 'tnid', $tnid, 'ciniki.artcatalog', 'settings', '');
     if( $rc['stat'] == 'ok' && isset($rc['settings']) ) {
         $rsp['settings'] = $rc['settings'];
     }
@@ -30,7 +30,7 @@ function ciniki_artcatalog_hooks_uiSettings($ciniki, $business_id, $args) {
     //
     // Check permissions for what menu items should be available
     //
-    if( isset($ciniki['business']['modules']['ciniki.artcatalog'])
+    if( isset($ciniki['tenant']['modules']['ciniki.artcatalog'])
         && (isset($args['permissions']['owners'])
             || isset($args['permissions']['employees'])
             || isset($args['permissions']['resellers'])
@@ -86,7 +86,7 @@ function ciniki_artcatalog_hooks_uiSettings($ciniki, $business_id, $args) {
 
     } 
 
-    if( isset($ciniki['business']['modules']['ciniki.artcatalog'])
+    if( isset($ciniki['tenant']['modules']['ciniki.artcatalog'])
         && (isset($args['permissions']['owners'])
             || isset($args['permissions']['resellers'])
             || ($ciniki['session']['user']['perms']&0x01) == 0x01
