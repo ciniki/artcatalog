@@ -654,6 +654,7 @@ function ciniki_artcatalog_main() {
             'fibreart':{'label':'Fibre Art', 'field_id':5},
             'printmaking':{'label':'Print Making', 'field_id':6},
             'pottery':{'label':'Pottery', 'field_id':8},
+            'graphicart':{'label':'Graphic Art', 'field_id':11},
         }};
     this.edit.forms.painting = {
         '_image':{'label':'Image', 'aside':'yes', 'type':'imageform', 
@@ -1365,6 +1366,33 @@ function ciniki_artcatalog_main() {
                 'save':{'label':'Save', 'fn':'M.ciniki_artcatalog_main.edit.save();'},
 //                  'delete':{'label':'Delete', 'fn':'M.ciniki_artcatalog_main.item.remove();'},
             }},
+    };
+    this.edit.forms.graphicart = {
+        '_image':this.edit.forms.painting._image,
+        'info':this.edit.forms.painting.info,
+        'ainfo':this.edit.forms.painting.ainfo,
+        '_lists':this.edit.forms.painting._lists,
+        '_description':this.edit.forms.painting._description,
+        '_inspiration':this.edit.forms.painting._inspiration,
+        '_awards':this.edit.forms.painting._awards,
+        '_publications':this.edit.forms.painting._publications,
+        '_notes':this.edit.forms.painting._notes,
+        '_website':{'label':'Website Information', 'type':'simpleform', 
+            'gstep':9,
+            'gtitle':this.edit.forms.painting._website.gtitle,
+            'gtext':this.edit.forms.painting._website.gtext,
+            'fields':{
+                'webflags_1':this.edit.forms.painting._website.fields.webflags_1,
+                'webflags_5':this.edit.forms.painting._website.fields.webflags_5,
+                'webflags_16':this.edit.forms.painting._website.fields.webflags_16,
+                'webflags_12':this.edit.forms.painting._website.fields.webflags_12,
+                'webflags_9':this.edit.forms.painting._website.fields.webflags_9,
+                'webflags_14':this.edit.forms.jewelry._website.fields.webflags_14,
+                'webflags_10':this.edit.forms.painting._website.fields.webflags_10,
+                'webflags_11':this.edit.forms.painting._website.fields.webflags_11,
+                'webflags_15':this.edit.forms.painting._website.fields.webflags_15,
+            }},
+        '_buttons':this.edit.forms.painting._buttons,
     };
     this.edit.form_id = 1;
     this.edit.sections = this.edit.forms.painting;

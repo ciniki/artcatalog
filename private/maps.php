@@ -25,6 +25,7 @@ function ciniki_artcatalog_maps($ciniki) {
             '6'=>'printmaking',
             '7'=>'clothing',
             '8'=>'pottery',
+            '11'=>'graphicart',
             ),
         'typepermalinks'=>array(
             '1'=>'paintings',
@@ -35,6 +36,7 @@ function ciniki_artcatalog_maps($ciniki) {
             '6'=>'printmaking',
             '7'=>'clothing',
             '8'=>'pottery',
+            '11'=>'graphicart',
             ),  
         'type'=>array(
             '1'=>'Painting',
@@ -45,6 +47,7 @@ function ciniki_artcatalog_maps($ciniki) {
             '6'=>'Printmaking',
             '7'=>'Clothing',
             '8'=>'Pottery',
+            '11'=>'Graphic Art',
             ),
         'status'=>array(
             '0'=>'',
