@@ -87,6 +87,7 @@ function ciniki_artcatalog_templates_pricelist($ciniki, $tnid, $sections, $args)
     $pdf->title = $args['pagetitle'];
     if( $args['pagetitle'] != '' ) {
         $filename = preg_replace('/[^a-zA-Z0-9_]/', '', preg_replace('/ /', '_', $args['pagetitle']));
+        $filename = preg_replace('/__/', '_', $filename);
     }
 
     // Set PDF basics
