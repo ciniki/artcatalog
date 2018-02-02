@@ -2223,10 +2223,10 @@ function ciniki_artcatalog_main() {
     this.downloadPDF = function() {
         var args = {'tnid':M.curTenantID, 'output':'pdf'};
         if( this.downloadpdf.list_section != null && this.downloadpdf.list_section != '' ) { 
-            args['section'] = this.downloadpdf.list_section; 
+            args['section'] = M.eU(this.downloadpdf.list_section);
         }
         if( this.downloadpdf.list_name != null && this.downloadpdf.list_name != '' ) { 
-            args['name'] = this.downloadpdf.list_name; 
+            args['name'] = M.eU(this.downloadpdf.list_name);
         }
         if( this.downloadpdf.list_type != null && this.downloadpdf.list_type != '' ) { 
             args['type'] = this.downloadpdf.list_type;
@@ -2237,7 +2237,7 @@ function ciniki_artcatalog_main() {
 //      var l = this.downloadpdf.formFieldValue(this.downloadpdf.formField('layout'), 'layout');
         args['layout'] = this.downloadpdf.formtab;
         var t = this.downloadpdf.formFieldValue(this.downloadpdf.formField('pagetitle'), 'pagetitle');
-        args['pagetitle'] = t;
+        args['pagetitle'] = M.eU(t);
         if( args['layout'] == 'pricelist' || args['layout'] == 'list' ) {
             args['sortby'] = this.downloadpdf.formFieldValue(this.downloadpdf.formField('sortby'), 'sortby');
         }

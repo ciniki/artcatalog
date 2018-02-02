@@ -89,6 +89,7 @@ function ciniki_artcatalog_templates_list($ciniki, $tnid, $sections, $args) {
     $pdf->title = $args['pagetitle'];
     if( $args['pagetitle'] != '' ) {
         $filename = preg_replace('/[^a-zA-Z0-9_]/', '', preg_replace('/ /', '_', $args['pagetitle']));
+        $filename = preg_replace('/__/', '_', $filename);
     }
     if( in_array('pagenumbers', $fields) ) {
         $pdf->pagenumbers = 'yes';
