@@ -394,7 +394,7 @@ function ciniki_artcatalog_main() {
 //            'addFn':'M.startApp(\'ciniki.artcatalog.products\',null,\'M.ciniki_artcatalog_main.item.open();\',\'mc\',{\'artcatalog_id\':M.ciniki_artcatalog_main.item.artcatalog_id,\'add\':\'yes\'});',
             },
         'products':{'label':'Products', 'type':'simplegrid', 'num_cols':3,
-            'visible':function() { return M.modOn('ciniki.merchandise') ? 'yes' : 'yes'; },
+            'visible':function() { return M.modOn('ciniki.merchandise') ? 'yes' : 'no'; },
             'headerValues':['Product', 'Inv', 'Price'],
             'cellClasses':['', '', ''],
             'addTxt':'Add Product',
