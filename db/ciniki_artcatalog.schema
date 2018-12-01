@@ -41,6 +41,7 @@
 #                   60 - Private Collection
 #                   70 - Collection of the Artist
 #                   80 - Commissioned
+#                   90 - Gifted
 # 
 # flags:            0x01 - For Sale
 #                   0x02 - Sold
