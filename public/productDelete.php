@@ -43,7 +43,7 @@ function ciniki_artcatalog_productDelete(&$ciniki) {
     //
     // Get the uuid of the product item to be deleted
     //
-    $strsql = "SELECT uuid FROM ciniki_artcatalog_product "
+    $strsql = "SELECT uuid FROM ciniki_artcatalog_products "
         . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
         . "AND id = '" . ciniki_core_dbQuote($ciniki, $args['product_id']) . "' "
         . "";
