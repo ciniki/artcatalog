@@ -111,7 +111,7 @@ function ciniki_artcatalog_add(&$ciniki) {
         'media'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Media'), 
         'size'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Size'), 
         'framed_size'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Framed Size'), 
-        'price'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'0', 'type'=>'currency', 'name'=>'Price'), 
+        'price'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'0', 'name'=>'Price'), 
         'location'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Location'), 
         'description'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Description'), 
         'inspiration'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'name'=>'Inspiration'), 
@@ -126,6 +126,9 @@ function ciniki_artcatalog_add(&$ciniki) {
     }   
     $args = $rc['args'];
 
+    if( isset($args['price']) ) {
+        $args['price'] = preg_replace('/[^0-9\.]/', '', $args['price']);
+    }
 //  $args['permalink'] = preg_replace('/ /', '-', preg_replace('/[^a-z0-9 ]/', '', strtolower($args['name'])));
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'makePermalink');
     $args['permalink'] = ciniki_core_makePermalink($ciniki, $args['name']);
