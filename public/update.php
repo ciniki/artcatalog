@@ -138,6 +138,12 @@ function ciniki_artcatalog_update(&$ciniki) {
         return $rc;
     }   
 
+    //
+    // Reset unknown category back to blank
+    //
+    if( isset($args['category']) && $args['category'] == 'Unknown' ) {
+        $args['category'] = '';
+    }
     if( isset($args['name']) ) {
         ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'makePermalink');
         $args['permalink'] = ciniki_core_makePermalink($ciniki, $args['name']);

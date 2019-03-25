@@ -126,8 +126,18 @@ function ciniki_artcatalog_add(&$ciniki) {
     }   
     $args = $rc['args'];
 
+    //
+    // Strip non-number characater from price, removes $ or NFS, etc.
+    //
     if( isset($args['price']) ) {
         $args['price'] = preg_replace('/[^0-9\.]/', '', $args['price']);
+    }
+
+    //
+    // Reset unknown category back to blank
+    //
+    if( isset($args['category']) && $args['category'] == 'Unknown' ) {
+        $args['category'] = '';
     }
 //  $args['permalink'] = preg_replace('/ /', '-', preg_replace('/[^a-z0-9 ]/', '', strtolower($args['name'])));
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'makePermalink');

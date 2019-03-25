@@ -138,7 +138,7 @@ function ciniki_artcatalog_stats($ciniki) {
     //
     // Get the category stats
     //
-    $strsql = "SELECT IF(category='', 'Unknown', category) AS name, COUNT(*) AS count FROM ciniki_artcatalog "
+    $strsql = "SELECT IF(category='', 'Unknown', category) AS category_name, COUNT(*) AS count FROM ciniki_artcatalog "
         . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
         . "";
     if( isset($args['type_id']) && $args['type_id'] > 0 ) {
@@ -146,12 +146,12 @@ function ciniki_artcatalog_stats($ciniki) {
             . "";
     }
     $strsql .= ""
-        . "GROUP BY category "
-        . "ORDER BY name "
+        . "GROUP BY category_name "
+        . "ORDER BY category_name "
         . "";
     $rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
-        array('container'=>'sections', 'fname'=>'name', 'name'=>'section',
-            'fields'=>array('name', 'count')),
+        array('container'=>'sections', 'fname'=>'category_name', 'name'=>'section',
+            'fields'=>array('name'=>'category_name', 'count')),
         ));
     if( $rc['stat'] != 'ok' ) {
         return $rc;
