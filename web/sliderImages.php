@@ -43,7 +43,7 @@ function ciniki_artcatalog_web_sliderImages($ciniki, $settings, $tnid, $list, $l
             . "";
         if( $limit != '' && $limit > 0 && is_int($limit) ) {
             $strsql .= "ORDER BY RAND() "
-                . "LIMIT $limit ";
+                . "LIMIT " . intval($limit) . " ";
         } else {
             $strsql .= "ORDER BY RAND() "
                 . "LIMIT 15 ";
@@ -65,7 +65,7 @@ function ciniki_artcatalog_web_sliderImages($ciniki, $settings, $tnid, $list, $l
             . "";
         if( $limit != '' && $limit > 0 && is_int($limit) ) {
             $strsql .= "ORDER BY RAND() "
-                . "LIMIT $limit ";
+                . "LIMIT " . intval($limit) . " ";
         } else {
             $strsql .= "ORDER BY RAND() "
                 . "LIMIT 15 ";
@@ -89,7 +89,7 @@ function ciniki_artcatalog_web_sliderImages($ciniki, $settings, $tnid, $list, $l
                 . "ciniki_artcatalog.date_added DESC "
                 . "";
         if( $limit != '' && $limit > 0 && is_int($limit) ) {
-            $strsql .= "LIMIT $limit ";
+            $strsql .= "LIMIT " . intval($limit) . " ";
         } else {
             $strsql .= "LIMIT 15";
         }

@@ -45,7 +45,7 @@ function ciniki_artcatalog_web_latestImages($ciniki, $settings, $tnid, $limit) {
             . "ciniki_artcatalog.month DESC, "
             . "ciniki_artcatalog.day DESC, "
             . "ciniki_artcatalog.date_added DESC "
-            . "LIMIT $limit ";
+            . "LIMIT " . intval($limit) . " ";
     } else {
 //      $strsql .= "ORDER BY ciniki_artcatalog.date_added DESC "
         $strsql .= "ORDER BY ciniki_artcatalog.year DESC, "

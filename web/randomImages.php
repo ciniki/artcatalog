@@ -41,7 +41,7 @@ function ciniki_artcatalog_web_randomImages($ciniki, $settings, $tnid, $limit) {
         . "";
     if( $limit != '' && $limit > 0 && is_int($limit) ) {
         $strsql .= "ORDER BY RAND() "
-            . "LIMIT $limit ";
+            . "LIMIT " . intval($limit) . " ";
     } else {
         $strsql .= "ORDER BY RAND() "
             . "LIMIT 6 ";
