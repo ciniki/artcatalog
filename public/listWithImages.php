@@ -99,10 +99,14 @@ function ciniki_artcatalog_listWithImages($ciniki) {
     // Map the types to an ID
     //
     if( isset($args['type']) && $args['type'] != '' ) {
-        $args['type_id'] = 0;
-        foreach($maps['item']['typecode'] as $type_id => $code) {
-            if( $args['type'] == $code ) {
-                $args['type_id'] = $type_id;
+        if( is_numeric($args['type']) ) {
+            $args['type_id'] = $args['type'];
+        } else {
+            $args['type_id'] = 0;
+            foreach($maps['item']['typecode'] as $type_id => $code) {
+                if( $args['type'] == $code ) {
+                    $args['type_id'] = $type_id;
+                }
             }
         }
 //      if( $args['type'] == 'painting' ) {
@@ -122,6 +126,17 @@ function ciniki_artcatalog_listWithImages($ciniki) {
 //      } else {
 //          $args['type_id'] = 0;
 //      }
+    }
+
+    //
+    // Check if exhibit name-start-end is passed
+    //
+    if( isset($args['section']) && $args['section'] == 'tracking' ) {
+        if( preg_match("/^(.*)-([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9])-([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9])$/", $args['name'], $m) ) {
+            $args['name'] = $m[1];
+            $args['start_date'] = $m[2];
+            $args['end_date'] = $m[3];
+        }
     }
 
     //
@@ -222,9 +237,7 @@ function ciniki_artcatalog_listWithImages($ciniki) {
         if( $args['section'] == 'category' ) {
             $strsql .= "AND category = '" . ciniki_core_dbQuote($ciniki, $args['name']) . "' ";
         } elseif( $args['section'] == 'media' ) {
-            $strsql .= "AND media = '" . ciniki_core_dbQuote($ciniki, $args['name']) . "' "
-                . "AND type = 1 "
-                . "";
+            $strsql .= "AND media = '" . ciniki_core_dbQuote($ciniki, $args['name']) . "' ";
         } elseif( $args['section'] == 'location' ) {
             $strsql .= "AND location = '" . ciniki_core_dbQuote($ciniki, $args['name']) . "' ";
         } elseif( $args['section'] == 'year' ) {
@@ -235,6 +248,12 @@ function ciniki_artcatalog_listWithImages($ciniki) {
             $strsql .= "AND ciniki_artcatalog_tags.tag_name = '" . ciniki_core_dbQuote($ciniki, $args['name']) . "' ";
         } elseif( $args['section'] == 'tracking' ) {
             $strsql .= "AND ciniki_artcatalog_tracking.name = '" . ciniki_core_dbQuote($ciniki, $args['name']) . "' ";
+            if( isset($args['start_date']) ) {
+                $strsql .= "AND ciniki_artcatalog_tracking.start_date = '" . ciniki_core_dbQuote($ciniki, $args['start_date']) . "' ";
+            }
+            if( isset($args['end_date']) ) {
+                $strsql .= "AND ciniki_artcatalog_tracking.end_date = '" . ciniki_core_dbQuote($ciniki, $args['end_date']) . "' ";
+            }
         } 
     }
     if( isset($args['type_id']) && $args['type_id'] > 0 ) {
@@ -315,7 +334,7 @@ function ciniki_artcatalog_listWithImages($ciniki) {
             return $rc;
         }
         return array('stat'=>'ok');
-    }
+    } 
 
     //
     // Add thumbnail information into list

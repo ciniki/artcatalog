@@ -143,9 +143,14 @@ function ciniki_artcatalog_fieldUpdate(&$ciniki) {
     // Get the list of objects which change, so we can sync them
     //
     $strsql = "SELECT id FROM ciniki_artcatalog "
-        . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
-        . "AND " . $args['field'] . " = '" . ciniki_core_dbQuote($ciniki, $args['old_value']) . "' "
-        . "";
+        . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' ";
+    if( $args['old_value'] == 'Unknown' ) {
+        $strsql .= "AND (" . $args['field'] . " = '" . ciniki_core_dbQuote($ciniki, $args['old_value']) . "' "
+            . "OR " . $args['field'] . " = '' "
+            . ") ";
+    } else {
+        $strsql .= "AND " . $args['field'] . " = '" . ciniki_core_dbQuote($ciniki, $args['old_value']) . "' ";
+    }
     $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', 'items');
     if( $rc['stat'] != 'ok' ) {
         return $rc;
@@ -158,9 +163,15 @@ function ciniki_artcatalog_fieldUpdate(&$ciniki) {
     $strsql = "UPDATE ciniki_artcatalog "
         . "SET " . $args['field'] . " = '" . ciniki_core_dbQuote($ciniki, $args['new_value']) . "', "
         . "last_updated = UTC_TIMESTAMP() "
-        . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
-        . "AND " . $args['field'] . " = '" . ciniki_core_dbQuote($ciniki, $args['old_value']) . "' "
-        . "";
+        . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' ";
+    if( $args['old_value'] == 'Unknown' ) {
+        $strsql .= "AND (" . $args['field'] . " = '" . ciniki_core_dbQuote($ciniki, $args['old_value']) . "' "
+            . "OR " . $args['field'] . " = '' "
+            . ") ";
+    } else {
+        $strsql .= "AND " . $args['field'] . " = '" . ciniki_core_dbQuote($ciniki, $args['old_value']) . "' ";
+    }
+
     $rc = ciniki_core_dbUpdate($ciniki, $strsql, 'ciniki.artcatalog');
     if( $rc['stat'] != 'ok' ) {
         return $rc;

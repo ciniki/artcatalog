@@ -42,14 +42,22 @@ function ciniki_artcatalog_trackingGet($ciniki) {
     ciniki_core_loadMethod($ciniki, 'ciniki', 'users', 'private', 'dateFormat');
     $date_format = ciniki_users_dateFormat($ciniki);
 
-    $strsql = "SELECT id, name, external_number, "
-        . "IFNULL(DATE_FORMAT(start_date, '" . ciniki_core_dbQuote($ciniki, $date_format) . "'), '') AS start_date, "
-        . "IFNULL(DATE_FORMAT(end_date, '" . ciniki_core_dbQuote($ciniki, $date_format) . "'), '') AS end_date, "
-        . "notes "
-        . "FROM ciniki_artcatalog_tracking "
-        . "WHERE id = '" . ciniki_core_dbQuote($ciniki, $args['tracking_id']) . "' "
-        . "AND tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
+    $strsql = "SELECT tracking.id, "
+        . "artcatalog.name AS artcatalog_name, "
+        . "tracking.name, "
+        . "tracking.external_number, "
+        . "IFNULL(DATE_FORMAT(tracking.start_date, '" . ciniki_core_dbQuote($ciniki, $date_format) . "'), '') AS start_date, "
+        . "IFNULL(DATE_FORMAT(tracking.end_date, '" . ciniki_core_dbQuote($ciniki, $date_format) . "'), '') AS end_date, "
+        . "tracking.notes "
+        . "FROM ciniki_artcatalog_tracking AS tracking "
+        . "LEFT JOIN ciniki_artcatalog AS artcatalog ON ("
+            . "tracking.artcatalog_id = artcatalog.id "
+            . "AND artcatalog.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
+            . ") "
+        . "WHERE tracking.id = '" . ciniki_core_dbQuote($ciniki, $args['tracking_id']) . "' "
+        . "AND tracking.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
         . "";
+    error_log($strsql);
     $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', 'place');
     if( $rc['stat'] != 'ok' ) { 
         return $rc;

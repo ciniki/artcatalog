@@ -81,9 +81,9 @@ function ciniki_artcatalog_searchQuick($ciniki) {
     if( isset($args['limit']) && $args['limit'] != '' && $args['limit'] > 0 ) {
         $strsql .= "LIMIT " . ciniki_core_dbQuote($ciniki, $args['limit']) . " ";
     }
-    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');
-    $rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
-        array('container'=>'items', 'fname'=>'id', 'name'=>'item',
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
+    $rc = ciniki_core_dbHashQueryArrayTree($ciniki, $strsql, 'ciniki.artcatalog', array(
+        array('container'=>'items', 'fname'=>'id', 
             'fields'=>array('id', 'type', 'name', 'image_id', 'media', 'catalog_number', 'size', 'framed_size', 'price', 'location', 'sold', 'last_updated')),
         ));
     if( $rc['stat'] != 'ok' ) {
@@ -98,13 +98,13 @@ function ciniki_artcatalog_searchQuick($ciniki) {
         //
         // Load the images
         //
-        if( isset($item['item']['image_id']) && $item['item']['image_id'] > 0 ) {
+        if( isset($item['image_id']) && $item['image_id'] > 0 ) {
             $rc = ciniki_images_hooks_loadThumbnail($ciniki, $args['tnid'], 
-                array('image_id'=>$item['item']['image_id'], 'maxlength'=>75, 'last_updated'=>$item['item']['last_updated'], 'reddot'=>$item['item']['sold']));
+                array('image_id'=>$item['image_id'], 'maxlength'=>75, 'last_updated'=>$item['last_updated'], 'reddot'=>$item['sold']));
             if( $rc['stat'] != 'ok' ) {
                 return $rc;
             }
-            $rsp['items'][$iid]['item']['image'] = 'data:image/jpg;base64,' . base64_encode($rc['image']);
+            $rsp['items'][$iid]['image'] = 'data:image/jpg;base64,' . base64_encode($rc['image']);
         }
     }
 
