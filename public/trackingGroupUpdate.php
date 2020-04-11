@@ -53,6 +53,13 @@ function ciniki_artcatalog_trackingGroupUpdate($ciniki) {
         return array('stat'=>'ok');
     }
 
+    if( isset($args['org_start_date']) && $args['org_start_date'] == '' ) {
+        $args['org_start_date'] = '0000-00-00';
+    }
+    if( isset($args['org_end_date']) && $args['org_end_date'] == '' ) {
+        $args['org_end_date'] = '0000-00-00';
+    }
+
     //
     // Get the original items
     //
@@ -73,8 +80,6 @@ function ciniki_artcatalog_trackingGroupUpdate($ciniki) {
         //
         // Update the tracking entry
         //
-        error_log($item['id']);
-        error_log(print_r($args, true));
         $rc = ciniki_core_objectUpdate($ciniki, $args['tnid'], 'ciniki.artcatalog.place', $item['id'], $args, 0x04);
         if( $rc['stat'] != 'ok' ) {
             return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.53', 'msg'=>'Unable to update the tracking'));
