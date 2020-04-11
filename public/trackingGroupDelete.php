@@ -39,11 +39,11 @@ function ciniki_artcatalog_trackingGroupDelete($ciniki) {
         return $rc;
     }
 
-    if( isset($args['org_start_date']) && $args['org_start_date'] == '' ) {
-        $args['org_start_date'] = '0000-00-00';
+    if( isset($args['start_date']) && $args['start_date'] == '' ) {
+        $args['start_date'] = '0000-00-00';
     }
-    if( isset($args['org_end_date']) && $args['org_end_date'] == '' ) {
-        $args['org_end_date'] = '0000-00-00';
+    if( isset($args['end_date']) && $args['end_date'] == '' ) {
+        $args['end_date'] = '0000-00-00';
     }
 
     //
