@@ -63,7 +63,7 @@ function ciniki_artcatalog_products() {
         //
         var appContainer = M.createContainer(appPrefix, 'ciniki_artcatalog_products', 'yes');
         if( appContainer == null ) {
-            alert('App Error');
+            M.alert('App Error');
             return false;
         }
 

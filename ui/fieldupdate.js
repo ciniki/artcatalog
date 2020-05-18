@@ -37,7 +37,7 @@ function ciniki_artcatalog_fieldupdate() {
         //
         var appContainer = M.createContainer(appPrefix, 'ciniki_artcatalog_fieldupdate', 'yes');
         if( appContainer == null ) {
-            alert('App Error');
+            M.alert('App Error');
             return false;
         } 
 

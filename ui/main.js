@@ -1819,7 +1819,7 @@ function ciniki_artcatalog_main() {
             if( c != '' ) {
                 var nv = this.formFieldValue(this.sections.info.fields.name, 'name');
                 if( nv != this.fieldValue('info', 'name') && nv == '' ) {
-                    alert('You must specifiy a title');
+                    M.alert('You must specifiy a title');
                     return false;
                 }
                 M.api.postJSONFormData('ciniki.artcatalog.update', {'tnid':M.curTenantID, 'artcatalog_id':this.artcatalog_id}, c, function(rsp) {
@@ -1835,7 +1835,7 @@ function ciniki_artcatalog_main() {
             var c = this.serializeFormData('yes');
             var nv = this.formFieldValue(this.sections.info.fields.name, 'name');
             if( nv == '' ) {
-                alert('You must specifiy a title');
+                M.alert('You must specifiy a title');
                 return false;
             }
             M.api.postJSONFormData('ciniki.artcatalog.add', {'tnid':M.curTenantID}, c, function(rsp) {
@@ -2625,7 +2625,7 @@ function ciniki_artcatalog_main() {
             if( c != '' ) {
                 var nv = this.formFieldValue(this.sections.info.fields.name, 'name');
                 if( nv != this.fieldValue('info', 'name') && nv == '' ) {
-                    alert('You must specifiy a title');
+                    M.alert('You must specifiy a title');
                     return false;
                 }
                 M.api.postJSONFormData('ciniki.artcatalog.update', {'tnid':M.curTenantID, 'artcatalog_id':this.artcatalog_id}, c, function(rsp) {
@@ -2641,7 +2641,7 @@ function ciniki_artcatalog_main() {
             var c = this.serializeFormData('yes');
             var nv = this.formFieldValue(this.sections.info.fields.name, 'name');
             if( nv == '' ) {
-                alert('You must specifiy a title');
+                M.alert('You must specifiy a title');
                 return false;
             }
             M.api.postJSONFormData('ciniki.artcatalog.add', {'tnid':M.curTenantID}, c, function(rsp) {
@@ -2888,7 +2888,7 @@ function ciniki_artcatalog_main() {
         //
         var appContainer = M.createContainer(appPrefix, 'ciniki_artcatalog_main', 'yes');
         if( appContainer == null ) {
-            alert('App Error');
+            M.alert('App Error');
             return false;
         }
 

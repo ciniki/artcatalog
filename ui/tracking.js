@@ -185,7 +185,7 @@ function ciniki_artcatalog_tracking() {
         //
         var appContainer = M.createContainer(appPrefix, 'ciniki_artcatalog_tracking', 'yes');
         if( appContainer == null ) {
-            alert('App Error');
+            M.alert('App Error');
             return false;
         }
 
