@@ -205,15 +205,15 @@ function ciniki_artcatalog_images() {
     };
 
     this.deleteImage = function() {
-        if( confirm('Are you sure you want to delete this image?') ) {
-            var rsp = M.api.getJSONCb('ciniki.artcatalog.imageDelete', {'tnid':M.curTenantID, 
-                'artcatalog_image_id':this.edit.artcatalog_image_id}, function(rsp) {
+        M.confirm('Are you sure you want to delete this image?',null,function() {
+            M.api.getJSONCb('ciniki.artcatalog.imageDelete', {'tnid':M.curTenantID, 
+                'artcatalog_image_id':M.ciniki_artcatalog_images.edit.artcatalog_image_id}, function(rsp) {
                     if( rsp.stat != 'ok' ) {
                         M.api.err(rsp);
                         return false;
                     }
                     M.ciniki_artcatalog_images.edit.close();
                 });
-        }
+        });
     };
 }

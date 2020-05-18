@@ -464,10 +464,10 @@ function ciniki_artcatalog_main() {
         } 
     }
     this.trackinggroup.remove = function() {
-        if( confirm('Are you sure you want to delete \'' + this.data.name + '\'?') ) {
-            c += '&name=' + M.eU(this.data.name);
-            c += '&start_date=' + M.eU(this.data.start_date);
-            c += '&end_date=' + M.eU(this.data.end_date);
+        M.confirm('Are you sure you want to delete \'' + this.data.name + '\'?',null,function() {
+            c += '&name=' + M.eU(M.ciniki_artcatalog_main.trackinggroup.data.name);
+            c += '&start_date=' + M.eU(M.ciniki_artcatalog_main.trackinggroup.data.start_date);
+            c += '&end_date=' + M.eU(M.ciniki_artcatalog_main.trackinggroup.data.end_date);
             M.api.postJSONCb('ciniki.artcatalog.trackingGroupDelete', {'tnid':M.curTenantID}, c, function(rsp) {
                 if( rsp.stat != 'ok' ) {
                     M.api.err(rsp);
@@ -475,7 +475,7 @@ function ciniki_artcatalog_main() {
                 }
                 M.ciniki_artcatalog_main.trackinggroup.close();
             });
-        }
+        });
     };
     this.trackinggroup.addClose('Cancel');
 
@@ -858,15 +858,15 @@ function ciniki_artcatalog_main() {
         });
     };
     this.item.remove = function() {
-        if( confirm('Are you sure you want to delete \'' + this.data.name + '\'?  All information, photos and exhibited information will be removed. There is no way to get the information back once deleted.') ) {
-            M.api.getJSONCb('ciniki.artcatalog.delete', {'tnid':M.curTenantID, 'artcatalog_id':this.artcatalog_id}, function(rsp) {
+        M.confirm('Are you sure you want to delete \'' + this.data.name + '\'?  All information, photos and exhibited information will be removed. There is no way to get the information back once deleted.',null,function() {
+            M.api.getJSONCb('ciniki.artcatalog.delete', {'tnid':M.curTenantID, 'artcatalog_id':M.ciniki_artcatalog_main.item.artcatalog_id}, function(rsp) {
                 if( rsp.stat != 'ok' ) {
                     M.api.err(rsp);
                     return false;
                 }
                 M.ciniki_artcatalog_main.item.close();
             });
-        }
+        });
     };
     this.item.addButton('edit', 'Edit', 'M.ciniki_artcatalog_main.guidededit.open(\'M.ciniki_artcatalog_main.item.open();\',M.ciniki_artcatalog_main.item.artcatalog_id);');
     this.item.addButton('next', 'Next');
@@ -2497,6 +2497,9 @@ function ciniki_artcatalog_main() {
             }
         }
     };
+    this.edit.thumbFn = function(s, i, d) {
+        return 'M.startApp(\'ciniki.artcatalog.images\',null,\'M.ciniki_artcatalog_main.edit.open();\',\'mc\',{\'artcatalog_image_id\':\'' + d.image.id + '\'});';
+    };
     this.edit.rowFn = function(s, i, d) {
         switch(s) {
             case 'tracking': return 'M.ciniki_artcatalog_main.edit.save("M.startApp(\'ciniki.artcatalog.tracking\',null,\'M.ciniki_artcatalog_main.edit.open();\',\'mc\',{\'tracking_id\':' + d.place.id + '});");';
@@ -2655,19 +2658,17 @@ function ciniki_artcatalog_main() {
         }
     };
     this.edit.remove = function() {
-        if( confirm('Are you sure you want to delete \'' + this.data.name + '\'?  All information, photos and exhibited information will be removed. There is no way to get the information back once deleted.') ) {
-            M.api.getJSONCb('ciniki.artcatalog.delete', {'tnid':M.curTenantID, 'artcatalog_id':this.artcatalog_id}, function(rsp) {
+        M.confirm('Are you sure you want to delete \'' + this.data.name + '\'?  All information, photos and exhibited information will be removed. There is no way to get the information back once deleted.',null,function() {
+            M.api.getJSONCb('ciniki.artcatalog.delete', {'tnid':M.curTenantID, 'artcatalog_id':M.ciniki_artcatalog_main.edit.artcatalog_id}, function(rsp) {
                 if( rsp.stat != 'ok' ) {
                     M.api.err(rsp);
                     return false;
                 }
                 M.ciniki_artcatalog_main.edit.close();
             });
-        }
+        });
     };
     this.edit.prevButtonFn = function() {
-        console.log('test');
-        console.log(this.prev_item_id);
         if( this.prev_item_id > 0 ) {
             return 'M.ciniki_artcatalog_main.edit.save("M.ciniki_artcatalog_main.edit.open(null,\'' + this.prev_item_id + '\');");';
         }

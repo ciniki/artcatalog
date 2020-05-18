@@ -160,16 +160,16 @@ function ciniki_artcatalog_tracking() {
         }
     }
     this.edit.remove = function() {
-        if( confirm('Are you sure you want to remove \'' + this.data.artcatalog_name + '\' from the exhibited list \'' + this.data.name + '\'?') ) {
+        M.confirm('Are you sure you want to remove \'' + this.data.artcatalog_name + '\' from the exhibited list \'' + this.data.name + '\'?',null,function() {
             M.api.getJSONCb('ciniki.artcatalog.trackingDelete', {'tnid':M.curTenantID, 
-                'tracking_id':this.tracking_id}, function(rsp) {
+                'tracking_id':M.ciniki_artcatalog_tracking.edit.tracking_id}, function(rsp) {
                     if( rsp.stat != 'ok' ) {
                         M.api.err(rsp);
                         return false;
                     }
                     M.ciniki_artcatalog_tracking.edit.close();
                 });
-        }
+        });
     }
     this.edit.addButton('save', 'Save', 'M.ciniki_artcatalog_tracking.edit.save();');
     this.edit.addClose('Cancel');

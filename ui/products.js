@@ -125,15 +125,15 @@ function ciniki_artcatalog_products() {
     };
 
     this.productDelete = function() {
-        if( confirm('Are you sure you want to remove this products? All information about the product will be removed and unrecoverable.') ) {
-            var rsp = M.api.getJSONCb('ciniki.artcatalog.productDelete', {'tnid':M.curTenantID, 
-                'product_id':this.edit.product_id}, function(rsp) {
+        M.confirm('Are you sure you want to remove this products? All information about the product will be removed and unrecoverable.',null,function() {
+            M.api.getJSONCb('ciniki.artcatalog.productDelete', {'tnid':M.curTenantID, 
+                'product_id':M.ciniki_artcatalog_products.edit.product_id}, function(rsp) {
                     if( rsp.stat != 'ok' ) {
                         M.api.err(rsp);
                         return false;
                     }
                     M.ciniki_artcatalog_products.edit.close();
                 });
-        }
+        });
     };
 }
