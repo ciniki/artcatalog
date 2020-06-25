@@ -2581,7 +2581,7 @@ function ciniki_artcatalog_main() {
                     var p = M.ciniki_artcatalog_main.edit;
                     p.formtab = null;
                     p.formtab_field_id = null;
-                    if( p.sections._materials != null ) { p.sections._materials.fields.materials.tags = []; }
+                    if( p.sections != null && p.sections._materials != null ) { p.sections._materials.fields.materials.tags = []; }
                     var material_tags = [];
                     for(i in rsp.tags.materials) {
                         material_tags.push(rsp.tags.materials[i].tag.name);
