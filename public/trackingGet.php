@@ -57,7 +57,6 @@ function ciniki_artcatalog_trackingGet($ciniki) {
         . "WHERE tracking.id = '" . ciniki_core_dbQuote($ciniki, $args['tracking_id']) . "' "
         . "AND tracking.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
         . "";
-    error_log($strsql);
     $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.artcatalog', 'place');
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
