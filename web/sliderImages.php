@@ -101,24 +101,26 @@ function ciniki_artcatalog_web_sliderImages($ciniki, $settings, $tnid, $list, $l
     }
 
     $images = array();
+    $caption_fields = array();
+    if( isset($settings['page-home-gallery-slider-captions']) && $settings['page-home-gallery-slider-captions'] != '' ) {
+        $caption_fields = explode('-', $settings['page-home-gallery-slider-captions']);
+    }
     foreach($rc['rows'] as $rownum => $row) {
-        $caption = $row['title'];
-/*        if( $row['media'] != '' ) {
-            $caption .= ', ' . $row['media'];
+        $caption = '';
+        foreach($caption_fields as $field) {
+            if( $field == 'title' && $row['title'] != '' ) {
+                $caption .= ($caption != '' ? ', ' : '') . $row['title'];
+            }
+            if( $field == 'media' && $row['media'] != '' ) {
+                $caption .= ($caption != '' ? ', ' : '') . $row['media'];
+            }
+            if( $field == 'size' && $row['size'] != '' ) {
+                $caption .= ($caption != '' ? ', ' : '') . $row['size'];
+            }
+            if( $field == 'price' && $row['price'] > 0  ) {
+                $caption .= ($caption != '' ? ', ' : '') . '$' . number_format($row['price'], 0);
+            }
         }
-        if( $row['size'] != '' ) {
-            $caption .= ', ' . $row['size'];
-        } */
-/*        if( $row['framed_size'] != '' ) {
-            $caption .= ' (framed: ' . $row['framed_size'] . ')';
-        } */
-//        if( $row['price'] != '' ) {
-//            $price = $row['price'];
-//            if( preg_match('/^\s*[^\$]/', $price) ) {
-//                $price = '$' . preg_replace('/^\s*/', '\$', $row['price']);
-//            }
-//            $caption .= ", " . $price;
-//        } 
         array_push($images, array('id'=>$row['id'], 'title'=>$row['title'], 
             'category'=>urlencode($row['category']),
             'permalink'=>$row['permalink'], 'image_id'=>$row['image_id'],
