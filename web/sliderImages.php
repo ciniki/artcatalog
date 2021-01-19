@@ -103,22 +103,22 @@ function ciniki_artcatalog_web_sliderImages($ciniki, $settings, $tnid, $list, $l
     $images = array();
     foreach($rc['rows'] as $rownum => $row) {
         $caption = $row['title'];
-        if( $row['media'] != '' ) {
+/*        if( $row['media'] != '' ) {
             $caption .= ', ' . $row['media'];
         }
         if( $row['size'] != '' ) {
             $caption .= ', ' . $row['size'];
-        }
-        if( $row['framed_size'] != '' ) {
+        } */
+/*        if( $row['framed_size'] != '' ) {
             $caption .= ' (framed: ' . $row['framed_size'] . ')';
-        }
-        if( $row['price'] != '' ) {
-            $price = $row['price'];
-            if( preg_match('/^\s*[^\$]/', $price) ) {
-                $price = '$' . preg_replace('/^\s*/', '\$', $row['price']);
-            }
-            $caption .= ", " . $price;
-        }
+        } */
+//        if( $row['price'] != '' ) {
+//            $price = $row['price'];
+//            if( preg_match('/^\s*[^\$]/', $price) ) {
+//                $price = '$' . preg_replace('/^\s*/', '\$', $row['price']);
+//            }
+//            $caption .= ", " . $price;
+//        } 
         array_push($images, array('id'=>$row['id'], 'title'=>$row['title'], 
             'category'=>urlencode($row['category']),
             'permalink'=>$row['permalink'], 'image_id'=>$row['image_id'],
