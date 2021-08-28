@@ -9,11 +9,11 @@ function ciniki_artcatalog_tracking() {
         'ciniki_artcatalog_tracking', 'edit',
         'mc', 'medium', 'sectioned', 'ciniki.artcatalog.tracking.edit');
     this.edit.data = {};
-    this.edit.gstep = 1;
+//    this.edit.gstep = 1;
     this.edit.sections = {
         'info':{'label':'Place', 'type':'simpleform', 
-            'gstep':1,
-            'gtitle':'Where was the item exhibited?',
+//            'gstep':1,
+//            'gtitle':'Where was the item exhibited?',
             'fields':{
                 'name':{'label':'Name', 'type':'text', 'livesearch':'yes', 'livesearchempty':'yes',
                     'gtitle':'What is the name of the venue?',
@@ -31,18 +31,18 @@ function ciniki_artcatalog_tracking() {
                     'htext':'The last day your item was on display.'},
             }},
         '_notes':{'label':'Notes', 'type':'simpleform', 
-            'gstep':2,
-            'gtitle':'Do you have any notes about the exhibition?',
-            'gmore':'Any private notes you want to keep about showing this item at this venue.',
+//            'gstep':2,
+//            'gtitle':'Do you have any notes about the exhibition?',
+//            'gmore':'Any private notes you want to keep about showing this item at this venue.',
             'fields':{
                 'notes':{'label':'', 'type':'textarea', 'size':'medium', 'hidelabel':'yes'},
             }},
         '_buttons':{'label':'', 
-            'gstep':3,
-            'gtitle':'Save the exhibition information',
-            'gtext-add':'Press the save button this exhibited place.',
-            'gtext-edit':'Press the save button the changes.',
-            'gmore-edit':'If you want to remove this exhibited place for your item, press the Remove button.',
+//            'gstep':3,
+//            'gtitle':'Save the exhibition information',
+//            'gtext-add':'Press the save button this exhibited place.',
+//            'gtext-edit':'Press the save button the changes.',
+//            'gmore-edit':'If you want to remove this exhibited place for your item, press the Remove button.',
             'buttons':{
                 'save':{'label':'Save', 'fn':'M.ciniki_artcatalog_tracking.edit.save();'},
                 'delete':{'label':'Remove', 'visible':'no', 'fn':'M.ciniki_artcatalog_tracking.edit.remove();'},
