@@ -13,7 +13,7 @@
 function ciniki_artcatalog_templates_single($ciniki, $tnid, $sections, $args) {
 
     require_once($ciniki['config']['ciniki.core']['lib_dir'] . '/tcpdf/tcpdf.php');
-    ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'loadCacheOriginal');
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'loadCacheJPEG');
     ciniki_core_loadMethod($ciniki, 'ciniki', 'tenants', 'private', 'tenantDetails');
 
     //
@@ -242,7 +242,7 @@ function ciniki_artcatalog_templates_single($ciniki, $tnid, $sections, $args) {
             // Load the image
             //
             if( $item['image_id'] > 0 ) {
-                $rc = ciniki_images_loadCacheOriginal($ciniki, $tnid, $item['image_id'], 2000, 2000);
+                $rc = ciniki_images_loadCacheJPEG($ciniki, $tnid, $item['image_id'], 2000, 2000);
                 if( $rc['stat'] == 'ok' ) {
                     $image = $rc['image'];
                     $img = $pdf->Image('@'.$image, '', '', $img_box_width, $img_box_height, 'JPEG', '', '', false, 300, '', false, false, 0, 'CM');
