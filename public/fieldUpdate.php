@@ -26,7 +26,7 @@ function ciniki_artcatalog_fieldUpdate(&$ciniki) {
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
         'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
         'field'=>array('required'=>'yes', 'blank'=>'yes', 'validlist'=>array('category','media','location','year'), 'name'=>'Field'), 
-        'old_value'=>array('required'=>'yes', 'blank'=>'yes', 'name'=>'Old value'), 
+        'old_value'=>array('required'=>'yes', 'blank'=>'yes', 'trim'=>'no', 'name'=>'Old value'), 
         'new_value'=>array('required'=>'yes', 'blank'=>'yes', 'name'=>'New value'), 
         )); 
     if( $rc['stat'] != 'ok' ) { 
