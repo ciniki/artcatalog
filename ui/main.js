@@ -68,12 +68,13 @@ function ciniki_artcatalog_main() {
         '31':'31',
         };
     this.statusOptions = {
-        '10':'NFS',
+        '10':'Not for Sale',
         '20':'For Sale',
         '50':'Sold',
         '60':'Private Collection',
         '70':'Artist Collection',
         '80':'Commissioned',
+        '85':'Donated',
         '90':'Gifted',
         };
     this.cur_type = null;
