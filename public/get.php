@@ -112,7 +112,7 @@ function ciniki_artcatalog_get($ciniki) {
             'name'=>'',
             'permalink'=>'',
             'image_id'=>'0',
-            'type'=>'1',
+            'type'=>1,
             'type_text'=>'',
             'status'=>'10',
             'status_text'=>'NFS',
