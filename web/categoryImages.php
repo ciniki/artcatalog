@@ -70,7 +70,7 @@ function ciniki_artcatalog_web_categoryImages($ciniki, $settings, $tnid, $args) 
         . "AND ciniki_artcatalog.image_id > 0 "
         . "AND (webflags&0x01) = 1 "
         . "";
-    if( isset($args['artcatalog_type']) && $args['artcatalog_type'] != '' ) {
+    if( isset($args['artcatalog_type']) && $args['artcatalog_type'] != '' && $args['artcatalog_type'] > 0 ) {
         $strsql .= "AND ciniki_artcatalog.type = '" . ciniki_core_dbQuote($ciniki, $args['artcatalog_type']) . "' ";
     }
     if( isset($args['type']) && $args['type'] == 'category' && isset($args['type_name'])) {
