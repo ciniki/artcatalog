@@ -106,7 +106,7 @@ function ciniki_artcatalog_categories() {
         if( type != null ) { this.category.artcatalog_type = type; }
         if( name != null ) { this.category.category_name = unescape(name); }
         M.api.getJSONCb('ciniki.artcatalog.categoryDetails', {'tnid':M.curTenantID,
-            'type':this.category.artcatalog_type, 'category':this.category.category_name}, function(rsp) {
+            'type':M.eU(this.category.artcatalog_type), 'category':M.eU(this.category.category_name)}, function(rsp) {
             if( rsp.stat != 'ok' ) {
                 M.api.err(rsp);
                 return false;
@@ -123,7 +123,7 @@ function ciniki_artcatalog_categories() {
         if( c != '' ) {
             M.api.postJSONFormData('ciniki.artcatalog.categoryUpdate', 
                 {'tnid':M.curTenantID, 'artcatalog_type':this.category.artcatalog_type,
-                'category':this.category.category_name}, c, function(rsp) {
+                'category':M.eU(this.category.category_name)}, c, function(rsp) {
                     if( rsp.stat != 'ok' ) {
                         M.api.err(rsp);
                         return false;
