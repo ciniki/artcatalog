@@ -35,8 +35,6 @@ function ciniki_artcatalog_templates_excel($ciniki, $tnid, $sections, $args) {
     if( $rc['stat'] != 'ok' ) {
         return $rc;
     }
-    $intl_currency_fmt = numfmt_create($rc['settings']['intl-default-locale'], NumberFormatter::CURRENCY);
-    $intl_currency = $rc['settings']['intl-default-currency'];
 
     //
     // Build the array of fields to include

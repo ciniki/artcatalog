@@ -46,8 +46,6 @@ function ciniki_artcatalog_templates_thumbnails($ciniki, $tnid, $sections, $args
     if( $rc['stat'] != 'ok' ) {
         return $rc;
     }
-    $intl_currency_fmt = numfmt_create($rc['settings']['intl-default-locale'], NumberFormatter::CURRENCY);
-    $intl_currency = $rc['settings']['intl-default-currency'];
 
     //
     // Create a custom class for this document
