@@ -41,7 +41,7 @@ function ciniki_artcatalog_fieldList($ciniki) {
     $strsql = "SELECT DISTINCT " . $args['field'] . " "
         . "FROM ciniki_artcatalog "
         . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
-        . "ORDER BY " . $args['field'] . " COLLATE latin1_general_cs, " . $args['field'] . " "
+        . "ORDER BY " . $args['field'] . " "
         . "";
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryTree');
     $rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(

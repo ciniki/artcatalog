@@ -494,15 +494,15 @@ function ciniki_artcatalog_list($ciniki) {
         if( isset($args['sortby']) && $args['sortby'] == 'catalognumber' ) {
             $strsql .= "ORDER BY catalog_number, name ";
         } elseif( isset($args['sortby']) && $args['sortby'] == 'year' ) {
-            $strsql .= "ORDER BY sname COLLATE latin1_general_cs DESC, name ";
+            $strsql .= "ORDER BY sname DESC, name ";
         } elseif( isset($args['sortby']) 
             && ($args['sortby'] == 'category' || $args['sortby'] == 'media' || $args['sortby'] == 'location' || $args['sortby'] == 'tracking') ) {
-            $strsql .= "ORDER BY sname COLLATE latin1_general_cs, name ";
+            $strsql .= "ORDER BY sname, name ";
         } elseif( isset($args['section']) && $args['section'] == 'year' ) {
-            $strsql .= "ORDER BY sname COLLATE latin1_general_cs DESC, name "
+            $strsql .= "ORDER BY sname DESC, name "
                 . "";
         } else {
-            $strsql .= "ORDER BY sname COLLATE latin1_general_cs, name "
+            $strsql .= "ORDER BY sname, name "
                 . "";
         }
         if( isset($args['limit']) && $args['limit'] != '' && $args['limit'] > 0 ) {

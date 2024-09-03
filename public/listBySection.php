@@ -71,14 +71,14 @@ function ciniki_artcatalog_listBySection($ciniki) {
 //      . "IF((ciniki_artcatalog.flags&0x02)=2, 'yes', 'no') AS sold, "
             . "FROM ciniki_artcatalog "
             . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
-            . "ORDER BY sname COLLATE latin1_general_cs, name "
+            . "ORDER BY sname, name "
             . "";
     } elseif( $args['section'] == 'media' ) {
         $strsql = "SELECT ciniki_artcatalog.id, image_id, name, media, catalog_number, size, framed_size, price, flags, location, notes, "
             . "IF(ciniki_artcatalog.media='', '', ciniki_artcatalog.media) AS sname "
             . "FROM ciniki_artcatalog "
             . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
-            . "ORDER BY sname COLLATE latin1_general_cs, name "
+            . "ORDER BY sname, name "
             . "";
     } elseif( $args['section'] == 'location' ) {
         $strsql = "SELECT ciniki_artcatalog.id, image_id, name, media, catalog_number, size, framed_size, "
@@ -86,7 +86,7 @@ function ciniki_artcatalog_listBySection($ciniki) {
             . "IF(ciniki_artcatalog.location='', '', ciniki_artcatalog.location) AS sname "
             . "FROM ciniki_artcatalog "
             . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
-            . "ORDER BY sname COLLATE latin1_general_cs, name "
+            . "ORDER BY sname, name "
             . "";
     }
     if( isset($args['limit']) && $args['limit'] != '' && $args['limit'] > 0 ) {

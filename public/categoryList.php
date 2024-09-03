@@ -69,7 +69,7 @@ function ciniki_artcatalog_categoryList($ciniki) {
         $strsql = "SELECT DISTINCT type, type AS name, category "
             . "FROM ciniki_artcatalog "
             . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
-            . "ORDER BY type, category COLLATE latin1_general_cs, category "
+            . "ORDER BY type, category "
             . "";
         $rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
             array('container'=>'types', 'fname'=>'type', 'name'=>'type',
@@ -90,7 +90,7 @@ function ciniki_artcatalog_categoryList($ciniki) {
         $strsql = "SELECT DISTINCT '0' AS type, category "
             . "FROM ciniki_artcatalog "
             . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
-            . "ORDER BY category COLLATE latin1_general_cs, category "
+            . "ORDER BY category "
             . "";
         $rc = ciniki_core_dbHashQueryTree($ciniki, $strsql, 'ciniki.artcatalog', array(
             array('container'=>'categories', 'fname'=>'category', 'name'=>'category',

@@ -87,9 +87,9 @@ function ciniki_artcatalog_searchField($ciniki) {
             . ") "
         . "";
     if( $args['field'] == 'year' ) {
-        $strsql .= "ORDER BY " . $args['field'] . " COLLATE latin1_general_cs DESC ";
+        $strsql .= "ORDER BY " . $args['field'] . " DESC ";
     } else {
-        $strsql .= "ORDER BY " . $args['field'] . " COLLATE latin1_general_cs ";
+        $strsql .= "ORDER BY " . $args['field'] . " ";
     }
     if( isset($args['limit']) && $args['limit'] != '' && $args['limit'] > 0 ) {
         $strsql .= "LIMIT " . ciniki_core_dbQuote($ciniki, $args['limit']) . " ";
