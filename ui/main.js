@@ -1609,7 +1609,7 @@ function ciniki_artcatalog_main() {
                         }
                     }
                     p.data = rsp.item;
-                    if( section != null && (section == 'category' || section == 'categories') && name != null && name != '' ) {
+                    if( section != null && (section == 'category' || section == 'categories') && name != null && name != '' && name != 'Unknown' ) {
                         p.data.category = decodeURIComponent(name);
                     } else if( section != null && section == 'media' && name != null && name != '' ) {
                         p.data.media = decodeURIComponent(name);
