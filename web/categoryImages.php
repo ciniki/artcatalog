@@ -39,7 +39,7 @@ function ciniki_artcatalog_web_categoryImages($ciniki, $settings, $tnid, $args) 
             
         if( isset($args['artcatalog_type']) && $args['artcatalog_type'] != '' ) {
             $strsql .= "AND (detail_key LIKE 'category-description-" . ciniki_core_dbQuote($ciniki, $args['type_name']) . "' "
-                . "OR detail_key LIKE 'category-description-" . ciniki_core_dbQuote($ciniki, $args['artcatalog_type']) . "-" . $args['type_name'] . "' )";
+                . "OR detail_key LIKE 'category-description-" . ciniki_core_dbQuote($ciniki, $args['artcatalog_type'] . "-" . $args['type_name']) . "' )";
         } else {
             $strsql .= "AND detail_key = 'category-description-" . ciniki_core_dbQuote($ciniki, $args['type_name']) . "' ";
         }
@@ -118,6 +118,10 @@ function ciniki_artcatalog_web_categoryImages($ciniki, $settings, $tnid, $args) 
         }
         array_push($images, array('id'=>$row['id'], 'title'=>$row['title'], 'permalink'=>$row['permalink'], 'image_id'=>$row['image_id'],
             'caption'=>$caption, 'sold'=>$row['sold'], 'last_updated'=>$row['last_updated']));
+    }
+
+    if( count($images) == 0 ) {
+        return array('stat'=>'404', 'err'=>array('code'=>'ciniki.artcatalog.59', 'msg'=>'Gallery not found'));
     }
     
     return array('stat'=>'ok', 'album'=>$album, 'images'=>$images);
