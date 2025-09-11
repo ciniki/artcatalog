@@ -177,7 +177,7 @@ function ciniki_artcatalog_add(&$ciniki) {
         return $rc;
     }
     if( $rc['num_rows'] > 0 ) {
-        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.artcatalog.13', 'msg'=>'You already have artwork with this name, please choose another name'));
+        return array('stat'=>'warn', 'err'=>array('code'=>'ciniki.artcatalog.13', 'msg'=>'You already have artwork with this name, please choose another name'));
     }
 
     //  
